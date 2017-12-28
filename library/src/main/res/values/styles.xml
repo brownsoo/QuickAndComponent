@@ -1,0 +1,9 @@
+<resources>
+
+    <style name="BrownTheme" parent="Brown_SuperTheme"/>
+    <style name="BrownTheme.Transparent" parent="BrownTheme"/>
+    <style name="BrownTheme.Dialog" parent="Brown_SuperTheme.Dialog"/>
+    <style name="BrownTheme.Dialog.Alert" parent="Brown_SuperTheme.Dialog.Alert"/>
+    <style name="BrownTheme.Dialog.Progress" parent="Brown_SuperTheme.Dialog"/>
+
+</resources>

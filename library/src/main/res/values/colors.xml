@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="vt__mirage">#1a2027</color>
+    <color name="vt__white">#ffffff</color>
+    <color name="vt__white_30">#4cffffff</color>
+    <color name="vt__regent_gray">#909caa</color>
+    <color name="vt__mountain_meadow">#1dc19c</color>
+    <color name="vt__mountain_meadow_50">#7f1cc19c</color>
+    <color name="vt__mountain_meadow_30">#4c1cc19c</color>
+    <color name="vt__woodsmoke_70">#b2161a1f</color>
+    <color name="vt__woodsmoke_50">#7f161a1f</color>
+    <color name="vt__woodsmoke_30">#4c161a1f</color>
+    <color name="vt__woodsmoke_20">#33161a1f</color>
+    <color name="vt__woodsmoke">#161a1f</color>
+    <color name="vt__ebony_clay_90">#e51d232a</color>
+    <color name="vt__ebony_clay_60">#991d232a</color>
+    <color name="vt__ebony_clay">#1d232a</color>
+    <color name="vt__light_ebony_clay">#252b36</color>
+    <color name="vt__valencia">#dd4848</color>
+    <color name="vt__cadet_blue">#b3b8c5</color>
+    <color name="vt__cadet_blue_50">#7fb3b8c5</color>
+    <color name="vt__cadet_blue_40">#66b3b8c5</color>
+    <color name="vt__bright_gray">#3e4657</color>
+    <color name="vt__pale_sky">#6a7684</color>
+    <color name="vt__pale_sky_40">#666a7684</color>
+    <color name="vt__shuttle_gray">#555b6a</color>
+    <color name="vt__shuttle_gray_40">#66555b6a</color>
+    <color name="vt__bunker">#0d131b</color>
+    <color name="vt__silver">#d6dbe2</color>
+    <color name="vt__catskill_white">#eef2f6</color>
+    <color name="vt__dark_catskill_white">#e9eef4</color>
+    <color name="vt__black_squeeze">#f2f6fa</color>
+    <color name="vt__sky_blue">#55bdf9</color>
+    <color name="vt__orange">#f6a623</color>
+</resources>

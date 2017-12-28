@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/brown__toast_bg"
+    android:minHeight="48dp"
+    android:minWidth="200dp">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@string/font_family_light"
+        android:gravity="center"
+        android:text="test"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
+</FrameLayout>
+
