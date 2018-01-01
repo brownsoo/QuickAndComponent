@@ -11,7 +11,7 @@ import io.reactivex.Scheduler
  * Created by brownsoo on 2017. 5. 10..
  */
 
-open class BaseMvpContract {
+open class MvpContract {
 
     interface View : Available {
 

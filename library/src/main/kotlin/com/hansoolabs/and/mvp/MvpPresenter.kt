@@ -10,9 +10,9 @@ import com.hansoolabs.and.error.ExceptionHandler
  * Created by brownsoo on 2017. 5. 10..
  */
 
-open class BaseMvpPresenter<out T : BaseMvpContract.View>(protected val view: T,
-                                                          protected val exceptionHandler: ExceptionHandler)
-    : BaseMvpContract.Presenter, BaseMvpContract.ViewForegroundListener {
+open class MvpPresenter<out T : MvpContract.View>(protected val view: T,
+                                                  protected val exceptionHandler: ExceptionHandler)
+    : MvpContract.Presenter, MvpContract.ViewForegroundListener {
 
     private val delayedCallbacks = ArrayList<DelayedCallback<*>>()
     protected fun viewAccessibleDo(run: () -> Unit) {

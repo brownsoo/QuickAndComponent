@@ -1,4 +1,4 @@
-package com.hansoolabs.and.mvp
+package com.hansoolabs.and.app
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
