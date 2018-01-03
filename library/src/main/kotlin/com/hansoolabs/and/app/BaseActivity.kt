@@ -1,4 +1,4 @@
-package com.hansoolabs.and
+package com.hansoolabs.and.app
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -36,7 +37,7 @@ import java.lang.ref.WeakReference
 open class BaseActivity : RxAppCompatActivity(),
         Available,
         AlertDialogFragment.Listener,
-        AppForegroundListener {
+        AppForegroundObserver.AppForegroundListener {
 
     override val isAvailable: Boolean
         get() = !isFinishing
@@ -130,14 +131,14 @@ open class BaseActivity : RxAppCompatActivity(),
 
     override fun onStart() {
         super.onStart()
-        BrownComponent.registerAppForegroundListener(this)
+        AppForegroundObserver.instance.registerObserver(this)
     }
 
     @CallSuper
     override fun onStop() {
         hideProgressDialog()
         hideKeyboard()
-        BrownComponent.unregisterAppForegroundListener(this)
+        AppForegroundObserver.instance.unregisterObserver(this)
         super.onStop()
     }
 
@@ -153,12 +154,12 @@ open class BaseActivity : RxAppCompatActivity(),
         super.onPause()
     }
 
-    override fun onAppBecomeForeground() {
+    override fun onAppDidForeground() {
         appForeground = true
         notifyViewForegroundChanged()
     }
 
-    override fun onAppBecomeBackground() {
+    override fun onAppDidBackground() {
         appForeground = false
         notifyViewForegroundChanged()
     }

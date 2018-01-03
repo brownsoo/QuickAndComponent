@@ -20,11 +20,20 @@ import android.util.Log
  * Created by brownsoo on 2017. 5. 10..
  */
 
-class AppForegroundObservable : Observable<AppForegroundListener>() {
+class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundListener>() {
+
+    interface AppForegroundListener {
+        fun onAppDidForeground()
+        fun onAppDidBackground()
+    }
+
+    private object Holder { val INSTANCE = AppForegroundObserver() }
 
     companion object {
         private const val MAX_ACTIVITY_TRANSITION_TIME_MS : Long = 2000L
-        private const val TAG = "AppForegroundObservable"
+        private const val TAG = "AppForegroundObserver"
+
+        val instance: AppForegroundObserver by lazy { Holder.INSTANCE }
     }
 
     private val handler : Handler = Handler(Looper.getMainLooper())
@@ -56,15 +65,13 @@ class AppForegroundObservable : Observable<AppForegroundListener>() {
         }
     }
 
-    fun isAppInBackground(): Boolean {
-        return wasAppInBackground
-    }
+    fun isAppInBackground(): Boolean = wasAppInBackground
 
     private fun startActivityTransitionTimer() {
         activityTransitionTimer = Timer()
         activityTransitionTimerTask = object : TimerTask() {
             override fun run() {
-                handler.post { this@AppForegroundObservable.onAppBecomeBackground() }
+                handler.post { this@AppForegroundObserver.onAppBecomeBackground() }
             }
         }
 
@@ -85,7 +92,7 @@ class AppForegroundObservable : Observable<AppForegroundListener>() {
             handler.post {
                 synchronized(mObservers) {
                     for (i in mObservers.indices.reversed()) {
-                        mObservers[i].onAppBecomeBackground()
+                        mObservers[i].onAppDidBackground()
                     }
                 }
             }
@@ -100,7 +107,7 @@ class AppForegroundObservable : Observable<AppForegroundListener>() {
             handler.post {
                 synchronized(mObservers) {
                     for (i in mObservers.indices.reversed()) {
-                        mObservers[i].onAppBecomeForeground()
+                        mObservers[i].onAppDidForeground()
                     }
                 }
             }
@@ -109,12 +116,10 @@ class AppForegroundObservable : Observable<AppForegroundListener>() {
 
 
     private val lifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
-        override fun onActivityCreated(activity: Activity, bundle: Bundle) {
-
+        override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
         }
 
         override fun onActivityStarted(activity: Activity) {
-
         }
 
         override fun onActivityResumed(activity: Activity) {
@@ -126,15 +131,12 @@ class AppForegroundObservable : Observable<AppForegroundListener>() {
         }
 
         override fun onActivityStopped(activity: Activity) {
-
         }
 
-        override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {
-
+        override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle?) {
         }
 
         override fun onActivityDestroyed(activity: Activity) {
-
         }
     }
 

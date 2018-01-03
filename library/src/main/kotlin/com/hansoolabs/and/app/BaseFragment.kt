@@ -30,7 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 open class BaseFragment : RxFragment(),
         Available,
-        AppForegroundListener, AlertDialogFragment.Listener {
+        AlertDialogFragment.Listener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
     protected var appForeground = true
@@ -114,12 +114,12 @@ open class BaseFragment : RxFragment(),
     @CallSuper
     override fun onStart() {
         super.onStart()
-        BrownComponent.registerAppForegroundListener(this)
+        AppForegroundObserver.instance.registerObserver(this)
     }
 
     @CallSuper
     override fun onStop() {
-        BrownComponent.unregisterAppForegroundListener(this)
+        AppForegroundObserver.instance.unregisterObserver(this)
         hideProgressDialog()
         hideKeyboard()
         super.onStop()
@@ -142,12 +142,12 @@ open class BaseFragment : RxFragment(),
         super.onDestroy()
     }
 
-    override fun onAppBecomeForeground() {
+    override fun onAppDidForeground() {
         appForeground = true
         notifyViewForegroundChanged()
     }
 
-    override fun onAppBecomeBackground() {
+    override fun onAppDidBackground() {
         appForeground = false
         notifyViewForegroundChanged()
     }
