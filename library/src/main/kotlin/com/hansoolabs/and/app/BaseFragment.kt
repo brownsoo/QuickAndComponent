@@ -79,7 +79,7 @@ open class BaseFragment : RxFragment(),
 
     @Suppress("UseExpressionBody", "MemberVisibilityCanPrivate")
     @CallSuper
-    protected fun onAttachCompat(context: Context?) {
+    protected open fun onAttachCompat(context: Context?) {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

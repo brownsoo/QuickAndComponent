@@ -47,7 +47,7 @@
         android:paddingStart="0dp"
         android:scrollbarSize="4dp"
         android:scrollbarStyle="insideOverlay"
-        android:scrollbarThumbVertical="@drawable/vt__scrollbar"
+        android:scrollbarThumbVertical="@drawable/and__scrollbar"
         android:scrollbars="vertical"
         android:visibility="gone"/>
 

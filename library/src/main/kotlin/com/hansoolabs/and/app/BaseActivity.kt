@@ -51,7 +51,7 @@ open class BaseActivity : RxAppCompatActivity(),
     protected var contentMain: View? = null
     protected var errorView: View? = null
 
-    protected val disposableBack by lazy { CompositeDisposable() }
+    protected val disposableBag by lazy { CompositeDisposable() }
 
     private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
