@@ -17,7 +17,7 @@
         android:ellipsize="end"
         android:fontFamily="@string/font_family_regular"
         android:maxLines="1"
-        android:textColor="@color/vt__white"
+        android:textColor="@color/and__white"
         android:textSize="14sp"
         tools:text="12"/>
     <TextView

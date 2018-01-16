@@ -102,7 +102,7 @@ open class BaseFragment : RxFragment(),
         baseFrame?.addView(progressBar)
         progressBar.visibility = View.GONE
 
-        errorView = inflater.inflate(R.layout.vt__error_content, baseFrame, false)
+        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
         errorView?.let { baseFrame?.addView(it) }
         return baseFrame
     }

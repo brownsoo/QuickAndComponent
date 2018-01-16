@@ -114,7 +114,7 @@ object UiUtil {
     @JvmStatic
     fun toast(context: Context, text: String, time: Int): Toast {
         val inflater = LayoutInflater.from(context)
-        val layout = inflater.inflate(R.layout.vt__toast, null, false)
+        val layout = inflater.inflate(R.layout.and__toast, null, false)
         (layout.findViewById<View>(R.id.text) as TextView).text = text
 
         return Toast(context.applicationContext).apply {

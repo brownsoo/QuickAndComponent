@@ -27,7 +27,7 @@ class MessageProgressView @JvmOverloads constructor(context: Context, attrs: Att
     private lateinit var textView: TextView
 
     init {
-        View.inflate(context, R.layout.br__message_progress, this)
+        View.inflate(context, R.layout.and__message_progress, this)
         progressBar = findViewById(R.id.message_loading_progressbar)
         textView = findViewById(R.id.message)
     }

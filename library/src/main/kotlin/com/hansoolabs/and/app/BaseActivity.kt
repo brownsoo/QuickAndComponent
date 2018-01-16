@@ -80,7 +80,7 @@ open class BaseActivity : RxAppCompatActivity(),
         val inflater = LayoutInflater.from(this)
         baseFrame = FrameLayout(this)
         contentMain = inflater.inflate(layoutResID, baseFrame, false)
-        errorView = inflater.inflate(R.layout.vt__error_content, baseFrame, false)
+        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)
@@ -91,7 +91,7 @@ open class BaseActivity : RxAppCompatActivity(),
         val inflater = LayoutInflater.from(this)
         baseFrame = FrameLayout(this)
         contentMain = view
-        errorView = inflater.inflate(R.layout.vt__error_content, baseFrame, false)
+        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)
@@ -103,7 +103,7 @@ open class BaseActivity : RxAppCompatActivity(),
         val inflater = LayoutInflater.from(this)
         baseFrame = FrameLayout(this)
         contentMain = view
-        errorView = inflater.inflate(R.layout.vt__error_content, baseFrame, false)
+        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)

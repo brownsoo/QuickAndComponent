@@ -18,7 +18,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.hansoolabs.and.utils.StringUtil
 import com.hansoolabs.and.utils.UiUtil
-import kotlinx.android.synthetic.main.vt__alert_dialog.*
+import kotlinx.android.synthetic.main.and__alert_dialog.*
 
 /**
  *
@@ -110,7 +110,7 @@ open class AlertDialogFragment : BaseDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater,
                      container: ViewGroup?,
                      savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.vt__alert_dialog, container, false)
+        return inflater.inflate(R.layout.and__alert_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
