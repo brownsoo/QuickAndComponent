@@ -12,19 +12,8 @@ import android.support.v4.app.DialogFragment
 
 open class BaseDialogFragment : DialogFragment() {
 
-    companion object {
-        const val RESULT_OK = -1
-        const val RESULT_CANCELED = 0
-    }
-
     private val resultData = Bundle()
     private var resultCode :Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BrownTheme_Dialog)
-        setResult(RESULT_CANCELED)
-    }
 
     override fun onStart() {
         super.onStart()
@@ -63,12 +52,8 @@ open class BaseDialogFragment : DialogFragment() {
         }
     }
 
-    fun getResultData(): Bundle {
-        return resultData
-    }
+    fun getResultData() = resultData
 
-    fun getResultCode(): Int {
-        return resultCode
-    }
+    fun getResultCode() = resultCode
 
 }

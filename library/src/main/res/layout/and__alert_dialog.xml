@@ -75,7 +75,7 @@
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:paddingTop="6dp"
-            android:text="ne"
+            tools:text="ne"
             android:textColor="@android:color/black"
             android:textSize="14sp"/>
 

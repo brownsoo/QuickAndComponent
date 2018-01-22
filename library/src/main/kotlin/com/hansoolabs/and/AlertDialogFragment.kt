@@ -41,8 +41,8 @@ open class AlertDialogFragment : BaseDialogFragment() {
         val EXTRA_NEGATIVE_BUTTON = UiUtil.constant("EXTRA_NEGATIVE_BUTTON")
         val EXTRA_NEUTRAL_BUTTON = UiUtil.constant("EXTRA_NEUTRAL_BUTTON")
         val EXTRA_THEME_RES_ID = UiUtil.constant("EXTRA_THEME_RES_ID")
-        protected val EXTRA_CUSTOM_VIEW_RES_ID = UiUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
-        protected val EXTRA_DEFAULT_RESULT_DATA = UiUtil.constant("EXTRA_DEFAULT_RESULT_DATA")
+        val EXTRA_CUSTOM_VIEW_RES_ID = UiUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
+        val EXTRA_DEFAULT_RESULT_DATA = UiUtil.constant("EXTRA_DEFAULT_RESULT_DATA")
 
         const val EXTRA_WHICH = "which"
         const val BUTTON_POSITIVE = -1
@@ -51,9 +51,8 @@ open class AlertDialogFragment : BaseDialogFragment() {
         const val RESULT_OK = -1
         const val RESULT_CANCELED = 0
 
-        fun isPositiveClick(bundle: Bundle): Boolean {
-            return bundle.getInt(EXTRA_WHICH, BUTTON_NEGATIVE) == BUTTON_POSITIVE
-        }
+        fun isPositiveClick(bundle: Bundle): Boolean =
+                bundle.getInt(EXTRA_WHICH, BUTTON_NEGATIVE) == BUTTON_POSITIVE
 
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
             if (resId >= 0x01000000) {   // start of real resource IDs.
@@ -163,7 +162,7 @@ open class AlertDialogFragment : BaseDialogFragment() {
         } else {
             positiveBtn!!.text = positive
             positiveBtn!!.visibility = View.VISIBLE
-            positiveBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_POSITIVE) }
+            positiveBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_POSITIVE, RESULT_OK) }
         }
 
         if (TextUtils.isEmpty(negative)) {
@@ -172,7 +171,7 @@ open class AlertDialogFragment : BaseDialogFragment() {
         } else {
             negativeBtn!!.text = negative
             negativeBtn!!.visibility = View.VISIBLE
-            negativeBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_NEGATIVE) }
+            negativeBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_NEGATIVE, RESULT_CANCELED) }
         }
 
         if (TextUtils.isEmpty(neutral)) {
@@ -181,7 +180,7 @@ open class AlertDialogFragment : BaseDialogFragment() {
         } else {
             neutralBtn!!.text = neutral
             neutralBtn!!.visibility = View.VISIBLE
-            neutralBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_NEUTRAL) }
+            neutralBtn!!.setOnClickListener { v -> onButtonClicked(BUTTON_NEUTRAL, RESULT_OK) }
         }
     }
 
@@ -193,28 +192,28 @@ open class AlertDialogFragment : BaseDialogFragment() {
         }
     }
 
-    override fun onCancel(dialog: DialogInterface) {
+    open override fun onCancel(dialog: DialogInterface) {
         setResult(RESULT_CANCELED)
         super.onCancel(dialog)
     }
 
-    protected fun onButtonClicked(which: Int) {
-        onButtonClicked(which, null)
+    open protected fun onButtonClicked(which: Int, resultCode: Int) {
+        onButtonClicked(which, resultCode,null)
     }
 
-    protected fun onButtonClicked(which: Int, extra: Bundle?) {
+    open protected fun onButtonClicked(which: Int, resultCode: Int, extra: Bundle?) {
         val data = Bundle()
         if (extra != null) {
             data.putAll(extra)
         }
+        setResult(resultCode, data)
         data.putInt(EXTRA_WHICH, which)
-        setResult(RESULT_OK, data)
         dismiss()
     }
 
 
 
-    class Builder @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
+    open class Builder @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
 
         @StyleRes
         private val themeResId: Int = resolveDialogTheme(context, themeResId)
@@ -313,15 +312,14 @@ open class AlertDialogFragment : BaseDialogFragment() {
             return args
         }
 
-        fun create(): AlertDialogFragment {
+        open fun create(): AlertDialogFragment {
             val fragment = AlertDialogFragment()
             fragment.arguments = buildArguments()
             return fragment
         }
 
-        fun show(fragmentManager: FragmentManager): AlertDialogFragment {
-            return show(fragmentManager, StringUtil.randomAlphaNumeric(20))
-        }
+        fun show(fragmentManager: FragmentManager): AlertDialogFragment =
+                show(fragmentManager, StringUtil.randomAlphaNumeric(20))
 
         fun show(fragmentManager: FragmentManager, tag: String): AlertDialogFragment {
             val fragment = create()
@@ -329,9 +327,8 @@ open class AlertDialogFragment : BaseDialogFragment() {
             return fragment
         }
 
-        fun show(transaction: FragmentTransaction): AlertDialogFragment {
-            return show(transaction, StringUtil.randomAlphaNumeric(20))
-        }
+        fun show(transaction: FragmentTransaction): AlertDialogFragment =
+                show(transaction, StringUtil.randomAlphaNumeric(20))
 
         fun show(transaction: FragmentTransaction, tag: String): AlertDialogFragment {
             val fragment = create()
