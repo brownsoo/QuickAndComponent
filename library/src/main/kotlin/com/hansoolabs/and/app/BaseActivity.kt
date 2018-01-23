@@ -114,7 +114,7 @@ open class BaseActivity : RxAppCompatActivity(),
                                   forceNewInstance: Boolean = false,
                                   builder: (Bundle?) -> Fragment) {
         val fragmentManager = supportFragmentManager
-        var fragment = fragmentManager.findFragmentByTag(TAG_CONTAINER)
+        var fragment = fragmentManager.findFragmentByTag(BODY)
         if (forceNewInstance || fragment == null) {
             val transaction = fragmentManager.beginTransaction()
             if (fragment != null) {
@@ -122,7 +122,7 @@ open class BaseActivity : RxAppCompatActivity(),
             }
             fragment = builder.invoke(intent.extras)
             transaction
-                    .add(containerId, fragment, TAG_CONTAINER)
+                    .add(containerId, fragment, BODY)
                     .commit()
             fragmentManager.executePendingTransactions()
         }
@@ -293,6 +293,6 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     companion object {
-        val TAG_CONTAINER = "body"
+        const val BODY = "body"
     }
 }
