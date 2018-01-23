@@ -30,7 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 open class BaseFragment : RxFragment(),
         Available,
-        AlertDialogFragment.Listener, AppForegroundObserver.AppForegroundListener {
+        BaseDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
     protected var appForeground = true
@@ -261,7 +261,7 @@ open class BaseFragment : RxFragment(),
         }
     }
 
-    override fun onAlertDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
+    override fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
         exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
 
