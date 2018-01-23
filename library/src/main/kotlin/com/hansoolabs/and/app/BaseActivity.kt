@@ -36,7 +36,7 @@ import java.lang.ref.WeakReference
 
 open class BaseActivity : RxAppCompatActivity(),
         Available,
-        AlertDialogFragment.Listener,
+        BaseDialogFragment.OnBaseDialogListener,
         AppForegroundObserver.AppForegroundListener {
 
     override val isAvailable: Boolean
@@ -236,7 +236,7 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     @CallSuper
-    override fun onAlertDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
+    override fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
         exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
 

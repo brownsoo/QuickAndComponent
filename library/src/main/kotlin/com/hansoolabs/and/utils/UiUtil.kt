@@ -29,9 +29,7 @@ import java.util.*
 object UiUtil {
 
     @JvmStatic
-    fun constant(name: String): String {
-        return BuildConfig.APPLICATION_ID + "." + name
-    }
+    fun constant(name: String) = BuildConfig.APPLICATION_ID + "." + name
 
     @JvmStatic
     fun dp2px(dpSize: Float): Int {
