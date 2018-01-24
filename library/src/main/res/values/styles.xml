@@ -1,9 +1,9 @@
 <resources>
 
-    <style name="BrownTheme" parent="Brown_SuperTheme"/>
-    <style name="BrownTheme.Transparent" parent="BrownTheme"/>
-    <style name="BrownTheme.Dialog" parent="Brown_SuperTheme.Dialog"/>
-    <style name="BrownTheme.Dialog.Alert" parent="Brown_SuperTheme.Dialog.Alert"/>
-    <style name="BrownTheme.Dialog.Progress" parent="Brown_SuperTheme.Dialog"/>
+    <style name="AndTheme" parent="And_SuperTheme"/>
+    <style name="AndTheme.Transparent" parent="AndTheme"/>
+    <style name="AndTheme.Dialog" parent="And_SuperTheme.Dialog"/>
+    <style name="AndTheme.Dialog.Alert" parent="And_SuperTheme.Dialog.Alert"/>
+    <style name="AndTheme.Dialog.Progress" parent="And_SuperTheme.Dialog"/>
 
 </resources>

@@ -82,7 +82,7 @@ open class BaseDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = arguments
-        val style = args?.getInt(EXTRA_THEME_RES_ID, R.style.BrownTheme_Dialog)
+        val style = args?.getInt(EXTRA_THEME_RES_ID, R.style.AndTheme_Dialog)
         style?.let { setStyle(DialogFragment.STYLE_NO_TITLE, style) }
 
         val defaultResultData = args?.getBundle(EXTRA_DEFAULT_RESULT_DATA)

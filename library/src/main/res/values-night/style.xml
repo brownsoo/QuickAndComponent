@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Brown_SuperTheme" parent="Theme.AppCompat"/>
-    <style name="Brown_SuperTheme.Dialog" parent="Theme.AppCompat.Dialog"/>
-    <style name="Brown_SuperTheme.Dialog.Alert" parent="Theme.AppCompat.Dialog.Alert"/>
+    <style name="And_SuperTheme" parent="Theme.AppCompat"/>
+    <style name="And_SuperTheme.Dialog" parent="Theme.AppCompat.Dialog"/>
+    <style name="And_SuperTheme.Dialog.Alert" parent="Theme.AppCompat.Dialog.Alert"/>
 
-    <style name="Brown_SuperThemeOverlay" parent="ThemeOverlay.AppCompat.Dark"/>
-    <style name="Brown_SuperThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="And_SuperThemeOverlay" parent="ThemeOverlay.AppCompat.Dark"/>
+    <style name="And_SuperThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="Brown_SuperStyle"/>
-    <style name="Brown_SuperStyle.Dialog" parent="AlertDialog.AppCompat"/>
-    <style name="Brown_SuperStyle.Dialog.Alert" parent="AlertDialog.AppCompat"/>
-    <style name="Brown_SuperStyle.DatePicker" parent="AlertDialog.AppCompat" />
-    <style name="Brown_SuperStyle.Spinner" parent="Widget.AppCompat.ListView.DropDown"/>
+    <style name="Base_SuperStyle" />
+    <style name="Base_SuperStyle.Dialog" parent="AlertDialog.AppCompat"/>
+    <style name="And_SuperStyle.Dialog.Alert" parent="AlertDialog.AppCompat"/>
+    <style name="And_SuperStyle.DatePicker" parent="AlertDialog.AppCompat" />
+    <style name="And_SuperStyle.Spinner" parent="Widget.AppCompat.ListView.DropDown"/>
 </resources>

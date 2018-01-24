@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.support.annotation.CallSuper
 import android.support.annotation.UiThread
 import android.support.v4.widget.ContentLoadingProgressBar
@@ -35,7 +36,7 @@ open class BaseFragment : RxFragment(),
     protected var resumed = false
     protected var appForeground = true
     protected val mainHandler = Handler()
-    protected lateinit var progressBar: ContentLoadingProgressBar
+    protected var loadingBar: ContentLoadingProgressBar? = null
     private var progressMsgView: MessageProgressView? = null
     private var baseFrame: FrameLayout? = null
     private var contentMain: View? = null
@@ -84,24 +85,24 @@ open class BaseFragment : RxFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 프레임 구조를 크게 4단 레이어로 구성
-        // baseFrame -> baseFrame -> progressBar -> errorView
+        // baseFrame -> baseFrame -> loadingBar -> errorView
         context!!
+        // 0
         baseFrame = FrameLayout(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT)
         }
+        // 1
         contentMain = createContentView(inflater, baseFrame, savedInstanceState)
-        contentMain?.let {
-            baseFrame?.addView(it)
-        }
-
-        progressBar = ContentLoadingProgressBar(context!!).apply {
+        baseFrame?.addView(contentMain)
+        // 2
+        loadingBar = ContentLoadingProgressBar(context!!).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
         }
-        baseFrame?.addView(progressBar)
-        progressBar.visibility = View.GONE
-
+        baseFrame?.addView(loadingBar)
+        loadingBar?.visibility = View.GONE
+        // 3
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
         errorView?.let { baseFrame?.addView(it) }
         return baseFrame
@@ -171,12 +172,12 @@ open class BaseFragment : RxFragment(),
     open protected fun onViewBackground() {
     }
 
-    protected fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
+    protected fun showLoadingBar() {
+        loadingBar?.visibility = View.VISIBLE
     }
 
-    protected fun hideProgressBar() {
-        progressBar.visibility = View.GONE
+    protected fun hideLoadingBar() {
+        loadingBar?.visibility = View.GONE
     }
 
     @UiThread
@@ -190,13 +191,15 @@ open class BaseFragment : RxFragment(),
     }
 
     open fun showProgressDialog(title: String?, message: String?) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { showProgressDialog(title, message) }
+            return
+        }
         if (isAvailable && context != null) {
             if (progressMsgView == null) {
                 progressMsgView = MessageProgressView(context!!)
                 progressMsgView?.apply {
-                    layoutParams = ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT)
+                    layoutParams = FrameLayout.LayoutParams(-1,-1)
                 }
                 baseFrame?.addView(progressMsgView)
             } else if (progressMsgView?.isShowing == true) {

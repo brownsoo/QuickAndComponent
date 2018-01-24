@@ -9,7 +9,8 @@ import android.widget.TextView
 import com.hansoolabs.and.R
 
 /**
- * Created by hansu on 2017-12-14.
+ *
+ * Created by brownsoo on 2017-12-14.
  */
 
 class MessageProgressView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)

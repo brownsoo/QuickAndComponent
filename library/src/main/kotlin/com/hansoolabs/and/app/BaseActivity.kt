@@ -1,18 +1,19 @@
 package com.hansoolabs.and.app
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.annotation.CallSuper
 import android.support.annotation.IdRes
 import android.support.annotation.UiThread
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.widget.MessageProgressView
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import io.reactivex.Observable
@@ -50,10 +52,12 @@ open class BaseActivity : RxAppCompatActivity(),
     protected var baseFrame: FrameLayout? = null
     protected var contentMain: View? = null
     protected var errorView: View? = null
+    private var progressMsgView: MessageProgressView? = null
+    protected var loadingBar: ContentLoadingProgressBar? = null
 
     protected val disposableBag by lazy { CompositeDisposable() }
 
-    private var progressDialog: ProgressDialog? = null
+    //private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
     private val mainHandler = BaseHandler(this)
 
@@ -78,24 +82,41 @@ open class BaseActivity : RxAppCompatActivity(),
 
     override fun setContentView(layoutResID: Int) {
         val inflater = LayoutInflater.from(this)
+        // 0
         baseFrame = FrameLayout(this)
+        // 1
         contentMain = inflater.inflate(layoutResID, baseFrame, false)
+        baseFrame?.addView(contentMain)
+        // 2
+        loadingBar = ContentLoadingProgressBar(this).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+        }
+        baseFrame?.addView(loadingBar)
+        loadingBar?.visibility = View.GONE
+        // 3
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
-        baseFrame!!.addView(contentMain)
-        baseFrame!!.addView(errorView)
+        baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
     }
 
     override fun setContentView(view: View) {
         val inflater = LayoutInflater.from(this)
+        // 0
         baseFrame = FrameLayout(this)
+        // 1
         contentMain = view
+        baseFrame?.addView(contentMain)
+        // 2
+        loadingBar = ContentLoadingProgressBar(this).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+        }
+        baseFrame?.addView(loadingBar)
+        loadingBar?.visibility = View.GONE
+        // 3
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
-        baseFrame!!.addView(contentMain)
-        baseFrame!!.addView(errorView)
-
+        baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
     }
 
@@ -182,6 +203,14 @@ open class BaseActivity : RxAppCompatActivity(),
     open protected fun onViewBackground() {
     }
 
+    protected fun showLoadingBar() {
+        loadingBar?.visibility = View.VISIBLE
+    }
+
+    protected fun hideLoadingBar() {
+        loadingBar?.visibility = View.GONE
+    }
+
     open protected fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T> =
             observable.compose(bindUntilEvent<T>(ActivityEvent.DESTROY))
 
@@ -199,25 +228,30 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     open fun showProgressDialog(title: String?, message: String?) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            runOnUiThread { showProgressDialog(title, message) }
+            return
+        }
         if (isAvailable) {
-            if (progressDialog == null) {
-                progressDialog = ProgressDialog(this)
-            } else if (progressDialog!!.isShowing) {
-                progressDialog!!.setTitle(title)
-                progressDialog!!.setMessage(message)
+            if (progressMsgView == null) {
+                progressMsgView = MessageProgressView(this)
+                progressMsgView?.apply {
+                    layoutParams = FrameLayout.LayoutParams(-1,-1)
+                }
+                baseFrame?.addView(progressMsgView)
+            } else if (progressMsgView?.isShowing == true) {
+                progressMsgView?.setMessage(message)
                 return
             }
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.setTitle(title)
-            progressDialog!!.setMessage(message)
-            UiUtil.showDialog<ProgressDialog>(progressDialog!!)
+            progressMsgView?.setMessage(message)
+            progressMsgView?.visibility = View.VISIBLE
         }
     }
 
     @UiThread
     open fun hideProgressDialog() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
-            progressDialog!!.dismiss()
+        if (progressMsgView?.isShowing == true) {
+            progressMsgView?.visibility = View.GONE
         }
     }
 
