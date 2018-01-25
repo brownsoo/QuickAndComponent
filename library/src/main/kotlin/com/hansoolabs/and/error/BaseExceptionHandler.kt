@@ -106,7 +106,7 @@ class BaseExceptionHandler : ExceptionHandler {
     companion object {
 
         fun toCommonException(throwable: Throwable,
-                              defaultValue: BaseException? = null): BaseException? {
+                              defaultValue: BaseException? = null): BaseException {
             when (throwable) {
                 is BaseException -> return throwable
                 is ConnectException -> return BaseException(
@@ -123,6 +123,11 @@ class BaseExceptionHandler : ExceptionHandler {
                         throwable)
             }
             return defaultValue
+                    ?: BaseException(BaseError.Sector.Internal,
+                                    BaseError.Code.UnknownError,
+                                    "Runtime exception",
+                                    null,
+                                    throwable)
         }
     }
 
