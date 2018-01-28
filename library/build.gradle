@@ -7,14 +7,16 @@ android {
     compileSdkVersion compileSdk
     buildToolsVersion buildTools
 
+
+    def baseVersionCode = 100
+    def baseVersionName = "1.0.0"
     def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()
-    def defaultPackage = "com.hansoolabs.and"
 
     defaultConfig {
         minSdkVersion minSdk
         targetSdkVersion targetSdk
-        versionCode mybaselibVersionCode
-
+        versionCode baseVersionCode
+        versionName baseVersionName + ".dev." + gitCommitCount
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -24,13 +26,40 @@ android {
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+}
+
+ext {
+
+    androidArchitect = '1.0.0'
+    room = '1.0.0'
+
+    multidex = "1.0.2"
+    dagger = "2.10"
+    rxandroid2 = "2.0.1"
+    rxjava2 = "2.1.0"
+    rxkotlin2 = "2.0.0"
+    rxbinding2 = "2.0.0"
+    rxlifecycle2 = "2.2.1"
+    rxpermissions2 = "0.9.5@aar"
+    guavaVersion = '21.0'
+
+    junit = "4.12"
+    espresso = "3.0.0"
+    testrunner = "1.0.0"
+    testrules = "1.0.0"
+
+    stetho = "1.5.0"
+    firebaseJob = "0.8.5"
+    ankoVersion = "0.10.1"
+
+    kakao = "1.7.0"
+    crashlytics = "2.6.8"
 }
 
 dependencies {
@@ -54,16 +83,17 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
 
     // life cycle component
-    implementation "android.arch.lifecycle:runtime:1.0.3"
+    implementation "android.arch.lifecycle:runtime:$androidArchitect"
     implementation "android.arch.lifecycle:extensions:$androidArchitect"
     kapt "android.arch.lifecycle:compiler:$androidArchitect"
     // Room
-    implementation "android.arch.persistence.room:runtime:$androidArchitect"
-    kapt "android.arch.persistence.room:compiler:$androidArchitect"
-    testImplementation ("android.arch.persistence.room:testing:$androidArchitect") {
+    implementation "android.arch.persistence.room:runtime:$room"
+    kapt "android.arch.persistence.room:compiler:$room"
+    testImplementation ("android.arch.persistence.room:testing:$room") {
         exclude group: 'com.android.support'
     }
-    implementation "android.arch.persistence.room:rxjava2:$androidArchitect"
+    // RxJava support for Room
+    //implementation "android.arch.persistence.room:rxjava2:$androidArchitect"
 
     //google play service
     implementation "com.google.android.gms:play-services-base:$playVer"

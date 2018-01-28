@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.20'
     repositories {
         google()
         jcenter()
@@ -22,44 +22,19 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
 ext {
-    mybaselibVersionCode = 100
-    mybaselibVersionName = "1.0.0"
-
     buildTools = "27.0.2"
     compileSdk = 27
-    minSdk = 19
+    minSdk = 16
     targetSdk = 27
 
-    multidex = "1.0.2"
     supportVer = "27.0.2"
     constraintLayout = "1.0.2"
-    playVer = "11.6.2"
-    firebase = '11.6.2'
-    dagger = "2.10"
-    rxandroid2 = "2.0.1"
-    rxjava2 = "2.1.0"
-    rxkotlin2 = "2.0.0"
-    rxbinding2 = "2.0.0"
-    rxlifecycle2 = "2.1.0"
-    rxpermissions2 = "0.9.4@aar"
-    rxpreferences2 = "2.0.0-RC2"
-    guavaVersion = '21.0'
+    playVer = "11.8.0"
+    firebase = '11.8.0'
+}
 
-    junit = "4.12"
-    espresso = "3.0.0"
-    testrunner = "1.0.0"
-    testrules = "1.0.0"
 
-    stetho = "1.5.0"
-    androidArchitect = '1.0.0'
-    firebaseJob = "0.8.5"
-    ankoVersion = "0.10.1"
-
-    kakao = "1.7.0"
-    crashlytics = "2.6.8"
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
