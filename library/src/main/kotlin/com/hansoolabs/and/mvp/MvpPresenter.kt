@@ -4,26 +4,30 @@ import android.os.Handler
 import android.os.Looper
 import com.hansoolabs.and.RequestCallback
 import com.hansoolabs.and.error.ExceptionHandler
+import java.lang.ref.WeakReference
 
 /**
  *
  * Created by brownsoo on 2017. 5. 10..
  */
 
-open class MvpPresenter<out T : MvpContract.View>(protected val view: T,
+open class MvpPresenter<out T : MvpContract.View>(presentingView: T,
                                                   protected val exceptionHandler: ExceptionHandler)
     : MvpContract.Presenter, MvpContract.ViewForegroundListener {
 
     private val delayedCallbacks = ArrayList<DelayedCallback<*>>()
+    private val viewRef: WeakReference<T> = WeakReference(presentingView)
+    protected val view: T? = viewRef.get()
+    
     protected fun viewAccessibleDo(run: () -> Unit) {
-        if (view.isForeground) run.invoke()
+        if (view != null) run.invoke()
     }
     override fun initialize() {
-        view.addForegroundListener(this)
+        view?.addForegroundListener(this)
     }
 
     override fun terminate() {
-        view.removeForegroundListener(this)
+        view?.removeForegroundListener(this)
     }
 
     override fun onViewForeground() {
@@ -39,16 +43,16 @@ open class MvpPresenter<out T : MvpContract.View>(protected val view: T,
         //
     }
 
-    fun getString(resId: Int): String = view.getString(resId)
+    fun getString(resId: Int): String = view?.getString(resId) ?: ""
 
-    fun getString(resId: Int, vararg args: Any): String = view.getString(resId, args)
+    fun getString(resId: Int, vararg args: Any): String = view?.getString(resId, args) ?: ""
 
 
     fun <K> delayUntilViewForeground(callback: RequestCallback<K>) : RequestCallback<K> {
 
         return object : RequestCallback<K> {
             override fun onSuccess(result: K?) {
-                if (view.isForeground) {
+                if (view?.isForeground == true) {
                     callback.onSuccess(result)
                 }
                 else {
@@ -59,7 +63,7 @@ open class MvpPresenter<out T : MvpContract.View>(protected val view: T,
             }
 
             override fun onFailure(e: Exception) {
-                if (view.isForeground) {
+                if (view?.isForeground == true) {
                     callback.onFailure(e)
                 }
                 else {
@@ -69,7 +73,6 @@ open class MvpPresenter<out T : MvpContract.View>(protected val view: T,
                 }
             }
         }
-
     }
 
 

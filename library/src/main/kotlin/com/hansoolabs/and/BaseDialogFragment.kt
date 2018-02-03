@@ -228,8 +228,8 @@ open class BaseDialogFragment : DialogFragment() {
         if (extra != null) {
             data.putAll(extra)
         }
-        setResult(resultCode, data)
         data.putInt(EXTRA_WHICH, which)
+        setResult(resultCode, data)
         dismiss()
     }
 
