@@ -50,7 +50,7 @@ open class BaseDialogFragment : DialogFragment() {
         const val EXTRA_WHICH = "which"
         const val BUTTON_POSITIVE = -1
         const val BUTTON_NEGATIVE = -2
-        const val BUTTON_NEUTRAL = -3
+        const val BUTTON_ALTERNATIVE = -3
         const val RESULT_OK = -1
         const val RESULT_CANCELED = 0
 
@@ -71,7 +71,7 @@ open class BaseDialogFragment : DialogFragment() {
     private var titleView: TextView? = null
     private var messageView: TextView? = null
     private var positiveBtn: Button? = null
-    private var neutralBtn: Button? = null
+    private var alternativeBtn: Button? = null
     private var negativeBtn: Button? = null
     private var customViewFrame: ScrollView? = null
     private var listener: OnBaseDialogListener? = null
@@ -133,7 +133,7 @@ open class BaseDialogFragment : DialogFragment() {
         messageView = alert_dialog_message
         positiveBtn = btn_positive
         negativeBtn = btn_negative
-        neutralBtn = btn_neutral
+        alternativeBtn = btn_alternative
         customViewFrame = custom_view_frame
 
         var args = arguments
@@ -173,7 +173,7 @@ open class BaseDialogFragment : DialogFragment() {
         } else {
             positiveBtn!!.text = positive
             positiveBtn!!.visibility = View.VISIBLE
-            positiveBtn!!.setOnClickListener { onButtonClicked(BUTTON_POSITIVE) }
+            positiveBtn!!.setOnClickListener { onPositiveButtonClicked() }
         }
 
         if (TextUtils.isEmpty(negative)) {
@@ -182,16 +182,16 @@ open class BaseDialogFragment : DialogFragment() {
         } else {
             negativeBtn!!.text = negative
             negativeBtn!!.visibility = View.VISIBLE
-            negativeBtn!!.setOnClickListener { onButtonClicked(BUTTON_NEGATIVE, RESULT_CANCELED) }
+            negativeBtn!!.setOnClickListener { onNegativeButtonClicked() }
         }
 
         if (TextUtils.isEmpty(neutral)) {
-            neutralBtn!!.visibility = View.GONE
-            neutralBtn!!.setOnClickListener(null)
+            alternativeBtn!!.visibility = View.GONE
+            alternativeBtn!!.setOnClickListener(null)
         } else {
-            neutralBtn!!.text = neutral
-            neutralBtn!!.visibility = View.VISIBLE
-            neutralBtn!!.setOnClickListener { onButtonClicked(BUTTON_NEUTRAL) }
+            alternativeBtn!!.text = neutral
+            alternativeBtn!!.visibility = View.VISIBLE
+            alternativeBtn!!.setOnClickListener { onAlternativeButtonClicked() }
         }
     }
 
@@ -219,8 +219,16 @@ open class BaseDialogFragment : DialogFragment() {
         super.onCancel(dialog)
     }
 
-    protected open fun onButtonClicked(which: Int, resultCode: Int = RESULT_OK) {
-        onButtonClicked(which, resultCode,null)
+    protected open fun onPositiveButtonClicked(extra: Bundle? = null) {
+        onButtonClicked(BUTTON_POSITIVE, RESULT_OK,null)
+    }
+
+    protected open fun onNegativeButtonClicked(extra: Bundle? = null) {
+        onButtonClicked(BUTTON_NEGATIVE, RESULT_CANCELED, extra)
+    }
+
+    protected open fun onAlternativeButtonClicked(extra: Bundle? = null) {
+        onButtonClicked(BUTTON_ALTERNATIVE, RESULT_OK, extra)
     }
 
     protected open fun onButtonClicked(which: Int, resultCode: Int, extra: Bundle?) {
