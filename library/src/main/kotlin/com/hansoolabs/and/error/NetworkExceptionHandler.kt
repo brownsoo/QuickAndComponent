@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import com.hansoolabs.and.BaseDialogFragment
 import com.hansoolabs.and.R
+import com.hansoolabs.and.utils.StringUtil
 import com.hansoolabs.and.utils.UiUtil
 
 /**
@@ -117,8 +118,8 @@ class NetworkExceptionHandler : ExceptionHandler {
     }
 
     companion object {
-        private val TAG_DIALOG = UiUtil.constant("NetworkExceptionDialog")
-        private val EXTRA_ERROR_TAG = UiUtil.constant("ExtraErrorTag")
-        private val EXTRA_ERROR_THROWABLE = UiUtil.constant("ExtraErrorThrowable")
+        private val TAG_DIALOG = StringUtil.constant("NetworkExceptionDialog")
+        private val EXTRA_ERROR_TAG = StringUtil.constant("ExtraErrorTag")
+        private val EXTRA_ERROR_THROWABLE = StringUtil.constant("ExtraErrorThrowable")
     }
 }

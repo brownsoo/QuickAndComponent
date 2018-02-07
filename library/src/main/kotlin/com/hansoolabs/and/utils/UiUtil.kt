@@ -29,9 +29,6 @@ import java.util.*
 object UiUtil {
 
     @JvmStatic
-    fun constant(name: String) = BuildConfig.APPLICATION_ID + "." + name
-
-    @JvmStatic
     fun dp2px(dpSize: Float): Int {
         val metrics = Resources.getSystem().displayMetrics
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, metrics))

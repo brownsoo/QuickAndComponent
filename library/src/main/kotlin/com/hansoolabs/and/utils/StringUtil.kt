@@ -1,5 +1,6 @@
 package com.hansoolabs.and.utils
 
+import com.hansoolabs.and.BuildConfig
 import java.util.regex.Pattern
 
 /**
@@ -7,6 +8,10 @@ import java.util.regex.Pattern
  */
 
 object StringUtil {
+
+    @JvmStatic
+    fun constant(name: String) = BuildConfig.APPLICATION_ID + "." + name
+
     @JvmStatic
     fun isNullOrEmpty(str: String?): Boolean {
         if (str == null || str.length == 0)

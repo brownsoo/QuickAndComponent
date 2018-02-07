@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import com.hansoolabs.and.BaseDialogFragment
 import com.hansoolabs.and.R
+import com.hansoolabs.and.utils.StringUtil
 import com.hansoolabs.and.utils.UiUtil
 
 /**
@@ -91,7 +92,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
 
     companion object {
         @JvmField
-        val ACTION_LOGOUT_REQUIRED = UiUtil.constant("ACTION_LOGOUT_REQUIRED")
+        val ACTION_LOGOUT_REQUIRED = StringUtil.constant("ACTION_LOGOUT_REQUIRED")
         private val TAG_DIALOG = "AccessTokenExpireDialog"
     }
 }

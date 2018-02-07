@@ -37,15 +37,15 @@ open class BaseDialogFragment : DialogFragment() {
 
     companion object {
 
-        val EXTRA_CANCELABLE = UiUtil.constant("EXTRA_CANCELABLE")
-        val EXTRA_TITLE = UiUtil.constant("EXTRA_TITLE")
-        val EXTRA_MESSAGE = UiUtil.constant("EXTRA_MESSAGE")
-        val EXTRA_POSITIVE_BUTTON = UiUtil.constant("EXTRA_POSITIVE_BUTTON")
-        val EXTRA_NEGATIVE_BUTTON = UiUtil.constant("EXTRA_NEGATIVE_BUTTON")
-        val EXTRA_NEUTRAL_BUTTON = UiUtil.constant("EXTRA_NEUTRAL_BUTTON")
-        val EXTRA_THEME_RES_ID = UiUtil.constant("EXTRA_THEME_RES_ID")
-        val EXTRA_CUSTOM_VIEW_RES_ID = UiUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
-        val EXTRA_DEFAULT_RESULT_DATA = UiUtil.constant("EXTRA_DEFAULT_RESULT_DATA")
+        val EXTRA_CANCELABLE = StringUtil.constant("EXTRA_CANCELABLE")
+        val EXTRA_TITLE = StringUtil.constant("EXTRA_TITLE")
+        val EXTRA_MESSAGE = StringUtil.constant("EXTRA_MESSAGE")
+        val EXTRA_POSITIVE_BUTTON = StringUtil.constant("EXTRA_POSITIVE_BUTTON")
+        val EXTRA_NEGATIVE_BUTTON = StringUtil.constant("EXTRA_NEGATIVE_BUTTON")
+        val EXTRA_NEUTRAL_BUTTON = StringUtil.constant("EXTRA_NEUTRAL_BUTTON")
+        val EXTRA_THEME_RES_ID = StringUtil.constant("EXTRA_THEME_RES_ID")
+        val EXTRA_CUSTOM_VIEW_RES_ID = StringUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
+        val EXTRA_DEFAULT_RESULT_DATA = StringUtil.constant("EXTRA_DEFAULT_RESULT_DATA")
 
         const val EXTRA_WHICH = "which"
         const val BUTTON_POSITIVE = -1
@@ -324,12 +324,12 @@ open class BaseDialogFragment : DialogFragment() {
             return this
         }
 
-        fun setNeutralButton(@StringRes textId: Int): Builder<T> {
+        fun setAlternativeButton(@StringRes textId: Int): Builder<T> {
             this.neutralButtonText = context.getText(textId)
             return this
         }
 
-        fun setNeutralButton(text: CharSequence): Builder<T> {
+        fun setAlternativeButton(text: CharSequence): Builder<T> {
             this.neutralButtonText = text
             return this
         }
@@ -369,7 +369,7 @@ open class BaseDialogFragment : DialogFragment() {
 
         abstract fun newInstance(): T
 
-        open fun create(): T {
+        open fun build(): T {
             val fragment = newInstance()
             fragment.arguments = buildArguments()
             return fragment
@@ -379,7 +379,7 @@ open class BaseDialogFragment : DialogFragment() {
                 show(fragmentManager, StringUtil.randomAlphaNumeric(20))
 
         fun show(fragmentManager: FragmentManager, tag: String): T {
-            val fragment = create()
+            val fragment = build()
             fragment.show(fragmentManager, tag)
             return fragment
         }
@@ -388,7 +388,7 @@ open class BaseDialogFragment : DialogFragment() {
                 show(transaction, StringUtil.randomAlphaNumeric(20))
 
         fun show(transaction: FragmentTransaction, tag: String): T {
-            val fragment = create()
+            val fragment = build()
             fragment.show(transaction, tag)
             return fragment
         }
