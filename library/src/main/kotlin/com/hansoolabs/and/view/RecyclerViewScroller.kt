@@ -1,4 +1,4 @@
-package com.cherrytree.skinnyyoga.view
+package com.hansoolabs.and.view
 
 import android.support.v7.widget.RecyclerView
 

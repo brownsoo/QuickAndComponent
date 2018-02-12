@@ -1,4 +1,4 @@
-package com.cherrytree.skinnyyoga.view
+package com.hansoolabs.and.view
 
 /*
  * BottomNavigationLayout library for Android

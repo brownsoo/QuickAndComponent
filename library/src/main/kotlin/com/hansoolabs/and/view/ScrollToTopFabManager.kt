@@ -1,4 +1,4 @@
-package com.cherrytree.skinnyyoga.view
+package com.hansoolabs.and.view
 
 import android.support.design.widget.FloatingActionButton
 import android.view.View

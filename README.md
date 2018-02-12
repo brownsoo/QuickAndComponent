@@ -1,2 +1,3 @@
-# AndBaseComponent
-android base component for quick deveopment
+# Quick Android Component
+
+My android base component for quick development
