@@ -157,48 +157,6 @@ object UiUtil {
         return editText
     }
 
-    @JvmStatic
-    fun <T : Any, K : Any> changeListAs(original: MutableList<T>,
-                                        to: List<K>,
-                                        comparatorForPosition: (obj1: Any, obj2: Any) -> Boolean,
-                                        comparatorForUpdate: (obj1: Any, obj2: Any) -> Boolean,
-                                        converter: (obj: K) -> T) {
-        val common = LongestCommonSubSequence.find(original, to, { obj1: T, obj2: K ->
-            comparatorForPosition.invoke(obj1, obj2)
-        })
-
-        var commonIdx = 0
-        val commonSize = common.size
-        var originalIdx = 0
-        while (originalIdx < original.size) {
-            if (commonIdx < commonSize && comparatorForPosition.invoke(
-                    original[originalIdx],
-                    common[commonIdx])) {
-                originalIdx++
-                commonIdx++
-            } else {
-                original.removeAt(originalIdx)
-            }
-        }
-
-        originalIdx = 0
-        var toIdx = 0
-        val toSize = to.size
-        var item: K
-        while (toIdx < toSize) {
-            item = to[toIdx]
-            if (originalIdx >= original.size) {
-                original.add(originalIdx, converter.invoke(item))
-            } else if (!comparatorForPosition.invoke(original[originalIdx], item)) {
-                original.add(originalIdx, converter.invoke(item))
-            } else if (!comparatorForUpdate.invoke(original[originalIdx], item)) {
-                original[originalIdx] = converter.invoke(item)
-            }
-            toIdx++
-            originalIdx++
-        }
-    }
-
 
     class AlphaNumericInputFilter : InputFilter {
         override fun filter(source: CharSequence, start: Int, end: Int,
@@ -206,7 +164,7 @@ object UiUtil {
 
             // Only keep characters that are alphanumeric
             val builder = StringBuilder()
-            for (i in start..end - 1) {
+            for (i in start until end) {
                 val c = source[i]
                 if (Character.isLetterOrDigit(c)) {
                     builder.append(c)
