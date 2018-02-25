@@ -121,7 +121,7 @@ open class BaseFragment : RxFragment(),
     @CallSuper
     override fun onStop() {
         AppForegroundObserver.instance.unregisterObserver(this)
-        hideProgressDialog()
+        hideProgressMsg()
         hideKeyboard()
         super.onStop()
     }
@@ -181,18 +181,18 @@ open class BaseFragment : RxFragment(),
     }
 
     @UiThread
-    open fun showProgressDialog() {
-        showProgressDialog(null)
+    open fun showProgressMsg() {
+        showProgressMsg(null)
     }
 
     @UiThread
-    open fun showProgressDialog(message: String?) {
-        showProgressDialog(null, message)
+    open fun showProgressMsg(message: String?) {
+        showProgressMsg(null, message)
     }
 
-    open fun showProgressDialog(title: String?, message: String?) {
+    open fun showProgressMsg(title: String?, message: String?) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            mainHandler.post { showProgressDialog(title, message) }
+            mainHandler.post { showProgressMsg(title, message) }
             return
         }
         if (isAvailable && context != null) {
@@ -213,7 +213,7 @@ open class BaseFragment : RxFragment(),
     }
 
     @UiThread
-    open fun hideProgressDialog() {
+    open fun hideProgressMsg() {
         if (progressMsgView?.isShowing == true) {
             progressMsgView?.visibility = View.GONE
         }

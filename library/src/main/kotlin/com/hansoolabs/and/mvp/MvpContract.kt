@@ -22,13 +22,13 @@ open class MvpContract {
         fun getString(@StringRes resId: Int, vararg formatArgs: Any): String
 
         @UiThread
-        fun showProgressDialog()
+        fun showProgressMsg()
         @UiThread
-        fun showProgressDialog(message: String?)
+        fun showProgressMsg(message: String?)
         @UiThread
-        fun showProgressDialog(title: String?, message: String?)
+        fun showProgressMsg(title: String?, message: String?)
         @UiThread
-        fun hideProgressDialog()
+        fun hideProgressMsg()
         @UiThread
         fun hideKeyboard()
 

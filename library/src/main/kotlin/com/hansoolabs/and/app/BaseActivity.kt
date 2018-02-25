@@ -157,7 +157,7 @@ open class BaseActivity : RxAppCompatActivity(),
 
     @CallSuper
     override fun onStop() {
-        hideProgressDialog()
+        hideProgressMsg()
         hideKeyboard()
         AppForegroundObserver.instance.unregisterObserver(this)
         super.onStop()
@@ -218,18 +218,18 @@ open class BaseActivity : RxAppCompatActivity(),
             observable.compose(bindUntilEvent<T>(ActivityEvent.PAUSE))
 
     @UiThread
-    open fun showProgressDialog() {
-        showProgressDialog(null)
+    open fun showProgressMsg() {
+        showProgressMsg(null)
     }
 
     @UiThread
-    open fun showProgressDialog(message: String?) {
-        showProgressDialog(null, message)
+    open fun showProgressMsg(message: String?) {
+        showProgressMsg(null, message)
     }
 
-    open fun showProgressDialog(title: String?, message: String?) {
+    open fun showProgressMsg(title: String?, message: String?) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            runOnUiThread { showProgressDialog(title, message) }
+            runOnUiThread { showProgressMsg(title, message) }
             return
         }
         if (isAvailable) {
@@ -249,7 +249,7 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     @UiThread
-    open fun hideProgressDialog() {
+    open fun hideProgressMsg() {
         if (progressMsgView?.isShowing == true) {
             progressMsgView?.visibility = View.GONE
         }
