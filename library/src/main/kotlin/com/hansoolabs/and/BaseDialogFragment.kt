@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
+import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
 import com.hansoolabs.and.utils.UiUtil
 import kotlinx.android.synthetic.main.and__alert_dialog.*
@@ -96,13 +97,21 @@ open class BaseDialogFragment : DialogFragment() {
         setResult(RESULT_CANCELED)
 
         if (tag != null) {
-            val fragment = parentFragment
-            if (fragment != null && fragment is OnBaseDialogListener) {
-                listener = fragment
-            } else {
+            if (parentFragment != null && (parentFragment as? OnBaseDialogListener) != null) {
+                listener = parentFragment as OnBaseDialogListener
+                HLog.d("quick", "base-dialog", "onAttach : parentFragment")
+            }
+            else if (targetFragment != null && (targetFragment as? OnBaseDialogListener) != null) {
+                listener = targetFragment as OnBaseDialogListener
+                HLog.d("quick", "base-dialog", "onAttach : targetFragment")
+            }
+            else {
                 val activity = activity
                 if (activity != null && activity is OnBaseDialogListener) {
                     listener = activity
+                    HLog.d("quick", "base-dialog", "onAttach : activity")
+                } else {
+                    HLog.d("quick", "base-dialog", "onAttach : no listener")
                 }
             }
         }
