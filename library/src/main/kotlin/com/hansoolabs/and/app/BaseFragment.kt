@@ -50,7 +50,7 @@ open class BaseFragment : RxFragment(),
     override val isAvailable: Boolean
         get() = !(activity?.isFinishing ?: true)
 
-    private val disposableBack by lazy { CompositeDisposable() }
+    val disposableBack by lazy { CompositeDisposable() }
 
     protected val exceptionHandler: BaseExceptionHandler by lazy {
         createCommonExceptionHandler()
