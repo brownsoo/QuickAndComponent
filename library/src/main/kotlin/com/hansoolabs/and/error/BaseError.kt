@@ -22,7 +22,7 @@ class BaseError(@NonNull val sector: Sector,
         Initialization(4000, "Initialization error"),
     }
 
-    enum class Code(name: String) {
+    enum class Code(@Suppress("UNUSED_PARAMETER") name: String) {
         IllegalState("Illegal State"),
         InvalidArgument("Invalid Argument"),
 

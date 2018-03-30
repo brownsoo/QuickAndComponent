@@ -21,11 +21,11 @@ import android.view.*
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.hansoolabs.and.BuildConfig
 import com.hansoolabs.and.R
 import java.io.ByteArrayOutputStream
 import java.util.*
 
+@Suppress("unused")
 object UiUtil {
 
     @JvmStatic

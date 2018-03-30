@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion compileSdk
-    buildToolsVersion buildTools
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
 
     def baseVersionCode = 100
@@ -13,8 +13,8 @@ android {
     def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()
 
     defaultConfig {
-        minSdkVersion minSdk
-        targetSdkVersion targetSdk
+        minSdkVersion 16
+        targetSdkVersion 27
         versionCode baseVersionCode
         versionName baseVersionName + ".dev." + gitCommitCount
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -36,30 +36,27 @@ android {
 
 ext {
 
-    androidArchitect = '1.0.0'
-    room = '1.0.0'
+    supportVer = '27.1.0'
+    playVer = '12.0.1'
+    androidArchitect = '1.1.1'
 
-    multidex = "1.0.2"
-    dagger = "2.10"
+    constraintLayout = "1.1.0-beta6"
+
     rxandroid2 = "2.0.1"
-    rxjava2 = "2.1.0"
-    rxkotlin2 = "2.0.0"
-    rxbinding2 = "2.0.0"
+    rxjava2 = "2.1.12"
+//    rxkotlin2 = "2.0.0"
+    rxbinding2 = "2.1.1"
     rxlifecycle2 = "2.2.1"
-    rxpermissions2 = "0.9.5@aar"
-    guavaVersion = '21.0'
 
     junit = "4.12"
     espresso = "3.0.0"
     testrunner = "1.0.0"
     testrules = "1.0.0"
 
-    stetho = "1.5.0"
+//    stetho = "1.5.0"
     firebaseJob = "0.8.5"
     ankoVersion = "0.10.1"
 
-    kakao = "1.7.0"
-    crashlytics = "2.6.8"
 }
 
 dependencies {
@@ -82,21 +79,8 @@ dependencies {
 
     implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
 
-    // life cycle component
-    implementation "android.arch.lifecycle:runtime:$androidArchitect"
-    implementation "android.arch.lifecycle:extensions:$androidArchitect"
-    kapt "android.arch.lifecycle:compiler:$androidArchitect"
-    // Room
-    implementation "android.arch.persistence.room:runtime:$room"
-    kapt "android.arch.persistence.room:compiler:$room"
-    testImplementation ("android.arch.persistence.room:testing:$room") {
-        exclude group: 'com.android.support'
-    }
-    // RxJava support for Room
-    //implementation "android.arch.persistence.room:rxjava2:$androidArchitect"
-
     //google play service
-    implementation "com.google.android.gms:play-services-base:$playVer"
+    //implementation "com.google.android.gms:play-services-base:$playVer"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -104,7 +88,7 @@ dependencies {
 
     /* RxJava related */
     implementation "io.reactivex.rxjava2:rxjava:$rxjava2"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin2"
+//    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin2"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid2"
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding2"
@@ -115,6 +99,5 @@ dependencies {
     implementation "com.trello.rxlifecycle2:rxlifecycle-android:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-components:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-kotlin:$rxlifecycle2"
-    implementation "com.tbruyelle.rxpermissions2:rxpermissions:$rxpermissions2"
 
 }

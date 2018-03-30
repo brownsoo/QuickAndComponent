@@ -23,7 +23,7 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
         const val SCROLL_NONE = 0
     }
 
-    @IntDef(SCROLL_DIRECTION_UP.toLong(), SCROLL_DIRECTION_DOWN.toLong())
+    @IntDef(SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN)
     @Retention(AnnotationRetention.SOURCE)
     annotation class ScrollDirection
 
@@ -68,14 +68,6 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
 
     override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int): Boolean {
         return nestedScrollAxes and View.SCROLL_AXIS_VERTICAL != 0
-    }
-
-    override fun onNestedScrollAccepted(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int) {
-        super.onNestedScrollAccepted(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes)
-    }
-
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View) {
-        super.onStopNestedScroll(coordinatorLayout, child, target)
     }
 
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) {
