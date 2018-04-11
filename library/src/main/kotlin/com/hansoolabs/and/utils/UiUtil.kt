@@ -2,6 +2,7 @@ package com.hansoolabs.and.utils
 
 import android.app.Activity
 import android.app.Dialog
+import android.app.Fragment
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.text.Spanned
 import android.util.Base64
 import android.util.TypedValue
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -228,6 +230,22 @@ object UiUtil {
     fun revokeUriPermission(context: Context, uri: Uri) {
         context.revokeUriPermission(uri,
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    
+    @JvmStatic
+    fun hideKeyboard(fragment: Fragment) {
+        if (fragment.activity != null) {
+            hideKeyboard(fragment.activity)
+        }
+    }
+    
+    @JvmStatic
+    fun hideKeyboard(activity: Activity) {
+        val v = activity.window.currentFocus
+        if (v != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(v.windowToken, 0)
+        }
     }
 
 }
