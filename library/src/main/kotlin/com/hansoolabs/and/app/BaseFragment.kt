@@ -214,13 +214,19 @@ open class BaseFragment : RxFragment(),
 
     @UiThread
     open fun hideProgressMsg() {
-        if (progressMsgView?.isShowing == true) {
-            progressMsgView?.visibility = View.GONE
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { hideProgressMsg() }
+            return
         }
+        progressMsgView?.visibility = View.GONE
     }
 
     @UiThread
     open fun hideKeyboard() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { hideKeyboard() }
+            return
+        }
         hideKeyboard(null)
     }
 
