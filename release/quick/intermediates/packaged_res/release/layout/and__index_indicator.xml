@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/and__index_scroller__bg"
+    android:gravity="center"
+    android:minHeight="40dp"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+    <TextView
+        android:id="@+id/index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@string/font_family_regular"
+        android:maxLines="1"
+        android:textColor="@color/and__white"
+        android:textSize="14sp"
+        tools:text="12"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@string/font_family_regular"
+        android:maxLines="1"
+        android:textColor="@color/and__shuttle_gray"
+        android:textSize="14sp"
+        tools:text="/"/>
+    <TextView
+        android:id="@+id/total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@string/font_family_regular"
+        android:maxLines="1"
+        android:textColor="@color/and__shuttle_gray"
+        android:textSize="14sp"
+        tools:text="12"/>
+</LinearLayout>

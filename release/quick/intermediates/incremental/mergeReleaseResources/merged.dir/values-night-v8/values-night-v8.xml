@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="And_SuperStyle.DatePicker" parent="AlertDialog.AppCompat"/>
+    <style name="And_SuperStyle.Dialog.Alert" parent="AlertDialog.AppCompat"/>
+    <style name="And_SuperStyle.Spinner" parent="Widget.AppCompat.ListView.DropDown"/>
+    <style name="And_SuperTheme" parent="Theme.AppCompat"/>
+    <style name="And_SuperTheme.Dialog" parent="Theme.AppCompat.Dialog"/>
+    <style name="And_SuperTheme.Dialog.Alert" parent="Theme.AppCompat.Dialog.Alert"/>
+    <style name="And_SuperThemeOverlay" parent="ThemeOverlay.AppCompat.Dark"/>
+    <style name="And_SuperThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="Base_SuperStyle"/>
+    <style name="Base_SuperStyle.Dialog" parent="AlertDialog.AppCompat"/>
+    <style name="Theme.AppCompat.DayNight" parent="Theme.AppCompat"/>
+    <style name="Theme.AppCompat.DayNight.DarkActionBar" parent="Theme.AppCompat"/>
+    <style name="Theme.AppCompat.DayNight.Dialog" parent="Theme.AppCompat.Dialog"/>
+    <style name="Theme.AppCompat.DayNight.Dialog.Alert" parent="Theme.AppCompat.Dialog.Alert"/>
+    <style name="Theme.AppCompat.DayNight.Dialog.MinWidth" parent="Theme.AppCompat.Dialog.MinWidth"/>
+    <style name="Theme.AppCompat.DayNight.DialogWhenLarge" parent="Theme.AppCompat.DialogWhenLarge"/>
+    <style name="Theme.AppCompat.DayNight.NoActionBar" parent="Theme.AppCompat.NoActionBar"/>
+</resources>

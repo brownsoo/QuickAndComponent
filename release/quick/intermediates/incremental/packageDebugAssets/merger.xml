@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/brownsoo/Workspace/QuickAndComponent/library/src/main/assets"/><source path="/Users/brownsoo/Workspace/QuickAndComponent/release/quick/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/Users/brownsoo/Workspace/QuickAndComponent/library/src/debug/assets"/></dataSet></merger>

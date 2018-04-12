@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/brownsoo/Workspace/QuickAndComponent/release/quick/intermediates/incremental/mergeReleaseResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "map": [
+                {
+                    "source": "/Users/brownsoo/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.1.0.aar/74367d51aba45b4aa7c868044ab5e741/res/values-night-v8/values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,209,293,389,491,593",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "120,204,288,384,486,588,682"
+                    },
+                    "to": {
+                        "startLines": "12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "806,876,960,1044,1140,1242,1344",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "871,955,1039,1135,1237,1339,1433"
+                    }
+                },
+                {
+                    "source": "/Users/brownsoo/Workspace/QuickAndComponent/library/src/main/res/values-night/style.xml",
+                    "from": {
+                        "startLines": "12,11,13,2,3,4,6,7,9,10",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "645,566,723,55,115,189,276,355,455,492",
+                        "endColumns": "77,78,86,59,73,85,78,98,36,73",
+                        "endOffsets": "718,640,805,110,184,270,350,449,487,561"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,132,211,298,358,432,518,597,696,732",
+                        "endColumns": "76,78,86,59,73,85,78,98,35,73",
+                        "endOffsets": "127,206,293,353,427,513,592,691,727,801"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/Users/brownsoo/Workspace/QuickAndComponent/release/quick/intermediates/res/merged/release/values-night-v8/values-night-v8.xml",
+            "map": [
+                {
+                    "source": "/Users/brownsoo/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.1.0.aar/74367d51aba45b4aa7c868044ab5e741/res/values-night-v8/values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,209,293,389,491,593",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "120,204,288,384,486,588,682"
+                    },
+                    "to": {
+                        "startLines": "12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "806,876,960,1044,1140,1242,1344",
+                        "endColumns": "69,83,83,95,101,101,93",
+                        "endOffsets": "871,955,1039,1135,1237,1339,1433"
+                    }
+                },
+                {
+                    "source": "/Users/brownsoo/Workspace/QuickAndComponent/library/src/main/res/values-night/style.xml",
+                    "from": {
+                        "startLines": "12,11,13,2,3,4,6,7,9,10",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "645,566,723,55,115,189,276,355,455,492",
+                        "endColumns": "77,78,86,59,73,85,78,98,36,73",
+                        "endOffsets": "718,640,805,110,184,270,350,449,487,561"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,132,211,298,358,432,518,597,696,732",
+                        "endColumns": "76,78,86,59,73,85,78,98,35,73",
+                        "endOffsets": "127,206,293,353,427,513,592,691,727,801"
+                    }
+                }
+            ]
+        }
+    ]
+}
