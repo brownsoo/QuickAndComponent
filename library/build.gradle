@@ -3,6 +3,42 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+
+
+ext {
+
+    buildTools = "27.0.3"
+    compileSdk = 27
+    minSdk = 16
+    targetSdk = 27
+
+//    multidex = "1.0.3"
+    dagger = "2.10"
+    supportVer = "27.1.1"
+    constraintLayout = "1.1.0"
+    playVer = "12.0.1"
+    firebase = '12.0.1'
+
+    androidArchitect = '1.1.1'
+    room = '1.0.0'
+
+    rxandroid2 = "2.0.1"
+    rxjava2 = "2.1.12"
+    rxkotlin2 = "2.2.0"
+    rxbinding2 = "2.1.1"
+    rxlifecycle2 = "2.2.1"
+    rxpermissions2 = "0.9.5@aar"
+
+    junit = "4.12"
+    espresso = "3.0.0"
+    testrunner = "1.0.0"
+    testrules = "1.0.0"
+
+    stetho = "1.5.0"
+    firebaseJob = "0.8.5"
+    ankoVersion = "0.10.1"
+}
+
 android {
     compileSdkVersion compileSdk
     buildToolsVersion buildTools
@@ -32,34 +68,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-}
-
-ext {
-
-    androidArchitect = '1.0.0'
-    room = '1.0.0'
-
-    multidex = "1.0.2"
-    dagger = "2.10"
-    rxandroid2 = "2.0.1"
-    rxjava2 = "2.1.0"
-    rxkotlin2 = "2.0.0"
-    rxbinding2 = "2.0.0"
-    rxlifecycle2 = "2.2.1"
-    rxpermissions2 = "0.9.5@aar"
-    guavaVersion = '21.0'
-
-    junit = "4.12"
-    espresso = "3.0.0"
-    testrunner = "1.0.0"
-    testrules = "1.0.0"
-
-    stetho = "1.5.0"
-    firebaseJob = "0.8.5"
-    ankoVersion = "0.10.1"
-
-    kakao = "1.7.0"
-    crashlytics = "2.6.8"
 }
 
 dependencies {
