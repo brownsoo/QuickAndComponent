@@ -24,8 +24,8 @@ class MessageProgressView @JvmOverloads constructor(context: Context, attrs: Att
 
     var isShowing: Boolean = this.visibility == View.VISIBLE
 
-    private lateinit var progressBar: ContentLoadingProgressBar
-    private lateinit var textView: TextView
+    private var progressBar: ContentLoadingProgressBar
+    private var textView: TextView
 
     init {
         View.inflate(context, R.layout.and__message_progress, this)

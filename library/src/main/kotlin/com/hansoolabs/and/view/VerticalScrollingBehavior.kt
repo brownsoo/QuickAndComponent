@@ -70,14 +70,6 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
         return nestedScrollAxes and View.SCROLL_AXIS_VERTICAL != 0
     }
 
-    override fun onNestedScrollAccepted(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int) {
-        super.onNestedScrollAccepted(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes)
-    }
-
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View) {
-        super.onStopNestedScroll(coordinatorLayout, child, target)
-    }
-
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed)
         if (dyUnconsumed > 0 && mTotalDyUnconsumed < 0) {

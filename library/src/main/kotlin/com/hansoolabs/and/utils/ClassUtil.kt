@@ -3,14 +3,14 @@ package com.hansoolabs.and.utils
 import android.os.Parcel
 import android.os.Parcelable
 
+@Suppress("unused", "UNUSED_PARAMETER")
 /**
  *
  * Created by brownsoo on 2017. 5. 19..
  */
 
 object ClassUtil {
-
-
+    
     fun areObjectsEqual(obj1: Any?, obj2: Any?): Boolean {
         if (obj1 == null) {
             return obj2 == null

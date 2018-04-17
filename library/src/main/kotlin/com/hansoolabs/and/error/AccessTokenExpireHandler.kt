@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import com.hansoolabs.and.BaseDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.StringUtil
-import com.hansoolabs.and.utils.UiUtil
 
 /**
  * Created by brownsoo on 2017. 8. 17..
@@ -35,7 +34,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
     }
 
     override fun onError(throwable: Throwable, tag: String?, data: Bundle?): Boolean {
-        val e: BaseException? = BaseExceptionHandler.toCommonException(throwable) ?: return false
+        val e: BaseException? = BaseExceptionHandler.toCommonException(throwable)
         val code = e!!.error.code
         if (code == BaseError.Code.SessionExpired ||
                 code == BaseError.Code.ConcurrentLogin ||
@@ -93,6 +92,6 @@ class AccessTokenExpireHandler : ExceptionHandler {
     companion object {
         @JvmField
         val ACTION_LOGOUT_REQUIRED = StringUtil.constant("ACTION_LOGOUT_REQUIRED")
-        private val TAG_DIALOG = "AccessTokenExpireDialog"
+        private const val TAG_DIALOG = "AccessTokenExpireDialog"
     }
 }

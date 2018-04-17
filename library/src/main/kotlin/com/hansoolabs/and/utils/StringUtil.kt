@@ -3,6 +3,7 @@ package com.hansoolabs.and.utils
 import com.hansoolabs.and.BuildConfig
 import java.util.regex.Pattern
 
+@Suppress("unused")
 /**
  * Created by brownsoo on 2017. 8. 14..
  */
@@ -19,12 +20,12 @@ object StringUtil {
         return false
     }
 
-    private val ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    private const val ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
     fun randomAlphaNumeric(count: Int): String {
-        var count = count
+        var c = count
         val builder = StringBuilder()
-        while (count-- != 0) {
+        while (c-- != 0) {
             val character = (Math.random() * ALPHA_NUMERIC_STRING.length).toInt()
             builder.append(ALPHA_NUMERIC_STRING[character])
         }

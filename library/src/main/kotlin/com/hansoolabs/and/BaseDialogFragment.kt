@@ -1,5 +1,6 @@
 package com.hansoolabs.and
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -21,7 +22,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
-import com.hansoolabs.and.utils.UiUtil
 import kotlinx.android.synthetic.main.and__alert_dialog.*
 
 /**
@@ -58,6 +58,7 @@ open class BaseDialogFragment : DialogFragment() {
         fun isPositiveClick(bundle: Bundle): Boolean =
                 bundle.getInt(EXTRA_WHICH, BUTTON_NEGATIVE) == BUTTON_POSITIVE
 
+        @SuppressLint("ResourceType")
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
             if (resId >= 0x01000000) {   // start of real resource IDs.
                 return resId
@@ -135,6 +136,7 @@ open class BaseDialogFragment : DialogFragment() {
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun setupDialogWindow(dialog: Dialog) = Unit
 
     protected open fun initLayout(view: View) {
