@@ -22,7 +22,7 @@ ext {
     androidArchitect = '1.1.1'
     room = '1.0.0'
 
-    rxandroid2 = "2.0.1"
+    rxandroid2 = "2.0.2"
     rxjava2 = "2.1.12"
     rxkotlin2 = "2.2.0"
     rxbinding2 = "2.1.1"
