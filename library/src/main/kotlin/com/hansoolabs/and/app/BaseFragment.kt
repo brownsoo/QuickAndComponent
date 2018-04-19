@@ -48,7 +48,7 @@ open class BaseFragment : RxFragment(),
         get() = viewForeground
 
     override val isAvailable: Boolean
-        get() = !(activity?.isFinishing ?: true)
+        get() = activity?.isFinishing == false
 
     val disposableBack by lazy { CompositeDisposable() }
 
@@ -202,9 +202,6 @@ open class BaseFragment : RxFragment(),
                     layoutParams = FrameLayout.LayoutParams(-1,-1)
                 }
                 baseFrame?.addView(progressMsgView)
-            } else if (progressMsgView?.isShowing == true) {
-                progressMsgView?.setMessage(message)
-                return
             }
             progressMsgView?.setMessage(message)
             progressMsgView?.visibility = View.VISIBLE
