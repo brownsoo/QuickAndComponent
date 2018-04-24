@@ -174,6 +174,11 @@ open class BaseActivity : RxAppCompatActivity(),
         notifyViewForegroundChanged()
         super.onPause()
     }
+    
+    override fun onDestroy() {
+        disposableBag.clear()
+        super.onDestroy()
+    }
 
     override fun onAppDidForeground() {
         appForeground = true
