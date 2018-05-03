@@ -103,7 +103,7 @@ dependencies {
     //implementation "android.arch.persistence.room:rxjava2:$androidArchitect"
 
     //google play service
-    implementation "com.google.android.gms:play-services-base:$playVer"
+    implementation "com.google.android.gms:play-services-base:15.0.1"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
