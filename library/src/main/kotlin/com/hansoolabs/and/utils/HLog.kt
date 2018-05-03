@@ -8,9 +8,6 @@ object HLog {
 
     private val logLevel = LogLevel.VERBOSE
 
-    private val isLogPrintMode: Boolean
-        get() = BuildConfig.DEBUG
-
     private enum class LogLevel {
         NONE,
         ERROR,
@@ -28,7 +25,7 @@ object HLog {
     }
 
     fun e(TAG: String, CLASS: String, msg: String) {
-        if (isLogPrintMode && LogLevel.ERROR.ordinal <= logLevel.ordinal) {
+        if (BuildConfig.DEBUG && LogLevel.ERROR.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
             val text = "[$thr] $CLASS $msg"
             Log.e(TAG, text)
@@ -36,7 +33,7 @@ object HLog {
     }
 
     fun w(TAG: String, CLASS: String, msg: String) {
-        if (isLogPrintMode && LogLevel.WARNING.ordinal <= logLevel.ordinal) {
+        if (BuildConfig.DEBUG && LogLevel.WARNING.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
             val text = "[$thr] $CLASS $msg"
             Log.w(TAG, text)
@@ -44,15 +41,13 @@ object HLog {
     }
 
     fun i(TAG: String, CLASS: String, msg: String) {
-        if (isLogPrintMode && LogLevel.INFO.ordinal <= logLevel.ordinal) {
-            val thr = Thread.currentThread().name
-            val text = "[$thr] $CLASS $msg"
-            Log.i(TAG, text)
-        }
+        val thr = Thread.currentThread().name
+        val text = "[$thr] $CLASS $msg"
+        Log.i(TAG, text)
     }
 
     fun d(TAG: String, CLASS: String, msg: String) {
-        if (isLogPrintMode && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
+        if (BuildConfig.DEBUG && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
             val the = Thread.currentThread().name
             val text = "[$the] $CLASS $msg"
             Log.d(TAG, text)
@@ -60,7 +55,7 @@ object HLog {
     }
 
     fun v(TAG: String, CLASS: String, msg: String) {
-        if (isLogPrintMode && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
+        if (BuildConfig.DEBUG && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
             val text = "[$thr] $CLASS $msg"
             Log.v(TAG, text)
