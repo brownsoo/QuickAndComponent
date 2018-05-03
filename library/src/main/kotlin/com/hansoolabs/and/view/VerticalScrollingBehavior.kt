@@ -83,7 +83,9 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
         onNestedVerticalOverScroll(coordinatorLayout, child, overScrollDirection, dyConsumed, mTotalDyUnconsumed)
     }
 
+    @Suppress("OverridingDeprecatedMember")
     override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray) {
+        @Suppress("DEPRECATION")
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed)
         if (dy > 0 && mTotalDy < 0) {
             mTotalDy = 0
@@ -110,7 +112,6 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
     }
 
     override fun onApplyWindowInsets(coordinatorLayout: CoordinatorLayout?, child: V?, insets: WindowInsetsCompat): WindowInsetsCompat {
-
         return super.onApplyWindowInsets(coordinatorLayout, child, insets)
     }
 
