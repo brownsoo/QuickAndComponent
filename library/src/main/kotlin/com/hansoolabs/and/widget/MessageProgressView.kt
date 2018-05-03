@@ -13,7 +13,9 @@ import com.hansoolabs.and.R
  * Created by brownsoo on 2017-12-14.
  */
 
-class MessageProgressView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class MessageProgressView
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : ConstraintLayout(context, attrs, defStyleAttr) {
 
     var isIndeterminate: Boolean
