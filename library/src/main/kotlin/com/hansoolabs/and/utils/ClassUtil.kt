@@ -18,9 +18,7 @@ object ClassUtil {
         return obj1 == obj2
     }
 
-    fun allNotNull(vararg objs: Any?): Boolean {
-        return objs.all { it != null }
-    }
+    fun allNotNull(vararg objs: Any?) = objs.all { it != null }
 
     @JvmStatic
     inline fun <reified T : Parcelable> createParcelable(crossinline createFromParcel: (Parcel) -> T?) =

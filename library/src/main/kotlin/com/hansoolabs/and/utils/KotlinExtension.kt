@@ -9,17 +9,11 @@ import android.view.View
  */
 
 
-fun Activity.isAvailable(): Boolean {
-    return !this.isFinishing
-}
+fun Activity.isAvailable() = !this.isFinishing
 
-fun Fragment.isAvailable(): Boolean {
-    return isAdded && !(activity?.isFinishing ?: true)
-}
+fun Fragment.isAvailable() = isAdded && !(activity?.isFinishing ?: true)
 
-fun View.isVisible(): Boolean {
-    return this.visibility == View.VISIBLE
-}
+fun View.isVisible() = this.visibility == View.VISIBLE
 
 fun View.setVisible(visible: Boolean) {
     this.visibility = if (visible) {
