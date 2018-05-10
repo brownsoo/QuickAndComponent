@@ -74,8 +74,7 @@ object UiUtil {
             synchronized(activityProgressDialog) {
                 progressDialog = activityProgressDialog[activity]
                 if (progressDialog == null) {
-                    progressDialog = ProgressDialog(
-                            activity, R.style.AndTheme_Dialog_Progress)
+                    progressDialog = ProgressDialog(activity, 0)
                     activityProgressDialog.put(activity, progressDialog)
                 }
             }

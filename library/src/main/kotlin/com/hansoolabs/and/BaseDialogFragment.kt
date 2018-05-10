@@ -137,7 +137,7 @@ open class BaseDialogFragment : DialogFragment() {
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun setupDialogWindow(dialog: Dialog) = Unit
+    protected fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
 
     protected open fun initLayout(view: View) {
         titleView = alert_dialog_title

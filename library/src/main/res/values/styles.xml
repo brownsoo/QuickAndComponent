@@ -1,9 +1,7 @@
 <resources>
 
-    <style name="AndTheme" parent="And_SuperTheme"/>
-    <style name="AndTheme.Transparent" parent="AndTheme"/>
-    <style name="AndTheme.Dialog" parent="And_SuperTheme.Dialog"/>
-    <style name="AndTheme.Dialog.Alert" parent="And_SuperTheme.Dialog.Alert"/>
-    <style name="AndTheme.Dialog.Progress" parent="And_SuperTheme.Dialog"/>
+    <style name="AndTheme" parent="Theme.AppCompat"/>
+    <style name="AndTheme.Dialog" parent="Theme.AppCompat.Dialog"/>
+    <style name="AndTheme.Dialog.Alert" parent="Theme.AppCompat.Dialog.Alert"/>
 
 </resources>
