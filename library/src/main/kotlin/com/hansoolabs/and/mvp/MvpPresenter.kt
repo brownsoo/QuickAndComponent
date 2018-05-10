@@ -28,6 +28,7 @@ open class MvpPresenter<out T : MvpContract.View>(presentingView: T,
 
     override fun terminate() {
         view?.removeForegroundListener(this)
+        viewRef.clear()
     }
 
     override fun onViewForeground() {
