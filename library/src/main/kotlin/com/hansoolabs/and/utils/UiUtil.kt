@@ -103,12 +103,12 @@ object UiUtil {
     }
 
     @JvmStatic
-    fun toast(context: Context, @StringRes textResId: Int, time: Int): Toast {
+    fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT): Toast {
         return toast(context, context.getString(textResId), time)
     }
 
     @JvmStatic
-    fun toast(context: Context, text: String, time: Int): Toast {
+    fun toast(context: Context, text: String, time: Int = Toast.LENGTH_SHORT): Toast {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.and__toast, null, false)
         (layout.findViewById<View>(R.id.text) as TextView).text = text
