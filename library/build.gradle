@@ -78,14 +78,14 @@ dependencies {
 
     implementation "com.android.support:support-v4:$supportVer"
     implementation "com.android.support:appcompat-v7:$supportVer"
-    implementation "com.android.support:design:$supportVer"
+//    implementation "com.android.support:design:$supportVer"
     implementation "com.android.support:recyclerview-v7:$supportVer"
-    implementation "com.android.support:cardview-v7:$supportVer"
+//    implementation "com.android.support:cardview-v7:$supportVer"
     androidTestImplementation "com.android.support:support-v4:$supportVer"
     androidTestImplementation "com.android.support:appcompat-v7:$supportVer"
-    androidTestImplementation "com.android.support:design:$supportVer"
+//    androidTestImplementation "com.android.support:design:$supportVer"
     androidTestImplementation "com.android.support:recyclerview-v7:$supportVer"
-    androidTestImplementation "com.android.support:cardview-v7:$supportVer"
+//    androidTestImplementation "com.android.support:cardview-v7:$supportVer"
 
     implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
 
@@ -116,7 +116,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding2"
-    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding2"
+//    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxbinding2"
     implementation "com.trello.rxlifecycle2:rxlifecycle:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-android:$rxlifecycle2"
