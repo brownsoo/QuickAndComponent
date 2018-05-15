@@ -39,19 +39,13 @@ ext {
 }
 
 android {
-    compileSdkVersion compileSdk
-    buildToolsVersion buildTools
-
-
-    def baseVersionCode = 100
-    def baseVersionName = "1.0.0"
-    def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()
-
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     defaultConfig {
-        minSdkVersion minSdk
-        targetSdkVersion targetSdk
-        versionCode baseVersionCode
-        versionName baseVersionName + ".dev." + gitCommitCount
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 100
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
