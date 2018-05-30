@@ -32,6 +32,6 @@ class ScrollToTopFabManager(private val fab: FloatingActionButton) {
 
     companion object {
 
-        private val THRESHOLD = 50f // in dp
+        private const val THRESHOLD = 50f // in dp
     }
 }
