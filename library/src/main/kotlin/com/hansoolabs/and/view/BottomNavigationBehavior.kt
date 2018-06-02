@@ -34,8 +34,11 @@ import android.view.ViewGroup
  *
  * Created by Nikola D. on 3/15/2016.
  */
+
+@Suppress("unused")
 class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
-    private val mWithSnackBarImpl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) LollipopBottomNavWithSnackBarImpl() else PreLollipopBottomNavWithSnackBarImpl()
+    private val mWithSnackBarImpl =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) LollipopBottomNavWithSnackBarImpl() else PreLollipopBottomNavWithSnackBarImpl()
     private val isTablet: Boolean = false
     private val mTabLayoutId: Int
     private var hidden = false
@@ -43,9 +46,9 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
     private var mTabLayout: ViewGroup? = null
     private var mTabsHolder: View? = null
     private var mSnackbarHeight = -1
-    var isScrollingEnabled = true
     private var hideAlongSnackbar = false
-    internal var attrsArray = intArrayOf(android.R.attr.id)
+    private var attrsArray = intArrayOf(android.R.attr.id)
+    private var isScrollingEnabled = true
 
     constructor() : super() {
         mTabLayoutId = View.NO_ID
@@ -69,15 +72,15 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
     }
 
     private fun updateScrollingForSnackbar(dependency: View?, child: V?, enabled: Boolean) {
-        if (!isTablet && dependency is Snackbar.SnackbarLayout) {
+        if (child!=null && !isTablet && dependency is Snackbar.SnackbarLayout) {
             isScrollingEnabled = enabled
-            if (!hideAlongSnackbar && ViewCompat.getTranslationY(child!!) != 0f) {
-                ViewCompat.setTranslationY(child, 0f)
+            if (!hideAlongSnackbar && child.translationY != 0f) {
+                child.translationY = 0f
                 hidden = false
                 hideAlongSnackbar = true
             } else if (hideAlongSnackbar) {
                 hidden = true
-                animateOffset(child, -child!!.height)
+                animateOffset(child, -child.height)
             }
         }
     }
@@ -97,9 +100,8 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
         return layoutChild
     }
 
-    private fun findTabLayout(child: View): ViewGroup? {
-        return if (mTabLayoutId == 0) null else child.findViewById<View>(mTabLayoutId) as ViewGroup
-    }
+    private fun findTabLayout(child: View): ViewGroup? =
+        if (mTabLayoutId == 0) null else child.findViewById<View>(mTabLayoutId) as ViewGroup
 
     override fun onNestedVerticalOverScroll(coordinatorLayout: CoordinatorLayout, child: V, @ScrollDirection direction: Int, currentOverScroll: Int, totalOverScroll: Int) {}
 
@@ -130,10 +132,10 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
     }
 
     private fun animateTabsHolder(offset: Int) {
-        var offset = offset
+        var offset1 = offset
         if (mTabsHolder != null) {
-            offset = if (offset > 0) 0 else 1
-            ViewCompat.animate(mTabsHolder).alpha(offset.toFloat()).setDuration(200).start()
+            offset1 = if (offset1 > 0) 0 else 1
+            ViewCompat.animate(mTabsHolder).alpha(offset1.toFloat()).setDuration(200).start()
         }
     }
 
@@ -152,7 +154,7 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
             mTabsHolder = mTabLayout!!.getChildAt(0)
         }
     }
-
+    
     fun setHidden(view: V, bottomLayoutHidden: Boolean) {
         if (!bottomLayoutHidden && hidden) {
             animateOffset(view, 0)
@@ -207,6 +209,7 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
     companion object {
         private val INTERPOLATOR = LinearOutSlowInInterpolator()
 
+        @Suppress("UNCHECKED_CAST")
         fun <V : View> from(view: V): BottomNavigationBehavior<V> {
             val params = view.layoutParams as? CoordinatorLayout.LayoutParams
                     ?: throw IllegalArgumentException("The view is not a child of CoordinatorLayout")

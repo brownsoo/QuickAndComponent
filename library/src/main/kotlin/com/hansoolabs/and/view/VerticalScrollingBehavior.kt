@@ -1,10 +1,10 @@
 package com.hansoolabs.and.view
 
 import android.content.Context
-import android.os.Parcelable
+import android.os.Build
 import android.support.annotation.IntDef
+import android.support.annotation.RequiresApi
 import android.support.design.widget.CoordinatorLayout
-import android.support.v4.view.WindowInsetsCompat
 import android.util.AttributeSet
 import android.view.View
 
@@ -13,9 +13,9 @@ import android.view.View
  * https://gist.githubusercontent.com/NikolaDespotoski/1d6fef4949eb9be05a46/raw/bd58b4f5b893efc9dd31589483cad94ada187b81/VerticalScrollingBehavior.java
  * Created by Nikola on 11/22/2015.
  */
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<V> {
-
-
+    
     companion object {
 
         const val SCROLL_DIRECTION_UP = 1
@@ -45,13 +45,10 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
     var scrollDirection = SCROLL_NONE
         private set
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
-
-    constructor() : super() {}
-
-
-
-
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    
+    constructor() : super()
+    
     /**
      * @param coordinatorLayout
      * @param child
@@ -66,11 +63,14 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
      */
     abstract fun onDirectionNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray, @ScrollDirection scrollDirection: Int)
 
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int): Boolean {
-        return nestedScrollAxes and View.SCROLL_AXIS_VERTICAL != 0
-    }
+    @Suppress("OverridingDeprecatedMember")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int): Boolean =
+        nestedScrollAxes and View.SCROLL_AXIS_VERTICAL != 0
 
+    @Suppress("OverridingDeprecatedMember")
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) {
+        @Suppress("DEPRECATION")
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed)
         if (dyUnconsumed > 0 && mTotalDyUnconsumed < 0) {
             mTotalDyUnconsumed = 0
@@ -107,16 +107,13 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
 
     protected abstract fun onNestedDirectionFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float, @ScrollDirection scrollDirection: Int): Boolean
 
-    override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float): Boolean {
-        return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
-    }
-
-    override fun onApplyWindowInsets(coordinatorLayout: CoordinatorLayout?, child: V?, insets: WindowInsetsCompat): WindowInsetsCompat {
-        return super.onApplyWindowInsets(coordinatorLayout, child, insets)
-    }
-
-    override fun onSaveInstanceState(parent: CoordinatorLayout?, child: V?): Parcelable {
-        return super.onSaveInstanceState(parent, child)
-    }
+//    override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float): Boolean =
+//        super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
+//
+//    override fun onApplyWindowInsets(coordinatorLayout: CoordinatorLayout?, child: V?, insets: WindowInsetsCompat): WindowInsetsCompat =
+//        super.onApplyWindowInsets(coordinatorLayout, child, insets)
+//
+//    override fun onSaveInstanceState(parent: CoordinatorLayout?, child: V?): Parcelable =
+//        super.onSaveInstanceState(parent, child)
 
 }

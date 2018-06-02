@@ -18,8 +18,7 @@ abstract class AbsRecyclerViewScroller : FrameLayout, RecyclerViewScroller {
 
     protected var recyclerViewCalculator: RecyclerViewCalculator? = null
         private set
-    protected var scrollerCalculator: ScrollerCalculator? = null
-        private set
+    private var scrollerCalculator: ScrollerCalculator? = null
     private var recyclerView: RecyclerView? = null
 
     override val onScrollListener: RecyclerView.OnScrollListener
@@ -61,9 +60,10 @@ abstract class AbsRecyclerViewScroller : FrameLayout, RecyclerViewScroller {
 
     abstract fun createRecyclerViewCalculator(): RecyclerViewCalculator
 
+    @Suppress("UNUSED_PARAMETER")
     private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         recyclerViewCalculator = createRecyclerViewCalculator()
-        setOnTouchListener { v, event -> onScrollerTouched(event) }
+        setOnTouchListener { _, event -> onScrollerTouched(event) }
     }
 
     open fun onScrollerTouched(event: MotionEvent): Boolean {

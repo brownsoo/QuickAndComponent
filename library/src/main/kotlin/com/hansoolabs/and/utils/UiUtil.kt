@@ -1,9 +1,9 @@
 package com.hansoolabs.and.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.Fragment
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -58,55 +58,12 @@ object UiUtil {
         }
         return dialog
     }
-
+    
     @JvmStatic
-    private val activityProgressDialog = WeakHashMap<Activity, ProgressDialog>()
+    fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT) =
+        toast(context, context.getString(textResId), time)
 
-    @JvmStatic
-    fun showProgressDialog(activity: Activity,
-                           title: String,
-                           message: String,
-                           cancelable: Boolean): ProgressDialog {
-
-        var progressDialog: ProgressDialog?
-        progressDialog = activityProgressDialog[activity]
-        if (progressDialog == null) {
-            synchronized(activityProgressDialog) {
-                progressDialog = activityProgressDialog[activity]
-                if (progressDialog == null) {
-                    progressDialog = ProgressDialog(activity, 0)
-                    activityProgressDialog.put(activity, progressDialog)
-                }
-            }
-        }
-
-        return progressDialog!!.apply {
-            setTitle(title)
-            setMessage(message)
-            setCancelable(cancelable)
-            if (!isShowing) {
-                show()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun hideProgressDialog(activity: Activity): Boolean {
-        synchronized(activityProgressDialog) {
-            val progressDialog = activityProgressDialog.remove(activity)
-            if (progressDialog != null && progressDialog.isShowing) {
-                progressDialog.dismiss()
-                return true
-            }
-            return false
-        }
-    }
-
-    @JvmStatic
-    fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT): Toast {
-        return toast(context, context.getString(textResId), time)
-    }
-
+    @SuppressLint("InflateParams")
     @JvmStatic
     fun toast(context: Context, text: String, time: Int = Toast.LENGTH_SHORT): Toast {
         val inflater = LayoutInflater.from(context)
@@ -129,12 +86,12 @@ object UiUtil {
         viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        var handled: Boolean
-                        try {
-                            handled = action.invoke()
+                        val handled: Boolean
+                        handled = try {
+                            action.invoke()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            handled = true
+                            true
                         }
 
                         if (handled) {

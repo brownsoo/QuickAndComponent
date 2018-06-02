@@ -1,3 +1,4 @@
+@file:Suppress("unused", "UNUSED_PARAMETER")
 package com.hansoolabs.and.view
 
 import android.support.design.widget.FloatingActionButton
@@ -9,6 +10,7 @@ import com.hansoolabs.and.utils.UiUtil
  *
  * Created by brownsoo on 2017. 8. 23..
  */
+
 
 class ScrollToTopFabManager(private val fab: FloatingActionButton) {
     private val threshold: Int
