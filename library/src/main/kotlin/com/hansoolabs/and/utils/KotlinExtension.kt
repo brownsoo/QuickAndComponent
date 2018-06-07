@@ -1,6 +1,8 @@
 package com.cherrytree.skinnyyoga.util
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
 import android.support.v4.app.Fragment
 import android.view.View
 
@@ -21,4 +23,10 @@ fun View.setVisible(visible: Boolean) {
     } else {
         View.GONE
     }
+}
+
+fun Context.isOnline(): Boolean {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val netInfo = cm.activeNetworkInfo
+    return netInfo != null && netInfo.isConnectedOrConnecting
 }
