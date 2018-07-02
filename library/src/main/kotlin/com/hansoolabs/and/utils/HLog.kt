@@ -17,13 +17,16 @@ object HLog {
         VERBOSE
     }
 
+    @JvmStatic
     fun getStackTraceString(name: String, e: Throwable?) =
             name + "\n" + Log.getStackTraceString(e)
-
+    
+    @JvmStatic
     fun e(TAG: String, CLASS: String, e: Throwable?) {
         e(TAG, CLASS, Log.getStackTraceString(e))
     }
-
+    
+    @JvmStatic
     fun e(TAG: String, CLASS: String, msg: String) {
         if (BuildConfig.DEBUG && LogLevel.ERROR.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
@@ -31,7 +34,8 @@ object HLog {
             Log.e(TAG, text)
         }
     }
-
+    
+    @JvmStatic
     fun w(TAG: String, CLASS: String, msg: String) {
         if (BuildConfig.DEBUG && LogLevel.WARNING.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
@@ -39,13 +43,15 @@ object HLog {
             Log.w(TAG, text)
         }
     }
-
+    
+    @JvmStatic
     fun i(TAG: String, CLASS: String, msg: String) {
         val thr = Thread.currentThread().name
         val text = "[$thr] $CLASS $msg"
         Log.i(TAG, text)
     }
-
+    
+    @JvmStatic
     fun d(TAG: String, CLASS: String, msg: String) {
         if (BuildConfig.DEBUG && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
             val the = Thread.currentThread().name
@@ -53,7 +59,8 @@ object HLog {
             Log.d(TAG, text)
         }
     }
-
+    
+    @JvmStatic
     fun v(TAG: String, CLASS: String, msg: String) {
         if (BuildConfig.DEBUG && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
