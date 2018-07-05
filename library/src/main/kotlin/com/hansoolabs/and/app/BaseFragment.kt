@@ -29,6 +29,7 @@ import io.reactivex.disposables.CompositeDisposable
  */
 
 
+@Suppress("UseExpressionBody")
 open class BaseFragment : RxFragment(),
         Available,
         BaseDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
@@ -78,8 +79,6 @@ open class BaseFragment : RxFragment(),
         onAttachCompat(context)
     }
 
-    @Suppress("UseExpressionBody", "MemberVisibilityCanPrivate")
-    @CallSuper
     protected open fun onAttachCompat(context: Context?) {
     }
 
