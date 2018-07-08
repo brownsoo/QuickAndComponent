@@ -7,35 +7,13 @@ apply plugin: 'kotlin-kapt'
 
 ext {
 
-    buildTools = "27.0.3"
-    compileSdk = 27
-    minSdk = 16
-    targetSdk = 27
-
-//    multidex = "1.0.3"
-    dagger = "2.10"
     supportVer = "27.1.1"
-    constraintLayout = "1.1.0"
-    playVer = '15.0.0'
-
-    androidArchitect = '1.1.0'
-    room = '1.0.0'
 
     rxandroid2 = "2.0.2"
-    rxjava2 = "2.1.12"
+    rxjava2 = "2.1.16"
     rxkotlin2 = "2.2.0"
     rxbinding2 = "2.1.1"
     rxlifecycle2 = "2.2.1"
-    rxpermissions2 = "0.9.5@aar"
-
-    junit = "4.12"
-    espresso = "3.0.0"
-    testrunner = "1.0.0"
-    testrules = "1.0.0"
-
-    stetho = "1.5.0"
-    firebaseJob = "0.8.5"
-    ankoVersion = "0.10.1"
 }
 
 android {
@@ -81,20 +59,7 @@ dependencies {
     androidTestImplementation "com.android.support:recyclerview-v7:$supportVer"
     androidTestImplementation "com.android.support:cardview-v7:$supportVer"
 
-    implementation "com.android.support.constraint:constraint-layout:$constraintLayout"
-
-    // life cycle component
-//    implementation "android.arch.lifecycle:runtime:$androidArchitect"
-//    implementation "android.arch.lifecycle:extensions:$androidArchitect"
-//    kapt "android.arch.lifecycle:compiler:$androidArchitect"
-    // Room
-//    implementation "android.arch.persistence.room:runtime:$room"
-//    kapt "android.arch.persistence.room:compiler:$room"
-//    testImplementation ("android.arch.persistence.room:testing:$room") {
-//        exclude group: 'com.android.support'
-//    }
-    // RxJava support for Room
-    //implementation "android.arch.persistence.room:rxjava2:$androidArchitect"
+    implementation "com.android.support.constraint:constraint-layout:1.1.2"
 
     //google play service
     implementation "com.google.android.gms:play-services-base:15.0.1"
@@ -110,12 +75,11 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding2"
-//    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding2"
+    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding2"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxbinding2"
     implementation "com.trello.rxlifecycle2:rxlifecycle:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-android:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-components:$rxlifecycle2"
     implementation "com.trello.rxlifecycle2:rxlifecycle-kotlin:$rxlifecycle2"
-    implementation "com.tbruyelle.rxpermissions2:rxpermissions:$rxpermissions2"
 
 }
