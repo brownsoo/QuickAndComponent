@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference
  * Created by brownsoo on 2017. 5. 10..
  */
 
+@Suppress("MemberVisibilityCanBePrivate")
 open class BaseActivity : RxAppCompatActivity(),
         Available,
         BaseDialogFragment.OnBaseDialogListener,
@@ -59,7 +60,8 @@ open class BaseActivity : RxAppCompatActivity(),
 
     //private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
-    private val mainHandler = BaseHandler(this)
+    private val mainHandler:BaseHandler
+        get() = BaseHandler(this)
 
     private class BaseHandler(activity: BaseActivity): Handler() {
         private val ref = WeakReference(activity)
@@ -202,10 +204,10 @@ open class BaseActivity : RxAppCompatActivity(),
         }
     }
 
-    open protected fun onViewForeground() {
+    protected open fun onViewForeground() {
     }
 
-    open protected fun onViewBackground() {
+    protected open fun onViewBackground() {
     }
 
     protected fun showLoadingBar() {
@@ -216,10 +218,10 @@ open class BaseActivity : RxAppCompatActivity(),
         loadingBar?.visibility = View.GONE
     }
 
-    open protected fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T> =
+    protected open fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T> =
             observable.compose(bindUntilEvent<T>(ActivityEvent.DESTROY))
 
-    open protected fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T> =
+    protected open fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T> =
             observable.compose(bindUntilEvent<T>(ActivityEvent.PAUSE))
 
     @UiThread
@@ -290,7 +292,7 @@ open class BaseActivity : RxAppCompatActivity(),
                     .filter { it == ActivityEvent.PAUSE }
                     .take(1)
                     .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                    .subscribe({ safeFinish(muteAnimation) })
+                    .subscribe { safeFinish(muteAnimation) }
         }
     }
 

@@ -29,7 +29,7 @@ import io.reactivex.disposables.CompositeDisposable
  */
 
 
-@Suppress("UseExpressionBody")
+@Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class BaseFragment : RxFragment(),
         Available,
         BaseDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
@@ -165,10 +165,10 @@ open class BaseFragment : RxFragment(),
         }
     }
 
-    open protected fun onViewForeground() {
+    protected open fun onViewForeground() {
     }
 
-    open protected fun onViewBackground() {
+    protected open fun onViewBackground() {
     }
 
     protected fun showLoadingBar() {

@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.and__alert_dialog.*
  */
 
 
+@Suppress("MemberVisibilityCanBePrivate")
 open class BaseDialogFragment : DialogFragment() {
 
     interface OnBaseDialogListener {
@@ -58,6 +59,7 @@ open class BaseDialogFragment : DialogFragment() {
         fun isPositiveClick(bundle: Bundle): Boolean =
                 bundle.getInt(EXTRA_WHICH, BUTTON_NEGATIVE) == BUTTON_POSITIVE
 
+        @Suppress("LiftReturnOrAssignment")
         @SuppressLint("ResourceType")
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
             if (resId >= 0x01000000) {   // start of real resource IDs.
@@ -77,6 +79,7 @@ open class BaseDialogFragment : DialogFragment() {
     private var negativeBtn: Button? = null
     private var customViewFrame: ScrollView? = null
     private var listener: OnBaseDialogListener? = null
+    @Suppress("MemberVisibilityCanBePrivate")
     protected var customView: View? = null
     private val resultData = Bundle()
     private var resultCode :Int = 0
