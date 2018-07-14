@@ -35,9 +35,13 @@ object TimeUtil {
      * *
      * @return yyyy-MM-dd
      */
-    fun getTimeFormat(date: Calendar): String {
+    fun getTimeFormat(cal: Calendar): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
-        return dateFormat.format(date.time)
+        return dateFormat.format(cal.time)
+    }
+
+    fun getTimeFormatWithoutTime(timeMilli: Long): String {
+        return getTimeFormat(timeMilli, "yyyy-MM-dd")
     }
 
     @JvmStatic
@@ -150,5 +154,11 @@ object TimeUtil {
             }
         }
         return diff
+    }
+
+    fun localizedShortDateTime(date: Date): String {
+        val f = DateFormat.getDateTimeInstance(DateFormat.SHORT,
+            DateFormat.SHORT, Locale.getDefault())
+        return f.format(date)
     }
 }
