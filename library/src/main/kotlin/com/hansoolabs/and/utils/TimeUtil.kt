@@ -23,21 +23,10 @@ object TimeUtil {
     }
 
     @Synchronized fun getTimeFormat(timeMilli: Long, template: String): String {
-        val dateFormat: SimpleDateFormat = SimpleDateFormat.getDateTimeInstance(
+        val dateFormat = SimpleDateFormat.getDateTimeInstance(
                 DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
         dateFormat.applyPattern(template)
         return dateFormat.format(Date(timeMilli))
-    }
-
-    /**
-     * yyyy-MM-dd style
-     * @param date
-     * *
-     * @return yyyy-MM-dd
-     */
-    fun getTimeFormat(cal: Calendar): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
-        return dateFormat.format(cal.time)
     }
 
     fun getTimeFormatWithoutTime(timeMilli: Long): String {
