@@ -43,7 +43,7 @@ open class BaseActivity : RxAppCompatActivity(),
         AppForegroundObserver.AppForegroundListener {
 
     override val isAvailable: Boolean
-        get() = !isFinishing
+        get() = !isFinishing && viewForeground
 
     protected var resumed = false
     protected var appForeground = true
