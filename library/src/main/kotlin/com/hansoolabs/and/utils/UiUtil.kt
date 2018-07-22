@@ -12,11 +12,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.support.annotation.StringRes
 import android.text.InputFilter
 import android.text.Spanned
 import android.util.Base64
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -203,5 +205,29 @@ object UiUtil {
             imm.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
-
+    
+    @JvmStatic
+    fun isAvailable(activity: Activity?): Boolean {
+        val valid = activity != null && !activity.isFinishing
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            valid && activity?.isDestroyed == false
+        } else {
+            valid
+        }
+    }
+    
+    @JvmStatic
+    fun getScreenMetrics(activity: Activity): DisplayMetrics {
+        val metrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(metrics)
+        return metrics
+    }
+    
+    @JvmStatic
+    fun getScreenInches(activity: Activity): Double {
+        val dm = getScreenMetrics(activity)
+        val x = Math.pow((dm.widthPixels / dm.xdpi).toDouble(), 2.0)
+        val y = Math.pow((dm.heightPixels / dm.ydpi).toDouble(), 2.0)
+        return Math.sqrt(x + y)
+    }
 }
