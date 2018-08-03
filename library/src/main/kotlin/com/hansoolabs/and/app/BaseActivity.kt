@@ -100,6 +100,8 @@ open class BaseActivity : RxAppCompatActivity(),
                 .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
+
+        onPostCreateContentView()
     }
 
     override fun setContentView(view: View) {
@@ -120,6 +122,8 @@ open class BaseActivity : RxAppCompatActivity(),
                 .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
+
+        onPostCreateContentView()
     }
 
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
@@ -131,6 +135,14 @@ open class BaseActivity : RxAppCompatActivity(),
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)
         super.setContentView(baseFrame, params)
+
+        onPostCreateContentView()
+    }
+
+    /**
+     * called after setContentView
+     */
+    protected open fun onPostCreateContentView() {
     }
 
     protected fun setContentFragment(@IdRes containerId: Int,
