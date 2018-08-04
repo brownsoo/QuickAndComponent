@@ -234,7 +234,7 @@ open class BaseDialogFragment : DialogFragment() {
     }
 
     protected open fun onPositiveButtonClicked(extra: Bundle? = null) {
-        onButtonClicked(BUTTON_POSITIVE, RESULT_OK,null)
+        onButtonClicked(BUTTON_POSITIVE, RESULT_OK, extra)
     }
 
     protected open fun onNegativeButtonClicked(extra: Bundle? = null) {

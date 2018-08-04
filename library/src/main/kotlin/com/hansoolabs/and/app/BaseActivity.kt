@@ -145,6 +145,9 @@ open class BaseActivity : RxAppCompatActivity(),
     protected open fun onPostCreateContentView() {
     }
 
+    /**
+     * add a fragment into containerView
+     */
     protected fun setContentFragment(@IdRes containerId: Int,
                                   forceNewInstance: Boolean = false,
                                   builder: (Bundle?) -> Fragment) {
