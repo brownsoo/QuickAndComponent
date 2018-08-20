@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.support.annotation.CallSuper
 import android.support.annotation.IdRes
 import android.support.annotation.UiThread
@@ -15,6 +12,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,8 +98,7 @@ open class BaseActivity : RxAppCompatActivity(),
                 .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
-
-        onPostCreateContentView()
+        Log.d("BaseActivity", "setContentView")
     }
 
     override fun setContentView(view: View) {
@@ -121,9 +118,9 @@ open class BaseActivity : RxAppCompatActivity(),
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
                 .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
-        super.setContentView(baseFrame)
 
-        onPostCreateContentView()
+        super.setContentView(baseFrame)
+        Log.d("BaseActivity", "setContentView")
     }
 
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
@@ -134,15 +131,9 @@ open class BaseActivity : RxAppCompatActivity(),
                 .apply { visibility = View.GONE }
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)
+
         super.setContentView(baseFrame, params)
-
-        onPostCreateContentView()
-    }
-
-    /**
-     * called after setContentView
-     */
-    protected open fun onPostCreateContentView() {
+        Log.d("BaseActivity", "setContentView")
     }
 
     /**
