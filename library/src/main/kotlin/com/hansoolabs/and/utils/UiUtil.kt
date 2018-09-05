@@ -198,6 +198,13 @@ object UiUtil {
     }
     
     @JvmStatic
+    fun hideKeyboard(fragmentV4: android.support.v4.app.Fragment) {
+        fragmentV4.activity?.let {
+            hideKeyboard(it)
+        }
+    }
+    
+    @JvmStatic
     fun hideKeyboard(activity: Activity) {
         val v = activity.window.currentFocus
         if (v != null) {
