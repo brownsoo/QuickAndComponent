@@ -15,7 +15,7 @@ object StringUtil {
 
     @JvmStatic
     fun isNullOrEmpty(str: String?): Boolean {
-        if (str == null || str.length == 0)
+        if (str == null || str.isEmpty())
             return true
         return false
     }

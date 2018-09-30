@@ -142,12 +142,12 @@ open class BaseDialogFragment : DialogFragment() {
     protected fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
 
     protected open fun initLayout(view: View) {
-        titleView = alert_dialog_title
-        messageView = alert_dialog_message
-        positiveBtn = btn_positive
-        negativeBtn = btn_negative
-        alternativeBtn = btn_alternative
-        customViewFrame = custom_view_frame
+        titleView = view.findViewById(R.id.alert_dialog_title)
+        messageView = view.findViewById(R.id.alert_dialog_message)
+        positiveBtn = view.findViewById(R.id.btn_positive)
+        negativeBtn = view.findViewById(R.id.btn_negative)
+        alternativeBtn = view.findViewById(R.id.btn_alternative)
+        customViewFrame = view.findViewById(R.id.custom_view_frame)
 
         var args = arguments
         if (args == null) {

@@ -19,8 +19,8 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.rx.RxFragment
 import com.hansoolabs.and.widget.MessageProgressView
-import com.trello.rxlifecycle2.components.support.RxFragment
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -85,9 +85,8 @@ open class BaseFragment : RxFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 프레임 구조를 크게 4단 레이어로 구성
         // baseFrame -> baseFrame -> loadingBar -> errorView
-        context!!
         // 0
-        baseFrame = FrameLayout(context).apply {
+        baseFrame = FrameLayout(context!!).apply {
             layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT)

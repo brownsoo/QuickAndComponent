@@ -24,8 +24,8 @@ class WeakFragmentDelegate(fragment: Fragment) : ContextDelegate {
     }
 
     override fun finishActivity() {
-        val activity = ref.get()?.activity
-        if (activity?.isAvailable() == true) {
+        val activity = ref.get()?.activity ?: return
+        if (!activity.isFinishing) {
             activity.finish()
         }
     }

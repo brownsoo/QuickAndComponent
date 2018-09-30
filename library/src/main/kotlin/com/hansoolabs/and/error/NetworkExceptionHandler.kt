@@ -103,12 +103,10 @@ class NetworkExceptionHandler : ExceptionHandler {
             resolving = false
             if (resultCode == BaseDialogFragment.RESULT_OK && resultData != null) {
                 if (BaseDialogFragment.isPositiveClick(resultData)) {
-                    val key = resultData.getString(EXTRA_ERROR_TAG)
-                    retryHandlerMap[key]?.let {
-                        it.handleRetry(
-                                throwable = resultData.getSerializable(EXTRA_ERROR_THROWABLE) as Throwable,
-                                data = resultData)
-                    }
+                    val key = resultData.getString(EXTRA_ERROR_TAG) ?: return false
+                    retryHandlerMap[key]?.handleRetry(
+                        throwable = resultData.getSerializable(EXTRA_ERROR_THROWABLE) as Throwable,
+                        data = resultData)
                     return true
                 }
             }

@@ -23,10 +23,10 @@ abstract class AbsRecyclerViewScroller : FrameLayout, RecyclerViewScroller {
 
     override val onScrollListener: RecyclerView.OnScrollListener
         get() = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (Math.abs(dy) > 0) {
-                    val progress = recyclerViewCalculator!!.calculateScrollProgress(recyclerView!!)
+                    val progress = recyclerViewCalculator?.calculateScrollProgress(recyclerView) ?: return
                     onScrollProgressChanged(progress)
                 }
             }

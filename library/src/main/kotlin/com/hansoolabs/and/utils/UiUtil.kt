@@ -3,7 +3,6 @@ package com.hansoolabs.and.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -70,7 +69,7 @@ object UiUtil {
     fun toast(context: Context, text: String, time: Int = Toast.LENGTH_SHORT): Toast {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.and__toast, null, false)
-        (layout.findViewById<View>(R.id.text) as TextView).text = text
+        (layout.findViewById<View>(R.id.toast_text) as? TextView)?.text = text
 
         return Toast(context.applicationContext).apply {
             setGravity(Gravity.BOTTOM, 0, dp2px(100f))
@@ -188,13 +187,6 @@ object UiUtil {
     fun revokeUriPermission(context: Context, uri: Uri) {
         context.revokeUriPermission(uri,
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    }
-    
-    @JvmStatic
-    fun hideKeyboard(fragment: Fragment) {
-        if (fragment.activity != null) {
-            hideKeyboard(fragment.activity)
-        }
     }
     
     @JvmStatic

@@ -60,13 +60,13 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
         mTabLayoutId = a.getResourceId(0, View.NO_ID)
         a.recycle()
     }
-
-    override fun layoutDependsOn(parent: CoordinatorLayout?, child: V?, dependency: View?): Boolean {
+    
+    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
         mWithSnackBarImpl.updateSnackbar(parent, dependency, child)
         return dependency is Snackbar.SnackbarLayout
     }
 
-    override fun onDependentViewRemoved(parent: CoordinatorLayout?, child: V?, dependency: View?) {
+    override fun onDependentViewRemoved(parent: CoordinatorLayout, child: V, dependency: View) {
         updateScrollingForSnackbar(dependency, child, true)
         super.onDependentViewRemoved(parent, child, dependency)
     }
@@ -85,15 +85,15 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
         }
     }
 
-    override fun onDependentViewChanged(parent: CoordinatorLayout?, child: V?, dependency: View?): Boolean {
+    override fun onDependentViewChanged(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
         updateScrollingForSnackbar(dependency, child, false)
         return super.onDependentViewChanged(parent, child, dependency)
     }
 
-    override fun onLayoutChild(parent: CoordinatorLayout?, child: V?, layoutDirection: Int): Boolean {
+    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         val layoutChild = super.onLayoutChild(parent, child, layoutDirection)
         if (mTabLayout == null && mTabLayoutId != View.NO_ID) {
-            mTabLayout = findTabLayout(child!!)
+            mTabLayout = findTabLayout(child)
             getTabsHolder()
         }
 
@@ -125,21 +125,19 @@ class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
         return true
     }
 
-    private fun animateOffset(child: V?, offset: Int) {
+    private fun animateOffset(child: V, offset: Int) {
         ensureOrCancelAnimator(child)
         mOffsetValueAnimator!!.translationY(offset.toFloat()).start()
         animateTabsHolder(offset)
     }
 
     private fun animateTabsHolder(offset: Int) {
-        var offset1 = offset
-        if (mTabsHolder != null) {
-            offset1 = if (offset1 > 0) 0 else 1
-            ViewCompat.animate(mTabsHolder).alpha(offset1.toFloat()).setDuration(200).start()
-        }
+        val holder = mTabsHolder ?: return
+        val offset1 = if (offset > 0) 0 else 1
+        ViewCompat.animate(holder).alpha(offset1.toFloat()).setDuration(200).start()
     }
 
-    private fun ensureOrCancelAnimator(child: V?) {
+    private fun ensureOrCancelAnimator(child: V) {
         if (mOffsetValueAnimator == null) {
             mOffsetValueAnimator = ViewCompat.animate(child)
             mOffsetValueAnimator!!.duration = 100

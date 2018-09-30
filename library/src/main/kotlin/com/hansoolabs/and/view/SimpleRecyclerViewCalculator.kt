@@ -10,7 +10,7 @@ class SimpleRecyclerViewCalculator : RecyclerViewCalculator {
 
     override fun calculatePositionFromScrollProgress(recyclerView: RecyclerView,
                                                      progress: Float): Int {
-        val adapter = recyclerView.adapter
+        val adapter = recyclerView.adapter ?: return 0
         return Math.round((adapter.itemCount - 1) * progress)
     }
 

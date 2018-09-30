@@ -11,9 +11,9 @@ import android.view.View
  */
 
 
-fun Activity.isAvailable() = !this.isFinishing
+fun Activity.isLive() = !this.isFinishing
 
-fun Fragment.isAvailable() = isAdded && !(activity?.isFinishing ?: true)
+fun Fragment.isLive() = isAdded && !(activity?.isFinishing ?: true)
 
 fun View.isVisible() = this.visibility == View.VISIBLE
 
@@ -28,5 +28,5 @@ fun View.setVisible(visible: Boolean) {
 fun Context.isOnline(): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val netInfo = cm.activeNetworkInfo
-    return netInfo != null && netInfo.isConnectedOrConnecting
+    return netInfo != null && netInfo.isConnected
 }

@@ -49,7 +49,7 @@ class BaseError(@NonNull val sector: Sector,
     constructor(parcel: Parcel) : this(
             Sector.values()[parcel.readInt()],
             Code.values()[parcel.readInt()],
-            parcel.readString(),
+            parcel.readString() ?: "",
             parcel.readString(),
             parcel.readSerializable() as Throwable)
 
