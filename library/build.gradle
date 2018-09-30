@@ -6,9 +6,6 @@ apply plugin: 'kotlin-kapt'
 
 
 ext {
-
-    supportVer = "28.0.0"
-
     rxjava2 = "2.2.2"
     rxandroid2 = "2.1.0"
     rxbinding2 = "2.2.0"
