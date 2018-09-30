@@ -5,13 +5,13 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.annotation.CallSuper
-import android.support.annotation.LayoutRes
-import android.support.annotation.StringRes
-import android.support.annotation.StyleRes
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
+import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -22,7 +22,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
-import kotlinx.android.synthetic.main.and__alert_dialog.*
 
 /**
  *

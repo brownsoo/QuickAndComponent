@@ -22,7 +22,7 @@
             tools:text="message" />
 
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/message_loading_progressbar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="150dp"

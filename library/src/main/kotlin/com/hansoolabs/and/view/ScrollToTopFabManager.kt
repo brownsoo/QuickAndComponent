@@ -1,7 +1,7 @@
 @file:Suppress("unused", "UNUSED_PARAMETER")
 package com.hansoolabs.and.view
 
-import android.support.design.widget.FloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.view.View
 
 import com.hansoolabs.and.utils.UiUtil

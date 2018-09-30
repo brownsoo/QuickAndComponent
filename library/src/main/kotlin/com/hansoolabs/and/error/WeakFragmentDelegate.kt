@@ -2,9 +2,8 @@ package com.hansoolabs.and.error
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import com.cherrytree.skinnyyoga.util.isAvailable
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import java.lang.ref.WeakReference
 
 /**

@@ -7,10 +7,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.CallSuper
-import android.support.annotation.UiThread
-import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AlertDialog
+import androidx.annotation.CallSuper
+import androidx.annotation.UiThread
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

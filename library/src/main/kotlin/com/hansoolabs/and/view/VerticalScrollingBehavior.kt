@@ -2,9 +2,9 @@ package com.hansoolabs.and.view
 
 import android.content.Context
 import android.os.Build
-import android.support.annotation.IntDef
-import android.support.annotation.RequiresApi
-import android.support.design.widget.CoordinatorLayout
+import androidx.annotation.IntDef
+import androidx.annotation.RequiresApi
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.View
 

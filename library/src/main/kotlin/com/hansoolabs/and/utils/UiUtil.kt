@@ -14,7 +14,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.text.InputFilter
 import android.text.Spanned
 import android.util.Base64
@@ -198,7 +198,7 @@ object UiUtil {
     }
     
     @JvmStatic
-    fun hideKeyboard(fragmentV4: android.support.v4.app.Fragment) {
+    fun hideKeyboard(fragmentV4: androidx.fragment.app.Fragment) {
         fragmentV4.activity?.let {
             hideKeyboard(it)
         }

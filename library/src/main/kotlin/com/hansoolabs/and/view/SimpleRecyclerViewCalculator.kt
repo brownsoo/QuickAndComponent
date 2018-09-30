@@ -1,6 +1,6 @@
 package com.hansoolabs.and.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by brownsoo on 2017. 8. 23..

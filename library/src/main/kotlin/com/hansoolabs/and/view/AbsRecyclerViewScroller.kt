@@ -2,10 +2,10 @@ package com.hansoolabs.and.view
 
 import android.content.Context
 import android.os.Build
-import android.support.annotation.AttrRes
-import android.support.annotation.RequiresApi
-import android.support.annotation.StyleRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.AttrRes
+import androidx.annotation.RequiresApi
+import androidx.annotation.StyleRes
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout

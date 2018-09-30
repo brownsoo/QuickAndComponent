@@ -21,11 +21,11 @@ package com.hansoolabs.and.view
 
 import android.content.Context
 import android.os.Build
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.Snackbar
-import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewPropertyAnimatorCompat
-import android.support.v4.view.animation.LinearOutSlowInInterpolator
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.ViewPropertyAnimatorCompat
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup

@@ -1,7 +1,7 @@
 package com.hansoolabs.and.mvp
 
-import android.support.annotation.StringRes
-import android.support.annotation.UiThread
+import androidx.annotation.StringRes
+import androidx.annotation.UiThread
 import com.hansoolabs.and.Available
 import io.reactivex.Observable
 import io.reactivex.Scheduler

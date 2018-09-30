@@ -1,6 +1,6 @@
 package com.hansoolabs.and.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Get position from scrollProgress or
@@ -10,8 +10,8 @@ import android.support.v7.widget.RecyclerView
 
 interface RecyclerViewCalculator {
     fun calculatePositionFromScrollProgress(
-            recyclerView: RecyclerView,
-            progress: Float): Int
+        recyclerView: RecyclerView,
+        progress: Float): Int
 
     fun calculateScrollProgress(
             recyclerView: RecyclerView): Float

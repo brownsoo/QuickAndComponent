@@ -2,9 +2,9 @@ package com.hansoolabs.and.error
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
 import com.hansoolabs.and.BaseDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.StringUtil

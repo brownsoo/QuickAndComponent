@@ -2,9 +2,8 @@ package com.hansoolabs.and.error
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
-import com.cherrytree.skinnyyoga.util.isAvailable
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
 import java.lang.ref.WeakReference
 
 /**
@@ -28,9 +27,10 @@ class WeakActivityDelegate(activity: AppCompatActivity) : ContextDelegate {
     }
 
     override fun finishActivity() {
-        val activity = ref.get()
-        if (activity?.isAvailable() == true) {
-            activity.finish()
+        ref.get()?.let { activity ->
+            if (!activity.isFinishing) {
+                activity.finish()
+            }
         }
     }
 }

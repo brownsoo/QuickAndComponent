@@ -1,8 +1,8 @@
 package com.hansoolabs.and.widget
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
-import android.support.v4.widget.ContentLoadingProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.ContentLoadingProgressBar
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
