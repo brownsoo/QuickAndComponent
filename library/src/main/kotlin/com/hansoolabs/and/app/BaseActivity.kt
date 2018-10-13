@@ -40,6 +40,9 @@ open class BaseActivity : RxAppCompatActivity(),
         BaseDialogFragment.OnBaseDialogListener,
         AppForegroundObserver.AppForegroundListener {
 
+    /**
+     * Activity is not finishing and foreground
+     */
     override val isAvailable: Boolean
         get() = !isFinishing && viewForeground
 
