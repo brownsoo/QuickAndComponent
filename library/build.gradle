@@ -59,7 +59,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
 
     //google play service
-    implementation "com.google.android.gms:play-services-base:15.0.1"
+    implementation "com.google.android.gms:play-services-base:16.0.1"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
