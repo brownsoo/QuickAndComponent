@@ -31,5 +31,7 @@
     <color name="and__dark_catskill_white">#e9eef4</color>
     <color name="and__black_squeeze">#f2f6fa</color>
     <color name="and__sky_blue">#55bdf9</color>
+    <color name="and__sky_dark_blue">#007ac1</color>
+    <color name="and__sky_light_blue">#67daff</color>
     <color name="and__orange">#f6a623</color>
 </resources>
