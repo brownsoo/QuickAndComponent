@@ -188,6 +188,12 @@ object UiUtil {
         context.revokeUriPermission(uri,
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
+
+    @JvmStatic
+    fun showKeyboard(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
     
     @JvmStatic
     fun hideKeyboard(fragmentV4: androidx.fragment.app.Fragment) {
