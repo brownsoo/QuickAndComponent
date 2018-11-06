@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
 
@@ -294,7 +295,8 @@ open class BaseDialogFragment : DialogFragment() {
         private var negativeButtonText: CharSequence? = null
         private var defaultResultData: Bundle? = null
         private var cancelable = true
-
+        private var targetFragment: Fragment? = null
+        private var requestCode: Int = 0
         private var customViewResId = -1
 
         fun setTitle(@StringRes titleId: Int): Builder<T> {
@@ -362,6 +364,23 @@ open class BaseDialogFragment : DialogFragment() {
             return this
         }
 
+        /**
+         * Optional target for this fragment.  This may be used, for example,
+         * if this fragment is being started by another, and when done wants to
+         * give a result back to the first.  The target set here is retained
+         * across instances via {@link FragmentManager#putFragment
+         * FragmentManager.putFragment()}.
+         *
+         * @param fragment The fragment that is the target of this one.
+         * @param requestCode Optional request code, for convenience if you
+         * are going to call back with {@link Fragment#onActivityResult(int, int, Intent)}.
+         */
+        fun setTargetFragment(fragment: Fragment?, requestCode: Int): Builder<T> {
+            this.targetFragment = fragment
+            this.requestCode = requestCode
+            return this
+        }
+
         protected open fun buildArguments(): Bundle {
             val args = Bundle()
             args.putBoolean(EXTRA_CANCELABLE, cancelable)
@@ -383,27 +402,28 @@ open class BaseDialogFragment : DialogFragment() {
         abstract fun newInstance(): T
 
         open fun build(): T {
-            val fragment = newInstance()
-            fragment.arguments = buildArguments()
-            return fragment
+            val dialog = newInstance()
+            dialog.arguments = buildArguments()
+            if (targetFragment != null) dialog.setTargetFragment(targetFragment, requestCode)
+            return dialog
         }
 
         fun show(fragmentManager: FragmentManager): T =
                 show(fragmentManager, StringUtil.randomAlphaNumeric(20))
 
         fun show(fragmentManager: FragmentManager, tag: String): T {
-            val fragment = build()
-            fragment.show(fragmentManager, tag)
-            return fragment
+            val dialog = build()
+            dialog.show(fragmentManager, tag)
+            return dialog
         }
 
         fun show(transaction: FragmentTransaction): T =
                 show(transaction, StringUtil.randomAlphaNumeric(20))
 
         fun show(transaction: FragmentTransaction, tag: String): T {
-            val fragment = build()
-            fragment.show(transaction, tag)
-            return fragment
+            val dialog = build()
+            dialog.show(transaction, tag)
+            return dialog
         }
     }
 
