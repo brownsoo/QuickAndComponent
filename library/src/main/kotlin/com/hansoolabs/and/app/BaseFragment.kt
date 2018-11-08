@@ -19,8 +19,8 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
-import com.hansoolabs.and.rx.RxFragment
 import com.hansoolabs.and.widget.MessageProgressView
+import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.disposables.CompositeDisposable
 
 /**

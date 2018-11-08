@@ -21,9 +21,9 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
-import com.hansoolabs.and.rx.RxAppCompatActivity
 import com.hansoolabs.and.widget.MessageProgressView
-import com.trello.rxlifecycle2.android.ActivityEvent
+import com.trello.rxlifecycle3.android.ActivityEvent
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -34,11 +34,11 @@ import java.lang.ref.WeakReference
  * Created by brownsoo on 2017. 5. 10..
  */
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 open class BaseActivity : RxAppCompatActivity(),
-        Available,
-        BaseDialogFragment.OnBaseDialogListener,
-        AppForegroundObserver.AppForegroundListener {
+    Available,
+    BaseDialogFragment.OnBaseDialogListener,
+    AppForegroundObserver.AppForegroundListener {
 
     /**
      * Activity is not finishing and foreground
@@ -61,10 +61,10 @@ open class BaseActivity : RxAppCompatActivity(),
 
     //private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
-    private val mainHandler:BaseHandler
+    private val mainHandler: BaseHandler
         get() = BaseHandler(this)
 
-    private class BaseHandler(activity: BaseActivity): Handler() {
+    private class BaseHandler(activity: BaseActivity) : Handler() {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
             val base = ref.get()
@@ -81,7 +81,7 @@ open class BaseActivity : RxAppCompatActivity(),
     protected open fun handleMainHandlerMessage(msg: Message?) {}
 
     protected open fun createCommonExceptionHandler(): BaseExceptionHandler =
-            BaseExceptionHandler(this)
+        BaseExceptionHandler(this)
 
     override fun setContentView(layoutResID: Int) {
         val inflater = LayoutInflater.from(this)
@@ -98,7 +98,7 @@ open class BaseActivity : RxAppCompatActivity(),
         loadingBar?.visibility = View.GONE
         // 3
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-                .apply { visibility = View.GONE }
+            .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
         Log.d("BaseActivity", "setContentView")
@@ -119,7 +119,7 @@ open class BaseActivity : RxAppCompatActivity(),
         loadingBar?.visibility = View.GONE
         // 3
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-                .apply { visibility = View.GONE }
+            .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
 
         super.setContentView(baseFrame)
@@ -131,7 +131,7 @@ open class BaseActivity : RxAppCompatActivity(),
         baseFrame = FrameLayout(this)
         contentMain = view
         errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-                .apply { visibility = View.GONE }
+            .apply { visibility = View.GONE }
         baseFrame!!.addView(contentMain)
         baseFrame!!.addView(errorView)
 
@@ -143,8 +143,8 @@ open class BaseActivity : RxAppCompatActivity(),
      * add a fragment into containerView
      */
     protected fun setContentFragment(@IdRes containerId: Int,
-                                  forceNewInstance: Boolean = false,
-                                  builder: (Bundle?) -> Fragment) {
+                                     forceNewInstance: Boolean = false,
+                                     builder: (Bundle?) -> Fragment) {
         val fragmentManager = supportFragmentManager
         var fragment = fragmentManager.findFragmentByTag(BODY)
         if (forceNewInstance || fragment == null) {
@@ -154,8 +154,8 @@ open class BaseActivity : RxAppCompatActivity(),
             }
             fragment = builder.invoke(intent.extras)
             transaction
-                    .add(containerId, fragment, BODY)
-                    .commit()
+                .add(containerId, fragment, BODY)
+                .commit()
             fragmentManager.executePendingTransactions()
         }
     }
@@ -185,7 +185,7 @@ open class BaseActivity : RxAppCompatActivity(),
         notifyViewForegroundChanged()
         super.onPause()
     }
-    
+
     override fun onDestroy() {
         disposableBag.clear()
         super.onDestroy()
@@ -228,10 +228,10 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     protected open fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T> =
-            observable.compose(bindUntilEvent<T>(ActivityEvent.DESTROY))
+        observable.compose(bindUntilEvent<T>(ActivityEvent.DESTROY))
 
     protected open fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T> =
-            observable.compose(bindUntilEvent<T>(ActivityEvent.PAUSE))
+        observable.compose(bindUntilEvent<T>(ActivityEvent.PAUSE))
 
     @UiThread
     open fun showProgressMsg() {
@@ -252,7 +252,7 @@ open class BaseActivity : RxAppCompatActivity(),
             if (progressMsgView == null) {
                 progressMsgView = MessageProgressView(this)
                 progressMsgView?.apply {
-                    layoutParams = FrameLayout.LayoutParams(-1,-1)
+                    layoutParams = FrameLayout.LayoutParams(-1, -1)
                 }
                 baseFrame?.addView(progressMsgView)
             } else if (progressMsgView?.isShowing == true) {
@@ -298,10 +298,10 @@ open class BaseActivity : RxAppCompatActivity(),
     fun deferredFinish(muteAnimation: Boolean = false) {
         if (finishDisposable == null || finishDisposable!!.isDisposed) {
             finishDisposable = lifecycle()
-                    .filter { it == ActivityEvent.PAUSE }
-                    .take(1)
-                    .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                    .subscribe { safeFinish(muteAnimation) }
+                .filter { it == ActivityEvent.PAUSE }
+                .take(1)
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe { safeFinish(muteAnimation) }
         }
     }
 
@@ -333,11 +333,11 @@ open class BaseActivity : RxAppCompatActivity(),
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
             AlertDialog.Builder(this)
-                    .setTitle("Failed to find proper app")
-                    .setMessage("Please install the app which can handle this command")
-                    .setPositiveButton("Close", null)
-                    .setCancelable(true)
-                    .show()
+                .setTitle("Failed to find proper app")
+                .setMessage("Please install the app which can handle this command")
+                .setPositiveButton("Close", null)
+                .setCancelable(true)
+                .show()
         }
 
     }

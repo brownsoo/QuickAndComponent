@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference
  */
 
 open class MvpPresenter<out T : MvpContract.View>(presentingView: T,
-                                                  protected val exceptionHandler: ExceptionHandler)
+                                                  protected val exceptionHandler: ExceptionHandler?)
     : MvpContract.Presenter, MvpContract.ViewForegroundListener {
 
     private val delayedCallbacks = ArrayList<DelayedCallback<*>>()

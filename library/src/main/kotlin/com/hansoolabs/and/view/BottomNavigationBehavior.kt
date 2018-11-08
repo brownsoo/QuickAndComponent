@@ -29,6 +29,7 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Interpolator
 
 /**
  *

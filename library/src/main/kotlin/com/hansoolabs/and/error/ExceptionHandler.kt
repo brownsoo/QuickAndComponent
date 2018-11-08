@@ -13,7 +13,6 @@ abstract class ExceptionHandler {
 
     private val handlerMap = HashMap<String, (throwable: Throwable, data: Bundle?) -> Boolean>()
     protected val delegate: ContextDelegate
-    protected val TAG_NULL = "null"
 
     abstract val resolving: Boolean
     abstract fun onError(throwable: Throwable, tag: String?, data: Bundle?): Boolean
@@ -35,8 +34,8 @@ abstract class ExceptionHandler {
 
     @JvmOverloads
     open fun addHandler(tag: String? = null,
-                             handler: (throwable: Throwable, data: Bundle?) -> Boolean): ExceptionHandler {
-        handlerMap.put(tag ?: TAG_NULL, handler)
+                        handler: (throwable: Throwable, data: Bundle?) -> Boolean): ExceptionHandler {
+        handlerMap[tag ?: TAG_NULL] = handler
         return this
     }
 
@@ -46,9 +45,13 @@ abstract class ExceptionHandler {
     }
 
     open fun removeHandler(handler: (throwable: Throwable, data: Bundle?) -> Boolean)
-            : ExceptionHandler {
+        : ExceptionHandler {
         handlerMap.values.remove(handler)
         return this
+    }
+
+    companion object {
+        const val TAG_NULL = "null"
     }
 
 }

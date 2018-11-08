@@ -1,4 +1,4 @@
-package com.hansoolabs.and.utils
+package com.hansoolabs.and.rx
 
 import io.reactivex.*
 import org.reactivestreams.Publisher

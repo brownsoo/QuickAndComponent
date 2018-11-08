@@ -1,5 +1,6 @@
 package com.hansoolabs.and.utils
 
+import com.hansoolabs.and.rx.Transformer
 import io.reactivex.*
 import org.reactivestreams.Publisher
 
