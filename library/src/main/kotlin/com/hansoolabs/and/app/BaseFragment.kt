@@ -93,7 +93,9 @@ open class BaseFragment : RxFragment(),
         }
         // 1
         contentMain = createContentView(inflater, baseFrame, savedInstanceState)
-        baseFrame?.addView(contentMain)
+        if (contentMain != null) {
+            baseFrame?.addView(contentMain)
+        }
         // 2
         loadingBar = ContentLoadingProgressBar(context!!).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
