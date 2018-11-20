@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SettingItemView">
+        <attr name="itemTitle" format="string" />
+        <attr name="itemDescription" format="string" />
+        <attr name="itemIcon" format="reference" />
+        <attr name="itemSwitch" format="boolean" />
+        <attr name="itemChecked" format="boolean" />
+        <attr name="itemAccessory" format="string" />
+    </declare-styleable>
+</resources>
