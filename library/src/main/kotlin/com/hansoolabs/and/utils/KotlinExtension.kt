@@ -1,4 +1,4 @@
-package com.cherrytree.skinnyyoga.util
+package com.hansoolabs.and.utils
 
 import android.app.Activity
 import android.content.Context
