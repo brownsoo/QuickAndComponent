@@ -40,6 +40,11 @@ open class BaseActivity : RxAppCompatActivity(),
     BaseDialogFragment.OnBaseDialogListener,
     AppForegroundObserver.AppForegroundListener {
 
+    companion object {
+        const val BODY = "body"
+        const val TAG = "BaseActivity"
+    }
+
     /**
      * Activity is not finishing and foreground
      */
@@ -101,7 +106,7 @@ open class BaseActivity : RxAppCompatActivity(),
             .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
         super.setContentView(baseFrame)
-        Log.d("BaseActivity", "setContentView")
+        Log.d(TAG, "setContentView")
     }
 
     override fun setContentView(view: View) {
@@ -123,7 +128,7 @@ open class BaseActivity : RxAppCompatActivity(),
         baseFrame?.addView(errorView)
 
         super.setContentView(baseFrame)
-        Log.d("BaseActivity", "setContentView")
+        Log.d(TAG, "setContentView")
     }
 
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
@@ -248,15 +253,16 @@ open class BaseActivity : RxAppCompatActivity(),
             runOnUiThread { showProgressMsg(title, message) }
             return
         }
-        if (isAvailable) {
+        if (!isFinishing) {
             if (progressMsgView == null) {
                 progressMsgView = MessageProgressView(this)
                 progressMsgView?.apply {
                     layoutParams = FrameLayout.LayoutParams(-1, -1)
                 }
                 baseFrame?.addView(progressMsgView)
-            } else if (progressMsgView?.isShowing == true) {
+            } else if (progressMsgView!!.isShowing) {
                 progressMsgView?.setMessage(message)
+                baseFrame?.bringChildToFront(progressMsgView!!)
                 return
             }
             progressMsgView?.setMessage(message)
@@ -266,9 +272,8 @@ open class BaseActivity : RxAppCompatActivity(),
 
     @UiThread
     open fun hideProgressMsg() {
-        if (progressMsgView?.isShowing == true) {
-            progressMsgView?.visibility = View.GONE
-        }
+        Log.d(TAG, "hideProgressMsg")
+        progressMsgView?.visibility = View.GONE
     }
 
     @UiThread
@@ -340,9 +345,5 @@ open class BaseActivity : RxAppCompatActivity(),
                 .show()
         }
 
-    }
-
-    companion object {
-        const val BODY = "body"
     }
 }

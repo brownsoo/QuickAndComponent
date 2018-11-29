@@ -2,8 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/and__ebony_clay_60">
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/background"
+        android:background="@color/and__ebony_clay_60"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

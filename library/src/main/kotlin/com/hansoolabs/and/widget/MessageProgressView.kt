@@ -23,16 +23,28 @@ class MessageProgressView
         set(value) {
             progressBar.isIndeterminate = value
         }
-
+    var isBackClickable: Boolean = false
+        set(value) {
+            field = value
+            bg.isClickable = !isBackClickable
+        }
     var isShowing: Boolean = this.visibility == View.VISIBLE
+        private set
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        isShowing = visibility == View.VISIBLE
+    }
 
     private var progressBar: ContentLoadingProgressBar
     private var textView: TextView
+    private var bg: View
 
     init {
         View.inflate(context, R.layout.and__message_progress, this)
         progressBar = findViewById(R.id.message_loading_progressbar)
         textView = findViewById(R.id.message)
+        bg = findViewById(R.id.background)
+        bg.isClickable = true
     }
 
     fun setMessage(msg: String?) {

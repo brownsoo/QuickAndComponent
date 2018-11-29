@@ -79,7 +79,6 @@ open class BaseDialogFragment : DialogFragment() {
     private var negativeBtn: Button? = null
     private var customViewFrame: ScrollView? = null
     private var listener: OnBaseDialogListener? = null
-    @Suppress("MemberVisibilityCanBePrivate")
     protected var customView: View? = null
     private val resultData = Bundle()
     private var resultCode :Int = 0
