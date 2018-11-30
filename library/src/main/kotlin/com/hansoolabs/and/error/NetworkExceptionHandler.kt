@@ -7,7 +7,7 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.appcompat.app.AppCompatActivity
-import com.hansoolabs.and.BaseDialogFragment
+import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.StringUtil
 
@@ -70,7 +70,7 @@ class NetworkExceptionHandler : ExceptionHandler {
             if (context != null && fm != null) {
                 resolving = true
                 val retryHandler = retryHandlerMap[key]
-                val builder = BaseDialogFragment.BasicBuilder(context)
+                val builder = QuickDialogFragment.BasicBuilder(context)
                         .setCancelable(false)
                         .setTitle(R.string.error__no_internet_dialog__title)
                         .setMessage(R.string.error__no_internet_dialog__msg)
@@ -101,8 +101,8 @@ class NetworkExceptionHandler : ExceptionHandler {
                                      resultData: Bundle?): Boolean {
         if (TAG_DIALOG == tag) {
             resolving = false
-            if (resultCode == BaseDialogFragment.RESULT_OK && resultData != null) {
-                if (BaseDialogFragment.isPositiveClick(resultData)) {
+            if (resultCode == QuickDialogFragment.RESULT_OK && resultData != null) {
+                if (QuickDialogFragment.isPositiveClick(resultData)) {
                     val key = resultData.getString(EXTRA_ERROR_TAG) ?: return false
                     retryHandlerMap[key]?.handleRetry(
                         throwable = resultData.getSerializable(EXTRA_ERROR_THROWABLE) as Throwable,

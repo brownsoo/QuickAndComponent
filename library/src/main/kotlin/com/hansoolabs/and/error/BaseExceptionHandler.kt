@@ -3,7 +3,7 @@ package com.hansoolabs.and.error
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import com.hansoolabs.and.BaseDialogFragment
+import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.ClassUtil
 import java.net.ConnectException
@@ -83,7 +83,7 @@ class BaseExceptionHandler : ExceptionHandler {
                 message = context.getString(R.string.error__undefined_message)
             }
             // todo email report handler ??
-            BaseDialogFragment.BasicBuilder(context)
+            QuickDialogFragment.BasicBuilder(context)
                     .setCancelable(true)
                     .setTitle(title)
                     .setMessage(message)

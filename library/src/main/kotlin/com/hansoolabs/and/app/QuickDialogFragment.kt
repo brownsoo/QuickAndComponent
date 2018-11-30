@@ -1,4 +1,4 @@
-package com.hansoolabs.and
+package com.hansoolabs.and.app
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
 
@@ -31,7 +32,7 @@ import com.hansoolabs.and.utils.StringUtil
 
 
 @Suppress("MemberVisibilityCanBePrivate")
-open class BaseDialogFragment : DialogFragment() {
+open class QuickDialogFragment : DialogFragment() {
 
     interface OnBaseDialogListener {
         fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle)
@@ -57,7 +58,10 @@ open class BaseDialogFragment : DialogFragment() {
         const val RESULT_CANCELED = 0
 
         fun isPositiveClick(bundle: Bundle): Boolean =
-                bundle.getInt(EXTRA_WHICH, BUTTON_NEGATIVE) == BUTTON_POSITIVE
+                bundle.getInt(
+                    EXTRA_WHICH,
+                    BUTTON_NEGATIVE
+                ) == BUTTON_POSITIVE
 
         @Suppress("LiftReturnOrAssignment")
         @SuppressLint("ResourceType")
@@ -86,7 +90,10 @@ open class BaseDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = arguments
-        val style = args?.getInt(EXTRA_THEME_RES_ID, R.style.AndTheme_Dialog)
+        val style = args?.getInt(
+            EXTRA_THEME_RES_ID,
+            R.style.AndTheme_Dialog
+        )
         style?.let { setStyle(DialogFragment.STYLE_NO_TITLE, style) }
 
         val defaultResultData = args?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
@@ -210,9 +217,8 @@ open class BaseDialogFragment : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        val tag = tag
         if (listener != null && tag != null) {
-            listener!!.onBaseDialogResult(tag, getResultCode(), getResultData())
+            listener!!.onBaseDialogResult(tag!!, resultCode, resultData)
         }
     }
 
@@ -233,15 +239,21 @@ open class BaseDialogFragment : DialogFragment() {
     }
 
     protected open fun onPositiveButtonClicked(extra: Bundle? = null) {
-        onButtonClicked(BUTTON_POSITIVE, RESULT_OK, extra)
+        onButtonClicked(
+            BUTTON_POSITIVE,
+            RESULT_OK, extra)
     }
 
     protected open fun onNegativeButtonClicked(extra: Bundle? = null) {
-        onButtonClicked(BUTTON_NEGATIVE, RESULT_CANCELED, extra)
+        onButtonClicked(
+            BUTTON_NEGATIVE,
+            RESULT_CANCELED, extra)
     }
 
     protected open fun onAlternativeButtonClicked(extra: Bundle? = null) {
-        onButtonClicked(BUTTON_ALTERNATIVE, RESULT_OK, extra)
+        onButtonClicked(
+            BUTTON_ALTERNATIVE,
+            RESULT_OK, extra)
     }
 
     protected open fun onButtonClicked(which: Int, resultCode: Int, extra: Bundle?) {
@@ -271,20 +283,16 @@ open class BaseDialogFragment : DialogFragment() {
         }
     }
 
-    fun getResultData() = resultData
-
-    fun getResultCode() = resultCode
-
-
     class BasicBuilder(context: Context,
-                       themeResId: Int = 0): BaseDialogFragment.Builder<BaseDialogFragment>(context, themeResId) {
-        override fun newInstance() = BaseDialogFragment()
+                       themeResId: Int = 0): Builder<QuickDialogFragment>(context, themeResId) {
+        override fun newInstance() = QuickDialogFragment()
     }
 
-    abstract class Builder<T: BaseDialogFragment> @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
+    abstract class Builder<T: QuickDialogFragment> @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
 
         @StyleRes
-        private val themeResId: Int = resolveDialogTheme(context, themeResId)
+        private val themeResId: Int =
+            resolveDialogTheme(context, themeResId)
 
         private var title: CharSequence? = null
         private var message: CharSequence? = null

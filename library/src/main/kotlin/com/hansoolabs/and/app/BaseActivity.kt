@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class BaseActivity : RxAppCompatActivity(),
     Available,
-    BaseDialogFragment.OnBaseDialogListener,
+    QuickDialogFragment.OnBaseDialogListener,
     AppForegroundObserver.AppForegroundListener {
 
     companion object {
@@ -62,7 +62,7 @@ open class BaseActivity : RxAppCompatActivity(),
     private var progressMsgView: MessageProgressView? = null
     protected var loadingBar: ContentLoadingProgressBar? = null
 
-    protected val disposableBag by lazy { CompositeDisposable() }
+    protected val compositeBag by lazy { CompositeDisposable() }
 
     //private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
@@ -192,7 +192,7 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     override fun onDestroy() {
-        disposableBag.clear()
+        compositeBag.clear()
         super.onDestroy()
     }
 

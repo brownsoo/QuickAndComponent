@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
-import com.hansoolabs.and.BaseDialogFragment
+import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.StringUtil
 
@@ -55,7 +55,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
                 // todo Change texts by code
                 val title = context.getString(R.string.error__invalid_credential_dialog__title)
                 val message = context.getString(R.string.error__invalid_credential_dialog__msg)
-                BaseDialogFragment.BasicBuilder(context)
+                QuickDialogFragment.BasicBuilder(context)
                         .setCancelable(false)
                         .setTitle(title)
                         .setMessage(message)
@@ -74,7 +74,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
         }
         if (tag == TAG_DIALOG) {
             resolving = false
-            val positive = resultData!=null && BaseDialogFragment.isPositiveClick(resultData)
+            val positive = resultData!=null && QuickDialogFragment.isPositiveClick(resultData)
             if (positive) {
                 notifyLogoutRequired()
                 return true

@@ -32,7 +32,7 @@ import io.reactivex.disposables.CompositeDisposable
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class BaseFragment : RxFragment(),
         Available,
-        BaseDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
+        QuickDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
     protected var appForeground = true
