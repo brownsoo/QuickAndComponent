@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class BaseActivity : RxAppCompatActivity(),
     Available,
-    QuickDialogFragment.OnBaseDialogListener,
+    QuickDialogListener,
     AppForegroundObserver.AppForegroundListener {
 
     companion object {
@@ -291,7 +291,7 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     @CallSuper
-    override fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
+    override fun onQuickDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
         exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
 

@@ -7,6 +7,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
 import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
+import com.hansoolabs.and.app.QuickDialog
 import com.hansoolabs.and.utils.StringUtil
 
 /**
@@ -74,7 +75,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
         }
         if (tag == TAG_DIALOG) {
             resolving = false
-            val positive = resultData!=null && QuickDialogFragment.isPositiveClick(resultData)
+            val positive = resultData!=null && QuickDialog.isPositiveClick(resultData)
             if (positive) {
                 notifyLogoutRequired()
                 return true

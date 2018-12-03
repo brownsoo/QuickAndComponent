@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.appcompat.app.AppCompatActivity
 import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
+import com.hansoolabs.and.app.QuickDialog
 import com.hansoolabs.and.utils.StringUtil
 
 /**
@@ -102,7 +103,7 @@ class NetworkExceptionHandler : ExceptionHandler {
         if (TAG_DIALOG == tag) {
             resolving = false
             if (resultCode == QuickDialogFragment.RESULT_OK && resultData != null) {
-                if (QuickDialogFragment.isPositiveClick(resultData)) {
+                if (QuickDialog.isPositiveClick(resultData)) {
                     val key = resultData.getString(EXTRA_ERROR_TAG) ?: return false
                     retryHandlerMap[key]?.handleRetry(
                         throwable = resultData.getSerializable(EXTRA_ERROR_THROWABLE) as Throwable,

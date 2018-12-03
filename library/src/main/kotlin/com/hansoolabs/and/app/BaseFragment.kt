@@ -32,7 +32,7 @@ import io.reactivex.disposables.CompositeDisposable
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class BaseFragment : RxFragment(),
         Available,
-        QuickDialogFragment.OnBaseDialogListener, AppForegroundObserver.AppForegroundListener {
+    QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
     protected var appForeground = true
@@ -267,7 +267,7 @@ open class BaseFragment : RxFragment(),
         }
     }
 
-    override fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
+    override fun onQuickDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
         exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
 

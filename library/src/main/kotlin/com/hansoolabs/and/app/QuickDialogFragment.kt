@@ -33,48 +33,33 @@ import com.hansoolabs.and.utils.StringUtil
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class QuickDialogFragment : DialogFragment() {
-    
-    interface OnBaseDialogListener {
-        fun onBaseDialogResult(tag: String, resultCode: Int, resultData: Bundle)
-    }
-    
+
     companion object {
-        
-        val EXTRA_CANCELABLE = StringUtil.constant("EXTRA_CANCELABLE")
-        val EXTRA_TITLE = StringUtil.constant("EXTRA_TITLE")
-        val EXTRA_MESSAGE = StringUtil.constant("EXTRA_MESSAGE")
-        val EXTRA_POSITIVE_BUTTON = StringUtil.constant("EXTRA_POSITIVE_BUTTON")
-        val EXTRA_NEGATIVE_BUTTON = StringUtil.constant("EXTRA_NEGATIVE_BUTTON")
-        val EXTRA_NEUTRAL_BUTTON = StringUtil.constant("EXTRA_NEUTRAL_BUTTON")
-        val EXTRA_THEME_RES_ID = StringUtil.constant("EXTRA_THEME_RES_ID")
-        val EXTRA_CUSTOM_VIEW_RES_ID = StringUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
-        val EXTRA_DEFAULT_RESULT_DATA = StringUtil.constant("EXTRA_DEFAULT_RESULT_DATA")
-        
-        const val EXTRA_WHICH = "which"
-        const val BUTTON_POSITIVE = -10
-        const val BUTTON_NEGATIVE = -20
-        const val BUTTON_ALTERNATIVE = -30
-        const val RESULT_OK = -1
-        const val RESULT_CANCELED = 0
-        
-        fun isPositiveClick(bundle: Bundle): Boolean =
-            bundle.getInt(EXTRA_WHICH, 0) == BUTTON_POSITIVE
-        
-        fun isNegativeClick(bundle: Bundle): Boolean =
-            bundle.getInt(EXTRA_WHICH, 0) == BUTTON_NEGATIVE
-        
-        fun isAlternativeClick(bundle: Bundle): Boolean =
-            bundle.getInt(EXTRA_WHICH, 0) == BUTTON_ALTERNATIVE
-        
-        @Suppress("LiftReturnOrAssignment")
+
+        val EXTRA_CANCELABLE = QuickDialog.EXTRA_CANCELABLE
+        val EXTRA_TITLE = QuickDialog.EXTRA_TITLE
+        val EXTRA_MESSAGE = QuickDialog.EXTRA_MESSAGE
+        val EXTRA_POSITIVE_BUTTON = QuickDialog.EXTRA_POSITIVE_BUTTON
+        val EXTRA_NEGATIVE_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
+        val EXTRA_NEUTRAL_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
+        val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
+        val EXTRA_CUSTOM_VIEW_RES_ID = QuickDialog.EXTRA_CUSTOM_VIEW_RES_ID
+        val EXTRA_DEFAULT_RESULT_DATA = QuickDialog.EXTRA_DEFAULT_RESULT_DATA
+        const val EXTRA_WHICH = QuickDialog.EXTRA_WHICH
+        const val BUTTON_POSITIVE = QuickDialog.BUTTON_POSITIVE
+        const val BUTTON_NEGATIVE = QuickDialog.BUTTON_NEGATIVE
+        const val BUTTON_ALTERNATIVE = QuickDialog.BUTTON_ALTERNATIVE
+        const val RESULT_OK = QuickDialog.RESULT_OK
+        const val RESULT_CANCELED = QuickDialog.RESULT_CANCELED
+
         @SuppressLint("ResourceType")
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
-            if (resId >= 0x01000000) {   // start of real resource IDs.
-                return resId
+            return if (resId >= 0x01000000) {   // start of real resource IDs.
+                resId
             } else {
                 val outValue = TypedValue()
                 context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
-                return outValue.resourceId
+                outValue.resourceId
             }
         }
     }
@@ -85,7 +70,7 @@ open class QuickDialogFragment : DialogFragment() {
     private var alternativeBtn: Button? = null
     private var negativeBtn: Button? = null
     private var customViewFrame: ScrollView? = null
-    private var listener: OnBaseDialogListener? = null
+    private var listener: QuickDialogListener? = null
     protected var customView: View? = null
     private val resultData = Bundle()
     private var resultCode: Int = 0
@@ -110,15 +95,15 @@ open class QuickDialogFragment : DialogFragment() {
         setResult(RESULT_CANCELED)
         
         if (tag != null) {
-            if (parentFragment != null && (parentFragment as? OnBaseDialogListener) != null) {
-                listener = parentFragment as OnBaseDialogListener
+            if (parentFragment != null && (parentFragment as? QuickDialogListener) != null) {
+                listener = parentFragment as QuickDialogListener
                 HLog.d("quick", "base-dialog", "onAttach : parentFragment")
-            } else if (targetFragment != null && (targetFragment as? OnBaseDialogListener) != null) {
-                listener = targetFragment as OnBaseDialogListener
+            } else if (targetFragment != null && (targetFragment as? QuickDialogListener) != null) {
+                listener = targetFragment as QuickDialogListener
                 HLog.d("quick", "base-dialog", "onAttach : targetFragment")
             } else {
                 val activity = activity
-                if (activity != null && activity is OnBaseDialogListener) {
+                if (activity != null && activity is QuickDialogListener) {
                     listener = activity
                     HLog.d("quick", "base-dialog", "onAttach : activity")
                 } else {
@@ -219,7 +204,7 @@ open class QuickDialogFragment : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (listener != null && tag != null) {
-            listener!!.onBaseDialogResult(tag!!, resultCode, resultData)
+            listener!!.onQuickDialogResult(tag!!, resultCode, resultData)
         }
     }
     
