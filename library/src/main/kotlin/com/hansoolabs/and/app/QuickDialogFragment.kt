@@ -72,7 +72,7 @@ open class QuickDialogFragment : DialogFragment() {
     private var customViewFrame: ScrollView? = null
     private var listener: QuickDialogListener? = null
     protected var customView: View? = null
-    private val resultData = Bundle()
+    protected val resultData = Bundle()
     private var resultCode: Int = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,6 +200,9 @@ open class QuickDialogFragment : DialogFragment() {
             alternativeBtn!!.setOnClickListener { onAlternativeButtonClicked() }
         }
     }
+
+    fun show(fragmentManager: FragmentManager) =
+        show(fragmentManager, StringUtil.randomAlphaNumeric(20))
     
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)

@@ -71,7 +71,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var customViewFrame: ScrollView? = null
     private var listener: QuickDialogListener? = null
     protected var customView: View? = null
-    private val resultData = Bundle()
+    protected val resultData = Bundle()
     private var resultCode :Int = 0
 
     override fun onAttach(context: Context) {
@@ -175,6 +175,9 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    fun show(fragmentManager: FragmentManager) =
+        show(fragmentManager, StringUtil.randomAlphaNumeric(20))
+
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
         if (listener != null && tag != null) {
@@ -198,15 +201,15 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         super.onCancel(dialog)
     }
 
-    protected fun onPositiveButtonClicked(extra: Bundle? = null) {
+    protected open fun onPositiveButtonClicked(extra: Bundle? = null) {
         onButtonClicked(BUTTON_POSITIVE, RESULT_OK, extra)
     }
 
-    protected fun onNegativeButtonClicked(extra: Bundle? = null) {
+    protected open fun onNegativeButtonClicked(extra: Bundle? = null) {
         onButtonClicked(BUTTON_NEGATIVE, RESULT_CANCELED, extra)
     }
 
-    protected fun onAlternativeButtonClicked(extra: Bundle? = null) {
+    protected open fun onAlternativeButtonClicked(extra: Bundle? = null) {
         onButtonClicked(BUTTON_ALTERNATIVE, RESULT_OK, extra)
     }
 
