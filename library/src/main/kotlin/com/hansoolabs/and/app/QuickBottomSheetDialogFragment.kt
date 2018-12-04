@@ -39,7 +39,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val EXTRA_MESSAGE = QuickDialog.EXTRA_MESSAGE
         val EXTRA_POSITIVE_BUTTON = QuickDialog.EXTRA_POSITIVE_BUTTON
         val EXTRA_NEGATIVE_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
-        val EXTRA_NEUTRAL_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
+        val EXTRA_ALT_BUTTON = QuickDialog.EXTRA_ALT_BUTTON
         val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
         val EXTRA_CUSTOM_VIEW_RES_ID = QuickDialog.EXTRA_CUSTOM_VIEW_RES_ID
         val EXTRA_DEFAULT_RESULT_DATA = QuickDialog.EXTRA_DEFAULT_RESULT_DATA
@@ -125,7 +125,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val customLayoutResId = args.getInt(EXTRA_CUSTOM_VIEW_RES_ID, -1)
         val positive = args.getCharSequence(EXTRA_POSITIVE_BUTTON)
         val negative = args.getCharSequence(EXTRA_NEGATIVE_BUTTON)
-        val neutral = args.getCharSequence(EXTRA_NEUTRAL_BUTTON)
+        val neutral = args.getCharSequence(EXTRA_ALT_BUTTON)
 
         if (TextUtils.isEmpty(title)) {
             titleView!!.visibility = View.GONE
@@ -352,7 +352,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
             args.putCharSequence(EXTRA_MESSAGE, message)
             args.putCharSequence(EXTRA_POSITIVE_BUTTON, positiveButtonText)
             args.putCharSequence(EXTRA_NEGATIVE_BUTTON, negativeButtonText)
-            args.putCharSequence(EXTRA_NEUTRAL_BUTTON, neutralButtonText)
+            args.putCharSequence(EXTRA_ALT_BUTTON, neutralButtonText)
             if (defaultResultData != null) {
                 args.putBundle(EXTRA_DEFAULT_RESULT_DATA, defaultResultData)
             }

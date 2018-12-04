@@ -10,7 +10,7 @@ class QuickDialog {
         val EXTRA_MESSAGE = StringUtil.constant("EXTRA_MESSAGE")
         val EXTRA_POSITIVE_BUTTON = StringUtil.constant("EXTRA_POSITIVE_BUTTON")
         val EXTRA_NEGATIVE_BUTTON = StringUtil.constant("EXTRA_NEGATIVE_BUTTON")
-        val EXTRA_NEUTRAL_BUTTON = StringUtil.constant("EXTRA_NEUTRAL_BUTTON")
+        val EXTRA_ALT_BUTTON = StringUtil.constant("EXTRA_ALT_BUTTON")
         val EXTRA_THEME_RES_ID = StringUtil.constant("EXTRA_THEME_RES_ID")
         val EXTRA_CUSTOM_VIEW_RES_ID = StringUtil.constant("EXTRA_CUSTOM_VIEW_RES_ID")
         val EXTRA_DEFAULT_RESULT_DATA = StringUtil.constant("EXTRA_DEFAULT_RESULT_DATA")

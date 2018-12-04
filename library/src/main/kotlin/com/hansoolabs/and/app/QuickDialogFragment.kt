@@ -41,7 +41,7 @@ open class QuickDialogFragment : DialogFragment() {
         val EXTRA_MESSAGE = QuickDialog.EXTRA_MESSAGE
         val EXTRA_POSITIVE_BUTTON = QuickDialog.EXTRA_POSITIVE_BUTTON
         val EXTRA_NEGATIVE_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
-        val EXTRA_NEUTRAL_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
+        val EXTRA_ALT_BUTTON = QuickDialog.EXTRA_ALT_BUTTON
         val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
         val EXTRA_CUSTOM_VIEW_RES_ID = QuickDialog.EXTRA_CUSTOM_VIEW_RES_ID
         val EXTRA_DEFAULT_RESULT_DATA = QuickDialog.EXTRA_DEFAULT_RESULT_DATA
@@ -151,7 +151,7 @@ open class QuickDialogFragment : DialogFragment() {
         val customLayoutResId = args.getInt(EXTRA_CUSTOM_VIEW_RES_ID, -1)
         val positive = args.getCharSequence(EXTRA_POSITIVE_BUTTON)
         val negative = args.getCharSequence(EXTRA_NEGATIVE_BUTTON)
-        val neutral = args.getCharSequence(EXTRA_NEUTRAL_BUTTON)
+        val alt = args.getCharSequence(EXTRA_ALT_BUTTON)
         
         if (TextUtils.isEmpty(title)) {
             titleView!!.visibility = View.GONE
@@ -191,11 +191,11 @@ open class QuickDialogFragment : DialogFragment() {
             negativeBtn!!.setOnClickListener { onNegativeButtonClicked() }
         }
         
-        if (TextUtils.isEmpty(neutral)) {
+        if (TextUtils.isEmpty(alt)) {
             alternativeBtn!!.visibility = View.GONE
             alternativeBtn!!.setOnClickListener(null)
         } else {
-            alternativeBtn!!.text = neutral
+            alternativeBtn!!.text = alt
             alternativeBtn!!.visibility = View.VISIBLE
             alternativeBtn!!.setOnClickListener { onAlternativeButtonClicked() }
         }
@@ -388,7 +388,7 @@ open class QuickDialogFragment : DialogFragment() {
             args.putCharSequence(EXTRA_MESSAGE, message)
             args.putCharSequence(EXTRA_POSITIVE_BUTTON, positiveButtonText)
             args.putCharSequence(EXTRA_NEGATIVE_BUTTON, negativeButtonText)
-            args.putCharSequence(EXTRA_NEUTRAL_BUTTON, neutralButtonText)
+            args.putCharSequence(EXTRA_ALT_BUTTON, neutralButtonText)
             if (defaultResultData != null) {
                 args.putBundle(EXTRA_DEFAULT_RESULT_DATA, defaultResultData)
             }
