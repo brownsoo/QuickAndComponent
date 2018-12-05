@@ -29,29 +29,25 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
-
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.android.billingclient:billing:1.1'
     implementation 'com.google.android.material:material:1.0.0'
-
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-
     // RxJava related
-    implementation "io.reactivex.rxjava2:rxjava:2.2.3"
-    implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     // Platform bindings:
     implementation 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha1'
     // AndroidX library bindings:
@@ -65,11 +61,9 @@ dependencies {
     implementation 'com.jakewharton.rxbinding3:rxbinding-viewpager:3.0.0-alpha1'
     // Google 'material' library bindings:
     implementation 'com.jakewharton.rxbinding3:rxbinding-material:3.0.0-alpha1'
-
     implementation 'com.trello.rxlifecycle3:rxlifecycle:3.0.0'
     // If you want to bind to Android-specific lifecycles
     implementation 'com.trello.rxlifecycle3:rxlifecycle-android:3.0.0'
     // If you want pre-written Activities and Fragments you can subclass as providers
     implementation 'com.trello.rxlifecycle3:rxlifecycle-components:3.0.0'
-
 }

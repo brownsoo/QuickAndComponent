@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.appcompat.app.AlertDialog
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,59 +90,33 @@ open class BaseActivity : RxAppCompatActivity(),
         BaseExceptionHandler(this)
 
     override fun setContentView(layoutResID: Int) {
-        val inflater = LayoutInflater.from(this)
-        // 0
         baseFrame = FrameLayout(this)
-        // 1
-        contentMain = inflater.inflate(layoutResID, baseFrame, false)
-        baseFrame?.addView(contentMain)
-        // 2
-        loadingBar = ContentLoadingProgressBar(this).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
-        }
-        baseFrame?.addView(loadingBar)
-        loadingBar?.visibility = View.GONE
-        // 3
-        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-            .apply { visibility = View.GONE }
-        baseFrame?.addView(errorView)
-        super.setContentView(baseFrame)
-        Log.d(TAG, "setContentView")
+        setContentView(LayoutInflater.from(this).inflate(layoutResID, baseFrame, false))
     }
-
     override fun setContentView(view: View) {
-        val inflater = LayoutInflater.from(this)
-        // 0
-        baseFrame = FrameLayout(this)
+        setContentView(view, null)
+    }
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        Log.d(TAG, "setContentView $view params=$params")
         // 1
         contentMain = view
         baseFrame?.addView(contentMain)
         // 2
         loadingBar = ContentLoadingProgressBar(this).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+                .also { it.gravity = Gravity.TOP }
         }
         baseFrame?.addView(loadingBar)
         loadingBar?.visibility = View.GONE
         // 3
-        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
+        errorView = LayoutInflater.from(this).inflate(R.layout.and__error_content, baseFrame, false)
             .apply { visibility = View.GONE }
         baseFrame?.addView(errorView)
-
-        super.setContentView(baseFrame)
-        Log.d(TAG, "setContentView")
-    }
-
-    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        val inflater = LayoutInflater.from(this)
-        baseFrame = FrameLayout(this)
-        contentMain = view
-        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-            .apply { visibility = View.GONE }
-        baseFrame!!.addView(contentMain)
-        baseFrame!!.addView(errorView)
-
-        super.setContentView(baseFrame, params)
-        Log.d("BaseActivity", "setContentView")
+        if (params == null) {
+            super.setContentView(baseFrame)
+        } else {
+            super.setContentView(baseFrame, params)
+        }
     }
 
     /**
