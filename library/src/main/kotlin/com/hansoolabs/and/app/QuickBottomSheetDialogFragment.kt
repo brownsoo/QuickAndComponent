@@ -97,7 +97,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 }
             }
         }
-        isCancelable = arguments?.getBoolean(EXTRA_CANCELABLE, false) ?: true
+        isCancelable = arguments?.getBoolean(EXTRA_CANCELABLE, true) ?: true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
