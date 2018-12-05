@@ -98,6 +98,9 @@ open class BaseActivity : RxAppCompatActivity(),
     }
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         Log.d(TAG, "setContentView $view params=$params")
+        if (baseFrame == null) {
+            baseFrame = FrameLayout(this)
+        }
         // 1
         contentMain = view
         baseFrame?.addView(contentMain)
