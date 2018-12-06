@@ -32,7 +32,7 @@ import io.reactivex.disposables.CompositeDisposable
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class BaseFragment : RxFragment(),
         Available,
-    QuickDialogListener, AppForegroundObserver.AppForegroundListener {
+        QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
     protected var appForeground = true
@@ -86,24 +86,31 @@ open class BaseFragment : RxFragment(),
         // 프레임 구조를 크게 4단 레이어로 구성
         // baseFrame -> baseFrame -> loadingBar -> errorView
         // 0
-        baseFrame = FrameLayout(context!!).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT)
+        if (baseFrame == null) {
+            baseFrame = FrameLayout(context!!).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT)
+            }
         }
+        baseFrame?.removeAllViews()
         // 1
         contentMain = createContentView(inflater, baseFrame, savedInstanceState)
         if (contentMain != null) {
             baseFrame?.addView(contentMain)
         }
         // 2
-        loadingBar = ContentLoadingProgressBar(context!!).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+        if (loadingBar == null) {
+            loadingBar = ContentLoadingProgressBar(context!!).apply {
+                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+            }
         }
         baseFrame?.addView(loadingBar)
         loadingBar?.visibility = View.GONE
         // 3
-        errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
+        if (errorView == null) {
+            errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
+        }
         errorView?.let { baseFrame?.addView(it) }
         return baseFrame
     }
@@ -199,7 +206,7 @@ open class BaseFragment : RxFragment(),
             if (progressMsgView == null) {
                 progressMsgView = MessageProgressView(context!!)
                 progressMsgView?.apply {
-                    layoutParams = FrameLayout.LayoutParams(-1,-1)
+                    layoutParams = FrameLayout.LayoutParams(-1, -1)
                 }
                 baseFrame?.addView(progressMsgView)
             }
@@ -235,7 +242,6 @@ open class BaseFragment : RxFragment(),
             imm.hideSoftInputFromWindow(target.windowToken, 0)
         }
     }
-
 
 
     /**

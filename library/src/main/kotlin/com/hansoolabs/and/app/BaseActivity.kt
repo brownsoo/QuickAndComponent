@@ -42,7 +42,7 @@ open class BaseActivity : RxAppCompatActivity(),
     AppForegroundObserver.AppForegroundListener {
 
     companion object {
-        const val BODY = "body"
+        const val CONTENT_FRAGMENT_TAG = "content-fragment+"
         const val TAG = "BaseActivity"
     }
 
@@ -132,7 +132,7 @@ open class BaseActivity : RxAppCompatActivity(),
                                      forceNewInstance: Boolean = false,
                                      builder: (Bundle?) -> Fragment) {
         val fragmentManager = supportFragmentManager
-        var fragment = fragmentManager.findFragmentByTag(BODY)
+        var fragment = fragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
         if (forceNewInstance || fragment == null) {
             val transaction = fragmentManager.beginTransaction()
             if (fragment != null) {
@@ -140,7 +140,7 @@ open class BaseActivity : RxAppCompatActivity(),
             }
             fragment = builder.invoke(intent.extras)
             transaction
-                .add(containerId, fragment, BODY)
+                .add(containerId, fragment, CONTENT_FRAGMENT_TAG)
                 .commit()
             fragmentManager.executePendingTransactions()
         }

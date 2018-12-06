@@ -28,7 +28,7 @@ import com.hansoolabs.and.utils.StringUtil
 
 /**
  * {@link BottomSheetDialogFragment} 를 상속받고,
- * {@link QuickDialogFragment.QuickDialogListener} 를 같이 사용한다.
+ * {@link QuickDialogListener} 를 같이 사용한다.
  */
 open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
