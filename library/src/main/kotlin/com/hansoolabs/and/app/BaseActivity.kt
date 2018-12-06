@@ -90,7 +90,7 @@ open class BaseActivity : RxAppCompatActivity(),
         BaseExceptionHandler(this)
 
     override fun setContentView(layoutResID: Int) {
-        baseFrame = FrameLayout(this)
+        if (baseFrame == null) baseFrame = FrameLayout(this)
         setContentView(LayoutInflater.from(this).inflate(layoutResID, baseFrame, false))
     }
     override fun setContentView(view: View) {
@@ -98,22 +98,25 @@ open class BaseActivity : RxAppCompatActivity(),
     }
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         Log.d(TAG, "setContentView $view params=$params")
-        if (baseFrame == null) {
-            baseFrame = FrameLayout(this)
-        }
+        if (baseFrame == null) baseFrame = FrameLayout(this)
+        baseFrame?.removeAllViews()
         // 1
         contentMain = view
         baseFrame?.addView(contentMain)
         // 2
-        loadingBar = ContentLoadingProgressBar(this).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
-                .also { it.gravity = Gravity.TOP }
+        if (loadingBar == null) {
+            loadingBar = ContentLoadingProgressBar(this).apply {
+                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+                    .also { it.gravity = Gravity.TOP }
+            }
         }
         baseFrame?.addView(loadingBar)
         loadingBar?.visibility = View.GONE
         // 3
-        errorView = LayoutInflater.from(this).inflate(R.layout.and__error_content, baseFrame, false)
-            .apply { visibility = View.GONE }
+        if (errorView == null) {
+            errorView = LayoutInflater.from(this).inflate(R.layout.and__error_content, baseFrame, false)
+                .apply { visibility = View.GONE }
+        }
         baseFrame?.addView(errorView)
         if (params == null) {
             super.setContentView(baseFrame)
