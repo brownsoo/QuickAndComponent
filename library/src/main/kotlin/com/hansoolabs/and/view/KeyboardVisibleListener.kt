@@ -29,7 +29,7 @@ class KeyboardVisibleListener {
     }
     
     private var root: View? = null
-    var keyboardVisible: Boolean = false
+    var isKeyboardVisible: Boolean = false
         private set
     var listener: OnKeyboardVisibleListener? = null
     private val layoutListener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -37,7 +37,7 @@ class KeyboardVisibleListener {
         root?.getWindowVisibleDisplayFrame(r)
         val screenHeight = root?.rootView?.height ?: return@OnGlobalLayoutListener
         // r.bottom is the position above soft keypad or device button.
-        // if keypad is keyboardVisible, the r.bottom is smaller than that before.
+        // if keypad is isKeyboardVisible, the r.bottom is smaller than that before.
         val keyboardHeight = screenHeight - r.bottom
         var showing = false
         if (keyboardHeight > screenHeight * 0.15) {
@@ -45,9 +45,9 @@ class KeyboardVisibleListener {
         } else if (keyboardHeight <= screenHeight * 0.15) {
             showing = false
         }
-        if (keyboardVisible != showing) {
-            keyboardVisible = showing
-            listener?.onKeyboardVisible(keyboardVisible)
+        if (isKeyboardVisible != showing) {
+            isKeyboardVisible = showing
+            listener?.onKeyboardVisible(isKeyboardVisible)
         }
     }
     
