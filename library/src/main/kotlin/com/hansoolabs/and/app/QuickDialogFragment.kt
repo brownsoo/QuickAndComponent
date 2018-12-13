@@ -74,7 +74,10 @@ open class QuickDialogFragment : DialogFragment() {
     protected var customView: View? = null
     protected val resultData = Bundle()
     private var resultCode: Int = 0
-    
+    private var positiveRunnable: Runnable? = null
+    private var altRunnable: Runnable? = null
+    private var negativeRunnable: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = arguments
@@ -253,8 +256,13 @@ open class QuickDialogFragment : DialogFragment() {
         data.putInt(EXTRA_WHICH, which)
         setResult(resultCode, data)
         dismiss()
+        when (which) {
+            BUTTON_POSITIVE -> positiveRunnable?.run()
+            BUTTON_ALTERNATIVE -> altRunnable?.run()
+            BUTTON_NEGATIVE -> negativeRunnable?.run()
+        }
     }
-    
+
     fun setResult(resultCode: Int) {
         setResult(resultCode, null)
     }
@@ -285,15 +293,17 @@ open class QuickDialogFragment : DialogFragment() {
         
         private var title: CharSequence? = null
         private var message: CharSequence? = null
-        
         private var positiveButtonText: CharSequence? = null
-        private var neutralButtonText: CharSequence? = null
+        private var altButtonText: CharSequence? = null
         private var negativeButtonText: CharSequence? = null
         private var defaultResultData: Bundle? = null
         private var cancelable = true
         private var targetFragment: Fragment? = null
         private var requestCode: Int = 0
         private var customViewResId = -1
+        private var positiveRunnable: Runnable? = null
+        private var altRunnable: Runnable? = null
+        private var negativeRunnable: Runnable? = null
         
         fun setTitle(@StringRes titleId: Int): Builder<T> {
             this.title = context.getText(titleId)
@@ -315,33 +325,39 @@ open class QuickDialogFragment : DialogFragment() {
             return this
         }
         
-        fun setPositiveButton(@StringRes textId: Int): Builder<T> {
+        fun setPositiveButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
             this.positiveButtonText = context.getText(textId)
+            this.positiveRunnable = runnable
             return this
         }
         
-        fun setPositiveButton(text: CharSequence): Builder<T> {
+        fun setPositiveButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
             this.positiveButtonText = text
+            this.positiveRunnable = runnable
             return this
         }
         
-        fun setNegativeButton(@StringRes textId: Int): Builder<T> {
+        fun setNegativeButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
             this.negativeButtonText = context.getText(textId)
+            this.negativeRunnable = runnable
             return this
         }
         
-        fun setNegativeButton(text: CharSequence): Builder<T> {
+        fun setNegativeButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
             this.negativeButtonText = text
+            this.negativeRunnable = runnable
             return this
         }
         
-        fun setAlternativeButton(@StringRes textId: Int): Builder<T> {
-            this.neutralButtonText = context.getText(textId)
+        fun setAltButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
+            this.altButtonText = context.getText(textId)
+            this.altRunnable = runnable
             return this
         }
         
-        fun setAlternativeButton(text: CharSequence): Builder<T> {
-            this.neutralButtonText = text
+        fun setAltButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
+            this.altButtonText = text
+            this.altRunnable = runnable
             return this
         }
         
@@ -388,7 +404,7 @@ open class QuickDialogFragment : DialogFragment() {
             args.putCharSequence(EXTRA_MESSAGE, message)
             args.putCharSequence(EXTRA_POSITIVE_BUTTON, positiveButtonText)
             args.putCharSequence(EXTRA_NEGATIVE_BUTTON, negativeButtonText)
-            args.putCharSequence(EXTRA_ALT_BUTTON, neutralButtonText)
+            args.putCharSequence(EXTRA_ALT_BUTTON, altButtonText)
             if (defaultResultData != null) {
                 args.putBundle(EXTRA_DEFAULT_RESULT_DATA, defaultResultData)
             }
@@ -401,6 +417,9 @@ open class QuickDialogFragment : DialogFragment() {
             val dialog = newInstance()
             dialog.arguments = buildArguments()
             if (targetFragment != null) dialog.setTargetFragment(targetFragment, requestCode)
+            dialog.altRunnable = this.altRunnable
+            dialog.positiveRunnable = this.positiveRunnable
+            dialog.negativeRunnable = this.negativeRunnable
             return dialog
         }
         
@@ -422,5 +441,4 @@ open class QuickDialogFragment : DialogFragment() {
             return dialog
         }
     }
-    
 }
