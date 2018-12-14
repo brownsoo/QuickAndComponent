@@ -146,6 +146,12 @@ open class BaseActivity : RxAppCompatActivity(),
         }
     }
 
+    override fun <T : View?> findViewById(id: Int): T {
+        if (contentMain != null) {
+            return contentMain!!.findViewById<T>(id)
+        }
+        return super.findViewById<T>(id)
+    }
 
     override fun onStart() {
         super.onStart()
