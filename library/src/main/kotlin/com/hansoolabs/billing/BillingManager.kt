@@ -20,7 +20,7 @@ class BillingManager(
     var connectedListener: ServiceConnectedListener? = null): PurchasesUpdatedListener {
     
     companion object {
-        private const val TAG = "Hansoo"
+        private const val TAG = "BillingManager"
         const val BILLING_MANAGER_NOT_INITIALIZED = -1
         /* BASE_64_ENCODED_PUBLIC_KEY should be YOUR APPLICATION'S PUBLIC KEY
          * (that you got from the Google Play developer console). This is not your
