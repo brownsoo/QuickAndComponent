@@ -30,11 +30,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import java.lang.ref.WeakReference
 
-/**
- *
- * Created by brownsoo on 2017. 5. 10..
- */
-
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class BaseActivity : RxAppCompatActivity(),
     Available,
@@ -65,11 +60,8 @@ open class BaseActivity : RxAppCompatActivity(),
 
     protected val compositeBag by lazy { CompositeDisposable() }
 
-    //private var progressDialog: ProgressDialog? = null
     private var finishDisposable: Disposable? = null
-    private val mainHandler: BaseHandler
-        get() = BaseHandler(this)
-
+    private var mainHandler: BaseHandler = BaseHandler(this)
     private class BaseHandler(activity: BaseActivity) : Handler() {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
@@ -82,7 +74,7 @@ open class BaseActivity : RxAppCompatActivity(),
         createCommonExceptionHandler()
     }
 
-    protected fun getMainHandler(): Handler = mainHandler
+    protected fun getMainHandler(): Handler? = if (isFinishing) null else mainHandler
 
     protected open fun handleMainHandlerMessage(msg: Message?) {}
 
