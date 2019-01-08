@@ -141,12 +141,6 @@
 -keep class rx.** { *; }
 -dontwarn rx.internal.*
 
-# Retrofit
--dontwarn retrofit2.cardListAdapter.rxjava.CompletableHelper$**
-
-# Retrolambda
--dontwarn java.lang.invoke.*
-
 # Autovalue gson extension
 -keep class **.AutoParcelGson_*
 -keepnames @auto.parcelgson.AutoParcelGson class *
@@ -160,14 +154,7 @@
     static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
 }
 
-# Crashlytics
--keepattributes *Annotation*
--keepattributes SourceFile,LineNumberTable
--keep public class * extends java.lang.Exception
--keep class com.crashlytics.** { *; }
--dontwarn com.crashlytics.**
-
 # Base lib
--keep class com.hansoolabs.and.** {
+-keep class com.hansoolabs.** {
     public protected *;
 }
