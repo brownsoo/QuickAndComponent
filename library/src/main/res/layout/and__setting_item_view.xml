@@ -41,7 +41,6 @@
                     android:fontFamily="@string/font_family_black"
                     android:textColor="@color/and__bunker"
                     android:textSize="14sp"
-                    android:maxLines="1"
                     android:ellipsize="end"
                     tools:text="title"/>
 

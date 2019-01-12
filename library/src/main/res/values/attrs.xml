@@ -7,5 +7,6 @@
         <attr name="itemSwitch" format="boolean" />
         <attr name="itemChecked" format="boolean" />
         <attr name="itemAccessory" format="string" />
+        <attr name="titleColor" format="color"/>
     </declare-styleable>
 </resources>

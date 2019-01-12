@@ -1,6 +1,7 @@
 package com.hansoolabs.and.widget
 
 import android.content.Context
+import android.graphics.Color
 import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.util.Log
@@ -64,6 +65,12 @@ class SettingItemView
             switch.isChecked = value
         }
 
+    var titleColor: Int = Color.parseColor("#0d131b")
+        set(value) {
+            field = value
+            titleTv.setTextColor(value)
+        }
+
     init {
 
         View.inflate(context, R.layout.and__setting_item_view, this)
@@ -81,6 +88,9 @@ class SettingItemView
         accessory = a.getString(R.styleable.SettingItemView_itemAccessory)
         switchVisible = a.getBoolean(R.styleable.SettingItemView_itemSwitch, false)
         isChecked = a.getBoolean(R.styleable.SettingItemView_itemChecked, false)
+        a.getColor(R.styleable.SettingItemView_titleColor, -1).let {
+            if (it > 0) titleColor = it
+        }
         a.recycle()
     }
 
