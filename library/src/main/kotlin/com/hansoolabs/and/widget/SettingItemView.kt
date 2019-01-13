@@ -70,6 +70,11 @@ class SettingItemView
             field = value
             titleTv.setTextColor(value)
         }
+    var descriptionColor: Int = Color.parseColor("#0d131b")
+        set(value) {
+            field = value
+            descTv.setTextColor(value)
+        }
 
     init {
 
@@ -90,6 +95,9 @@ class SettingItemView
         isChecked = a.getBoolean(R.styleable.SettingItemView_itemChecked, false)
         a.getColor(R.styleable.SettingItemView_titleColor, -1).let {
             if (it > 0) titleColor = it
+        }
+        a.getColor(R.styleable.SettingItemView_descriptionColor, -1).let {
+            if (it > 0) descriptionColor = it
         }
         a.recycle()
     }

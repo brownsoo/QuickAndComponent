@@ -61,7 +61,7 @@ open class BaseActivity : RxAppCompatActivity(),
     protected val compositeBag by lazy { CompositeDisposable() }
 
     private var finishDisposable: Disposable? = null
-    private var mainHandler: BaseHandler = BaseHandler(this)
+    private val mainHandler by lazy {  BaseHandler(this) }
     private class BaseHandler(activity: BaseActivity) : Handler() {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
