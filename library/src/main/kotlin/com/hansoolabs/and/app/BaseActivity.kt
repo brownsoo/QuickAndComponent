@@ -132,7 +132,7 @@ open class BaseActivity : RxAppCompatActivity(),
             }
             fragment = builder.invoke(intent.extras)
             transaction
-                .add(containerId, fragment, CONTENT_FRAGMENT_TAG)
+                .replace(containerId, fragment, CONTENT_FRAGMENT_TAG)
                 .commit()
             fragmentManager.executePendingTransactions()
         }
