@@ -84,11 +84,11 @@ class NetworkExceptionHandler : ExceptionHandler {
                     builder.setDefaultResultData(bundle)
                 }
                 if (retryHandler != null) {
-                    builder.setPositiveButton(R.string.retry)
-                            .setNegativeButton(R.string.close)
+                    builder.setPositiveButton(R.string.and__retry)
+                            .setNegativeButton(R.string.and__close)
                             .show(fm, TAG_DIALOG)
                 } else {
-                    builder.setPositiveButton(R.string.close)
+                    builder.setPositiveButton(R.string.and__close)
                             .show(fm)
                 }
                 return true

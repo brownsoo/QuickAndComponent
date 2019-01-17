@@ -60,7 +60,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
                         .setCancelable(false)
                         .setTitle(title)
                         .setMessage(message)
-                        .setPositiveButton(R.string.confirm)
+                        .setPositiveButton(R.string.and__confirm)
                         .setDefaultResultData(default)
                         .show(fragmentManager, TAG_DIALOG)
                 return true

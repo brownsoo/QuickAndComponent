@@ -87,7 +87,7 @@ class BaseExceptionHandler : ExceptionHandler {
                     .setCancelable(true)
                     .setTitle(title)
                     .setMessage(message)
-                    .setPositiveButton(R.string.close)
+                    .setPositiveButton(R.string.and__close)
                     .setDefaultResultData(bundle)
                     .show(fm)
             return true
