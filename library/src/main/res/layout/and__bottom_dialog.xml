@@ -58,9 +58,9 @@
         android:paddingRight="6dp"
         android:paddingBottom="8dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_negative"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fontFamily="@string/font_family_regular"
@@ -73,9 +73,9 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="ne" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_alternative"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fontFamily="@string/font_family_regular"
@@ -87,9 +87,9 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="nu" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_positive"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fontFamily="@string/font_family_regular"

@@ -1,7 +1,7 @@
 <resources>
 
-    <style name="AndTheme" parent="Theme.AppCompat"/>
-    <style name="AndTheme.Dialog" parent="ThemeOverlay.AppCompat.Dialog"/>
-    <style name="AndTheme.Dialog.Alert" parent="ThemeOverlay.AppCompat.Dialog.Alert"/>
+    <style name="AndTheme" parent="Theme.MaterialComponents.Light"/>
+    <style name="AndTheme.Dialog" parent="Theme.MaterialComponents.Light.Dialog"/>
+    <style name="AndTheme.Dialog.Alert" parent="Theme.MaterialComponents.Light.Dialog.Alert"/>
 
 </resources>
