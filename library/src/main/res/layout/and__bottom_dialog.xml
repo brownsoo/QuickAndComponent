@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="18dp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="18dp" android:orientation="vertical">
 
     <TextView
         android:id="@+id/alert_dialog_title"
@@ -19,7 +18,7 @@
         android:paddingBottom="6dp"
         android:textColor="@color/and__ebony_clay"
         android:textSize="18sp"
-        tools:text="Discard Changes" />
+        tools:text="Discard Changes"/>
 
     <TextView
         android:id="@+id/alert_dialog_message"
@@ -34,7 +33,7 @@
         android:paddingBottom="8dp"
         android:textColor="@color/and__light_ebony_clay"
         android:textSize="16sp"
-        tools:text="All changes will be ignored. Cancel anyways?" />
+        tools:text="All changes will be ignored. Cancel anyways?"/>
 
     <ScrollView
         android:id="@+id/custom_view_frame"
@@ -47,58 +46,49 @@
         android:scrollbarStyle="insideOverlay"
         android:scrollbarThumbVertical="@drawable/and__scrollbar"
         android:scrollbars="vertical"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/button_container"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
+        android:background="@color/and__white_gray"
         android:paddingLeft="6dp"
         android:paddingTop="8dp"
         android:paddingRight="6dp"
-        android:paddingBottom="8dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_negative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fontFamily="@string/font_family_regular"
-            android:gravity="center"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_alternative"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="ne" />
+        android:paddingBottom="8dp"
+        android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_alternative"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_positive"
-            app:layout_constraintStart_toEndOf="@id/btn_negative"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="nu" />
+            tools:text="nu"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_positive"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_alternative"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="p" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            tools:text="p"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_negative"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@string/font_family_regular"
+            android:textColor="@color/and__light_ebony_clay"
+            android:gravity="center"
+            android:textSize="14sp"
+            tools:text="ne"/>
+
+    </LinearLayout>
 </LinearLayout>
