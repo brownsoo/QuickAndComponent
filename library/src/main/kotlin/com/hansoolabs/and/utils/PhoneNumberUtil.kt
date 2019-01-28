@@ -1,5 +1,6 @@
 package com.hansoolabs.and.utils
 
+import android.os.Build
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
@@ -66,7 +67,12 @@ fun formatPhoneNumber(number: String, locale: Locale = Locale.getDefault()): Str
                 .also { formatPhoneNumberForKorea(it) }
                 .toString()
     }
-    return PhoneNumberUtils.formatNumber(number)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        PhoneNumberUtils.formatNumber(number, locale.country)
+    } else {
+        @Suppress("DEPRECATION")
+        PhoneNumberUtils.formatNumber(number)
+    }
 }
 
 fun formatPhoneNumberForKorea(number: Editable) {
