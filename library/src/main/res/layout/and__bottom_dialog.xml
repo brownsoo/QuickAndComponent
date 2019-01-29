@@ -4,7 +4,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:paddingTop="18dp" android:orientation="vertical">
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/alert_dialog_title"
@@ -13,8 +13,9 @@
         android:fontFamily="@string/font_family_black"
         android:gravity="center_vertical"
         android:minHeight="28dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="18dp"
         android:paddingBottom="6dp"
         android:textColor="@color/and__ebony_clay"
         android:textSize="18sp"
@@ -27,9 +28,9 @@
         android:fontFamily="@string/font_family_light"
         android:gravity="center_vertical"
         android:minHeight="50dp"
-        android:paddingLeft="24dp"
-        android:paddingTop="8dp"
-        android:paddingRight="24dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
         android:paddingBottom="8dp"
         android:textColor="@color/and__light_ebony_clay"
         android:textSize="16sp"
@@ -57,12 +58,13 @@
         android:paddingTop="8dp"
         android:paddingRight="6dp"
         android:paddingBottom="8dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_alternative"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
@@ -72,7 +74,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_positive"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
@@ -82,7 +85,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_negative"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
             android:textColor="@color/and__light_ebony_clay"
