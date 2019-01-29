@@ -49,7 +49,7 @@ open class BaseFragment : RxFragment(),
         get() = viewForeground
 
     override val isAvailable: Boolean
-        get() = activity?.isFinishing == false
+        get() = activity?.isFinishing == false && !isDetached
 
     val disposableBack by lazy { CompositeDisposable() }
 
