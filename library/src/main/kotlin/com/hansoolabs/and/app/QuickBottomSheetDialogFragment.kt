@@ -73,7 +73,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var listener: QuickDialogListener? = null
     protected var customView: View? = null
     protected val resultData = Bundle()
-    private var resultCode :Int = 0
+    protected var resultCode :Int = 0
     private var positiveRunnable: Runnable? = null
     private var altRunnable: Runnable? = null
     private var negativeRunnable: Runnable? = null
