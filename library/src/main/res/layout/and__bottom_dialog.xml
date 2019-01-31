@@ -61,12 +61,25 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_negative"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:fontFamily="@string/font_family_regular"
+                android:textColor="@color/and__light_ebony_clay"
+                android:gravity="center"
+                android:textSize="14sp"
+                tools:text="ne"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_alternative"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_family_regular"
+            android:textColor="@color/and__light_ebony_clay"
             android:gravity="center"
             android:textSize="14sp"
             tools:text="nu"/>
@@ -82,17 +95,7 @@
             android:textSize="14sp"
             tools:text="p"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_negative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:fontFamily="@string/font_family_regular"
-            android:textColor="@color/and__light_ebony_clay"
-            android:gravity="center"
-            android:textSize="14sp"
-            tools:text="ne"/>
+
 
     </LinearLayout>
 </LinearLayout>
