@@ -135,7 +135,7 @@ open class QuickDialogFragment : DialogFragment() {
     }
     
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
+    protected open fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
     
     protected open fun initLayout(view: View) {
         titleView = view.findViewById(R.id.alert_dialog_title)

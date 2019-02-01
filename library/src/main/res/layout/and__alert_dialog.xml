@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="18dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/alert_dialog_title"
@@ -13,6 +12,7 @@
         android:fontFamily="@string/font_family_black"
         android:gravity="center_vertical"
         android:minHeight="28dp"
+        android:paddingTop="18dp"
         android:paddingBottom="6dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
