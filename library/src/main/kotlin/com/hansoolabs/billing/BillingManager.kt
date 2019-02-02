@@ -3,6 +3,7 @@ package com.hansoolabs.billing
 import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient.BillingResponse.*
 import com.hansoolabs.and.utils.HLog
 import java.io.IOException
 import java.util.*
@@ -34,6 +35,35 @@ class BillingManager(
          * of their own and then fake messages from the server.
          */
         var BASE_64_ENCODED_PUBLIC_KEY = ""
+
+        fun errorMessage(@BillingClient.BillingResponse code: Int): String {
+            when(code) {
+                FEATURE_NOT_SUPPORTED ->
+                    return "Requested feature is not supported by Play Store on the current device.[-2]"
+                SERVICE_DISCONNECTED ->
+                    return "Play Store service is not connected now[-1]"
+                OK ->
+                    return "Success"
+                USER_CANCELED ->
+                    return "User pressed back or canceled a dialog[1]"
+                SERVICE_UNAVAILABLE ->
+                    return "Network connection is down[2]"
+                BILLING_UNAVAILABLE ->
+                    return "Billing API version is not supported for the type requested[3]"
+                ITEM_UNAVAILABLE ->
+                    return "Requested product is not available for purchase[4]"
+                DEVELOPER_ERROR ->
+                    return "Invalid arguments provided to the API.[5]"
+                ERROR ->
+                    return "Fatal error during the API action[6]"
+                ITEM_ALREADY_OWNED ->
+                    return "Failure to purchase since item is already owned[7]"
+                ITEM_NOT_OWNED ->
+                    return "Failure to consume since item is not owned[8]"
+                else ->
+                    return "Unknown code [$code]"
+            }
+        }
     }
     /**
      * Listener to the updates that happen when purchases list was updated or consumption of the
@@ -62,6 +92,7 @@ class BillingManager(
      * Returns the value BillingController client response code or BILLING_MANAGER_NOT_INITIALIZED if the
      * clien connection response was not received yet.
      */
+    @BillingClient.BillingResponse
     var billingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED
         private set
     
@@ -148,6 +179,7 @@ class BillingManager(
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(itemType)
             billingClient?.querySkuDetailsAsync(params.build()) { responseCode, skuDetailsList ->
+                billingClientResponseCode = responseCode
                 listener.onSkuDetailsResponse(responseCode, skuDetailsList)
             }
         }
