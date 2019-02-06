@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.annotation.StringRes
 import android.text.InputFilter
@@ -214,11 +213,7 @@ object UiUtil {
     @JvmStatic
     fun isAvailable(activity: Activity?): Boolean {
         val valid = activity != null && !activity.isFinishing
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            valid && activity?.isDestroyed == false
-        } else {
-            valid
-        }
+        return valid && activity?.isDestroyed == false
     }
     
     @JvmStatic
