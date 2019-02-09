@@ -45,7 +45,7 @@ open class BaseActivity : RxAppCompatActivity(),
      * Activity is not finishing and foreground
      */
     override val isAvailable: Boolean
-        get() = !isDestroyed && !isFinishing && viewForeground
+        get() = !isDestroyed && !isFinishing
 
     protected var resumed = false
     protected var appForeground = true
