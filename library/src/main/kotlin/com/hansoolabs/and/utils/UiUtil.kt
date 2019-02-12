@@ -209,13 +209,7 @@ object UiUtil {
             imm.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
-    
-    @JvmStatic
-    fun isAvailable(activity: Activity?): Boolean {
-        val valid = activity != null && !activity.isFinishing
-        return valid && activity?.isDestroyed == false
-    }
-    
+
     @JvmStatic
     fun getScreenMetrics(activity: Activity): DisplayMetrics {
         val metrics = DisplayMetrics()

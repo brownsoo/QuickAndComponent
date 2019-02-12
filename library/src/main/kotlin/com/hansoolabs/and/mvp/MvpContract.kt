@@ -2,7 +2,6 @@ package com.hansoolabs.and.mvp
 
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
-import com.hansoolabs.and.Available
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 
@@ -13,7 +12,7 @@ import io.reactivex.Scheduler
 
 open class MvpContract {
 
-    interface View : Available {
+    interface View {
 
         val isForeground: Boolean
         val uiScheduler: Scheduler
