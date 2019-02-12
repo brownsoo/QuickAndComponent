@@ -22,6 +22,7 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgressView
 import com.trello.rxlifecycle3.android.ActivityEvent
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
@@ -32,7 +33,6 @@ import java.lang.ref.WeakReference
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class BaseActivity : RxAppCompatActivity(),
-    Available,
     QuickDialogListener,
     AppForegroundObserver.AppForegroundListener {
 
@@ -40,12 +40,6 @@ open class BaseActivity : RxAppCompatActivity(),
         const val CONTENT_FRAGMENT_TAG = "content-fragment+"
         const val TAG = "BaseActivity"
     }
-
-    /**
-     * Activity is not finishing and foreground
-     */
-    override val isAvailable: Boolean
-        get() = !isDestroyed && !isFinishing
 
     protected var resumed = false
     protected var appForeground = true
@@ -290,7 +284,7 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     fun safeFinish(muteAnimation: Boolean = false) {
-        if (isAvailable) {
+        if (isLive()) {
             finish()
             if (muteAnimation) {
                 overridePendingTransition(0, 0)

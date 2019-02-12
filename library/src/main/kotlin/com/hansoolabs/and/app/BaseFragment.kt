@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgressView
 import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.disposables.CompositeDisposable
@@ -31,7 +32,6 @@ import io.reactivex.disposables.CompositeDisposable
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class BaseFragment : RxFragment(),
-        Available,
         QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
@@ -47,9 +47,6 @@ open class BaseFragment : RxFragment(),
 
     val viewForegrounded: Boolean
         get() = viewForeground
-
-    override val isAvailable: Boolean
-        get() = activity?.isFinishing == false && !isDetached
 
     val disposableBack by lazy { CompositeDisposable() }
 
@@ -202,7 +199,7 @@ open class BaseFragment : RxFragment(),
             mainHandler.post { showProgressMsg(title, message) }
             return
         }
-        if (isAvailable && context != null) {
+        if (isLive() && context != null) {
             if (progressMsgView == null) {
                 progressMsgView = MessageProgressView(context!!)
                 progressMsgView?.apply {

@@ -12,9 +12,9 @@ import com.google.android.material.textfield.TextInputLayout
  */
 
 
-fun Activity.isLive() = !this.isFinishing
+fun Activity.isLive() = !this.isFinishing && !this.isDestroyed
 
-fun Fragment.isLive() = isAdded && !(activity?.isFinishing ?: true)
+fun Fragment.isLive() = isAdded && activity?.isFinishing == false
 
 fun View.isVisible() = this.visibility == View.VISIBLE
 
