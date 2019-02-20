@@ -43,4 +43,10 @@ object StringUtil {
                 "|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$")
         return pattern.matcher(text).matches()
     }
+
+    @JvmStatic
+    fun hasSpecialChar(text: String): Boolean {
+        val pattern = Pattern.compile("[*^\\s!@#$&()\\-`.+,/\"]+")
+        return pattern.matcher(text).matches()
+    }
 }
