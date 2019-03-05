@@ -17,17 +17,18 @@ open class MvpPresenter<T : MvpContract.View>(presentingView: T,
 
     private val delayedCallbacks = ArrayList<DelayedCallback<*>>()
     protected val viewRef: WeakReference<T> = WeakReference(presentingView)
-    protected val view: T? = viewRef.get()
+
+    protected fun getView(): T? = viewRef.get()
     
     protected fun viewAccessibleDo(run: () -> Unit) {
-        if (view != null) run.invoke()
+        if (getView() != null) run.invoke()
     }
     override fun initialize() {
-        view?.addForegroundListener(this)
+        getView()?.addForegroundListener(this)
     }
 
     override fun terminate() {
-        view?.removeForegroundListener(this)
+        getView()?.removeForegroundListener(this)
         viewRef.clear()
     }
 
@@ -44,16 +45,16 @@ open class MvpPresenter<T : MvpContract.View>(presentingView: T,
         //
     }
 
-    fun getString(resId: Int): String = view?.getString(resId) ?: ""
+    fun getString(resId: Int): String = getView()?.getString(resId) ?: ""
 
-    fun getString(resId: Int, vararg args: Any): String = view?.getString(resId, args) ?: ""
+    fun getString(resId: Int, vararg args: Any): String = getView()?.getString(resId, args) ?: ""
 
 
     fun <K> delayUntilViewForeground(callback: RequestCallback<K>) : RequestCallback<K> {
 
         return object : RequestCallback<K> {
             override fun onSuccess(result: K?) {
-                if (view?.isForeground == true) {
+                if (getView()?.isForeground == true) {
                     callback.onSuccess(result)
                 }
                 else {
@@ -64,7 +65,7 @@ open class MvpPresenter<T : MvpContract.View>(presentingView: T,
             }
 
             override fun onFailure(e: Exception) {
-                if (view?.isForeground == true) {
+                if (getView()?.isForeground == true) {
                     callback.onFailure(e)
                 }
                 else {
