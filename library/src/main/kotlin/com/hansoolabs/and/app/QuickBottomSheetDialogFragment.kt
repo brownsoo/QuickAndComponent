@@ -2,6 +2,7 @@ package com.hansoolabs.and.app
 
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -112,6 +113,16 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initLayout(view)
     }
+
+    override fun onStart() {
+        super.onStart()
+        if (dialog != null) {
+            setupDialogWindow(dialog)
+        }
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected open fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
 
     protected open fun initLayout(view: View) {
         titleView = view.findViewById(R.id.alert_dialog_title)
@@ -246,6 +257,13 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     fun addDefaultResultData(defaultResult: Bundle?) {
         if (defaultResult != null) {
             resultData.putAll(defaultResult)
+        }
+    }
+
+    class BasicBuilder(context: Context,
+                       themeResId: Int = 0) : Builder<QuickBottomSheetDialogFragment>(context, themeResId) {
+        override fun newInstance(): QuickBottomSheetDialogFragment {
+            return QuickBottomSheetDialogFragment()
         }
     }
 
