@@ -32,6 +32,16 @@ fun Context.isOnline(): Boolean {
     return netInfo != null && netInfo.isConnected
 }
 
+fun Context.versionName(): String {
+    return try {
+        val manager = this.packageManager
+        val info = manager.getPackageInfo(this.packageName, 0)
+        info.versionName
+    } catch (e: Throwable) {
+        "0.0.0"
+    }
+}
+
 fun TextInputLayout.showError(msg: CharSequence?) {
     this.error = msg
     this.isErrorEnabled = true
