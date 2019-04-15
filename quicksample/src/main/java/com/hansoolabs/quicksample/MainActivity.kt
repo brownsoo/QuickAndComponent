@@ -69,7 +69,7 @@ class BottomDialog: QuickBottomSheetDialogFragment() {
         }
 
         val titleEt: TextInputEditText = view.findViewById(R.id.title_et)
-        titleEt.setOnFocusChangeListener { v, hasFocus ->
+        titleEt.setOnFocusChangeListener { _, hasFocus ->
             Log.d("quick_test", "hasFocus=$hasFocus")
         }
     }
