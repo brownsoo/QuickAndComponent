@@ -37,7 +37,8 @@ class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundList
     }
 
     private val handler : Handler = Handler(Looper.getMainLooper())
-    private var wasAppInBackground = false
+    var isAppInBackground:Boolean = false
+        private set
     private var activityTransitionTimer : Timer? = null
     private var activityTransitionTimerTask : TimerTask? = null
     private var bound = false
@@ -65,8 +66,6 @@ class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundList
         }
     }
 
-    fun isAppInBackground(): Boolean = wasAppInBackground
-
     private fun startActivityTransitionTimer() {
         activityTransitionTimer = Timer()
         activityTransitionTimerTask = object : TimerTask() {
@@ -86,8 +85,8 @@ class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundList
     }
 
     @Synchronized private fun onAppBecomeBackground() {
-        if (!wasAppInBackground) {
-            wasAppInBackground = true
+        if (!isAppInBackground) {
+            isAppInBackground = true
             Log.d(TAG, "app is background")
             handler.post {
                 synchronized(mObservers) {
@@ -100,8 +99,8 @@ class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundList
     }
 
     @Synchronized private fun onAppBecomeForeground() {
-        if (wasAppInBackground) {
-            wasAppInBackground = false
+        if (isAppInBackground) {
+            isAppInBackground = false
             Log.d(TAG, "app is foreground")
 
             handler.post {

@@ -35,7 +35,7 @@ open class BaseFragment : RxFragment(),
         QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
-    protected var appForeground = true
+
     protected val mainHandler = Handler()
     protected var loadingBar: ContentLoadingProgressBar? = null
     private var progressMsgView: MessageProgressView? = null
@@ -44,6 +44,8 @@ open class BaseFragment : RxFragment(),
     private var errorView: View? = null
 
     private var viewForeground = false
+    protected val appForeground: Boolean
+        get() = !AppForegroundObserver.instance.isAppInBackground
 
     val viewForegrounded: Boolean
         get() = viewForeground
@@ -148,12 +150,10 @@ open class BaseFragment : RxFragment(),
     }
 
     override fun onAppDidForeground() {
-        appForeground = true
         notifyViewForegroundChanged()
     }
 
     override fun onAppDidBackground() {
-        appForeground = false
         notifyViewForegroundChanged()
     }
 
