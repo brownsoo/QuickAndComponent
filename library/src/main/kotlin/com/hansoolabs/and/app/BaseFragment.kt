@@ -44,6 +44,7 @@ open class BaseFragment : RxFragment(),
     private var errorView: View? = null
 
     private var viewForeground = false
+    
     protected val appForeground: Boolean
         get() = !AppForegroundObserver.instance.isAppInBackground
 

@@ -42,14 +42,22 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     protected var resumed = false
-    protected var appForeground = true
+    protected val appForeground: Boolean
+        get() = !AppForegroundObserver.instance.isAppInBackground
+
     protected var viewForeground = false
+
     protected val androidContentView: ViewGroup?
         get() = findViewById<View>(android.R.id.content) as? ViewGroup
+
     protected var baseFrame: FrameLayout? = null
+
     protected var contentMain: View? = null
+
     protected var errorView: View? = null
+
     private var progressMsgView: MessageProgressView? = null
+
     protected var loadingBar: ContentLoadingProgressBar? = null
 
     protected val compositeBag by lazy { CompositeDisposable() }
@@ -170,12 +178,10 @@ open class BaseActivity : RxAppCompatActivity(),
     }
 
     override fun onAppDidForeground() {
-        appForeground = true
         notifyViewForegroundChanged()
     }
 
     override fun onAppDidBackground() {
-        appForeground = false
         notifyViewForegroundChanged()
     }
 
