@@ -68,13 +68,13 @@ open class BaseFragment : RxFragment(),
 
     @Suppress("OverridingDeprecatedMember", "DEPRECATION")
     @CallSuper
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         onAttachCompat(activity)
     }
 
     @CallSuper
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         onAttachCompat(context)
     }

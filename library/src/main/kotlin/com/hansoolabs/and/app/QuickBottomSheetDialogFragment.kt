@@ -193,7 +193,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     fun show(fragmentManager: FragmentManager) =
         show(fragmentManager, StringUtil.randomAlphaNumeric(20))
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (listener != null && tag != null) {
             listener!!.onQuickDialogResult(tag!!, resultCode, resultData)
@@ -211,7 +211,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         super.onDestroyView()
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         setResult(RESULT_CANCELED)
         super.onCancel(dialog)
     }
