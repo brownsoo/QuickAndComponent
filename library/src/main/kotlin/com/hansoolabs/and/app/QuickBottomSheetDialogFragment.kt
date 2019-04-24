@@ -116,9 +116,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        if (dialog != null) {
-            setupDialogWindow(dialog)
-        }
+        dialog?.let { d -> setupDialogWindow(d) }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -205,8 +203,8 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
      */
     @CallSuper
     override fun onDestroyView() {
-        if (dialog != null && retainInstance) {
-            dialog.setDismissMessage(null)
+        if (retainInstance) {
+            dialog?.setDismissMessage(null)
         }
         super.onDestroyView()
     }
@@ -272,8 +270,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
 
         @StyleRes
-        private val themeResId: Int =
-            QuickBottomSheetDialogFragment.resolveDialogTheme(context, themeResId)
+        private val themeResId: Int = resolveDialogTheme(context, themeResId)
 
         private var title: CharSequence? = null
         private var message: CharSequence? = null
@@ -290,22 +287,22 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         private var altRunnable: Runnable? = null
         private var negativeRunnable: Runnable? = null
 
-        fun setTitle(@StringRes titleId: Int): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setTitle(@StringRes titleId: Int): Builder<T> {
             this.title = context.getText(titleId)
             return this
         }
 
-        fun setTitle(title: CharSequence?): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setTitle(title: CharSequence?): Builder<T> {
             this.title = title
             return this
         }
 
-        fun setMessage(@StringRes messageId: Int): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setMessage(@StringRes messageId: Int): Builder<T> {
             this.message = context.getText(messageId)
             return this
         }
 
-        fun setMessage(message: CharSequence): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setMessage(message: CharSequence): Builder<T> {
             this.message = message
             return this
         }
@@ -346,17 +343,17 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
             return this
         }
 
-        fun setCancelable(cancelable: Boolean): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setCancelable(cancelable: Boolean): Builder<T> {
             this.cancelable = cancelable
             return this
         }
 
-        fun setView(@LayoutRes layoutResId: Int): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setView(@LayoutRes layoutResId: Int): Builder<T> {
             this.customViewResId = layoutResId
             return this
         }
 
-        fun setDefaultResultData(data: Bundle): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setDefaultResultData(data: Bundle): Builder<T> {
             this.defaultResultData = data
             return this
         }
@@ -372,7 +369,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
          * @param requestCode Optional request code, for convenience if you
          * are going to call back with {@link Fragment#onActivityResult(int, int, Intent)}.
          */
-        fun setTargetFragment(fragment: Fragment?, requestCode: Int): QuickBottomSheetDialogFragment.Builder<T> {
+        fun setTargetFragment(fragment: Fragment?, requestCode: Int): Builder<T> {
             this.targetFragment = fragment
             this.requestCode = requestCode
             return this

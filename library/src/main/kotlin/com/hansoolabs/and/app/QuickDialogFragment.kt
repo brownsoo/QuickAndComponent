@@ -85,7 +85,7 @@ open class QuickDialogFragment : DialogFragment() {
             EXTRA_THEME_RES_ID,
             R.style.AndTheme_Dialog
         )
-        style?.let { setStyle(DialogFragment.STYLE_NO_TITLE, style) }
+        style?.let { setStyle(STYLE_NO_TITLE, style) }
         
         val defaultResultData = args?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
         if (defaultResultData != null) {
@@ -130,7 +130,7 @@ open class QuickDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         if (dialog != null) {
-            setupDialogWindow(dialog)
+            setupDialogWindow(dialog!!)
         }
     }
     
