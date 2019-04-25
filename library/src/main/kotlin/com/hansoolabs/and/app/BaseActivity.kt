@@ -262,11 +262,7 @@ open class BaseActivity : RxAppCompatActivity(),
 
     @UiThread
     open fun hideKeyboard(focusView: View?) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val target = focusView ?: currentFocus
-        if (target != null) {
-            imm.hideSoftInputFromWindow(target.windowToken, 0)
-        }
+        UiUtil.hideKeyboard(this)
     }
 
     @CallSuper
