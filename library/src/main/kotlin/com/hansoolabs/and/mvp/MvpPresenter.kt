@@ -91,7 +91,7 @@ open class MvpPresenter<T : MvpContract.View>(presentingView: T,
             this.e = null
             this.callback = callback
             success = true
-            handler = Handler(Looper.myLooper())
+            handler = Handler(Looper.myLooper()!!)
         }
 
         constructor(e: Exception, callback: RequestCallback<T>) {
@@ -99,7 +99,7 @@ open class MvpPresenter<T : MvpContract.View>(presentingView: T,
             this.e = e
             this.callback = callback
             success = false
-            handler = Handler(Looper.myLooper())
+            handler = Handler(Looper.myLooper()!!)
         }
 
         fun fire() {
