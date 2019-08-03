@@ -26,12 +26,6 @@ fun View.setVisible(visible: Boolean) {
     }
 }
 
-fun Context.isOnline(): Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val netInfo = cm.activeNetworkInfo
-    return netInfo != null && netInfo.isConnected
-}
-
 fun Context.versionName(): String {
     return try {
         val manager = this.packageManager

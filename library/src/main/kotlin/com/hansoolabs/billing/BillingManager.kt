@@ -15,6 +15,7 @@ import kotlin.math.abs
  * refer: https://github.com/googlesamples/android-play-billing/blob/master/TrivialDrive_v2/shared-module/src/main/java/com/example/billingmodule/billing/BillingManager.java
  */
 
+@Suppress("MemberVisibilityCanBePrivate")
 class BillingManager(
     private val activity: Activity,
     private val updatesListener: BillingUpdatesListener,
@@ -123,7 +124,7 @@ class BillingManager(
      */
     override fun onPurchasesUpdated(responseCode: Int,
                                     purchases: MutableList<Purchase>?) {
-        if (responseCode == BillingClient.BillingResponse.OK) {
+        if (responseCode == OK) {
             if (purchases != null) {
                 for (purchase in purchases) {
                     handlePurchase(purchase)
@@ -142,28 +143,26 @@ class BillingManager(
                     updatesListener.onPurchasesCreated(newPurchases)
                 }
             }
-        } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
+        } else if (responseCode == USER_CANCELED) {
             HLog.i(TAG, klass, "user cancelled")
         } else {
             HLog.w(TAG, klass, "onPurchasesUpdated unknown : $responseCode")
         }
     }
     
-    fun initiatePurchaseFlow(skuId: String, @BillingClient.SkuType billingType: String) {
-        initiatePurchaseFlow(skuId, null, billingType)
+    fun initiatePurchaseFlow(skuDetails: SkuDetails) {
+        initiatePurchaseFlow(skuDetails, null)
     }
     
     /**
      * 구매 과정 시작
      */
-    fun initiatePurchaseFlow(skuId: String, oldSku: String?,
-                             @BillingClient.SkuType billingType: String) {
+    fun initiatePurchaseFlow(skuDetails: SkuDetails, oldSku: String?) {
         if (billingClient == null) return
         val purchaseFlowRequest = Runnable {
             HLog.d(TAG, klass, "Launching in-app purchase flow. Replace old SKU? ${oldSku != null}")
             val builder = BillingFlowParams.newBuilder()
-                .setSku(skuId)
-                .setType(billingType)
+                .setSkuDetails(skuDetails)
             if (oldSku != null) {
                 builder.setOldSku(oldSku)
             }
@@ -186,6 +185,7 @@ class BillingManager(
         executeServiceRequest(queryRequest)
     }
     
+    @Suppress("unused")
     fun consumeAsync(purchaseToken: String) {
         // If we've already scheduled to consume this token - no action is needed (this could happen
         // if you received the token when querying purchases inside onReceive() and later from
@@ -227,7 +227,7 @@ class BillingManager(
      * Handle a result from querying of purchases and report an updated list to the listener
      */
     private fun onQueryPurchasesFinished(result: Purchase.PurchasesResult) {
-        if (billingClient == null || result.responseCode != BillingClient.BillingResponse.OK) {
+        if (billingClient == null || result.responseCode != OK) {
             // Have we been disposed of in the meantime? If so, or bad result code, then quit
             HLog.w(TAG, klass, "BillingController client was null or result code (${result.responseCode}) was bad")
             return
@@ -235,7 +235,7 @@ class BillingManager(
         HLog.d(TAG, klass, "Query inventory was successful.")
         // Update the UI and purchases inventory with new list of purchases
         mPurchases.clear()
-        onPurchasesUpdated(BillingClient.BillingResponse.OK, result.purchasesList)
+        onPurchasesUpdated(OK, result.purchasesList)
     }
     
     /**
@@ -247,10 +247,10 @@ class BillingManager(
      */
     fun areSubscriptionsSupported(): Boolean {
         val responseCode = billingClient?.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
-        if (responseCode != BillingClient.BillingResponse.OK) {
+        if (responseCode != OK) {
             HLog.w(TAG, klass, "areSubscriptionsSupported() got an error response: $responseCode")
         }
-        return responseCode == BillingClient.BillingResponse.OK
+        return responseCode == OK
     }
     
     /**
@@ -270,12 +270,12 @@ class BillingManager(
                 HLog.i(TAG, klass,"Querying subscriptions result code: "
                     + subscriptionResult?.responseCode
                     + " res: " + subscriptionResult?.purchasesList?.size)
-                if (subscriptionResult?.responseCode == BillingClient.BillingResponse.OK) {
+                if (subscriptionResult?.responseCode == OK) {
                     purchasesResult?.purchasesList?.addAll(subscriptionResult.purchasesList)
                 } else {
                     HLog.e(TAG, klass, "Got an error response trying to query subscription purchases")
                 }
-            } else if (purchasesResult?.responseCode == BillingClient.BillingResponse.OK) {
+            } else if (purchasesResult?.responseCode == OK) {
                 HLog.i(TAG, klass, "Skipped subscription purchases query since they are not supported")
             } else {
                 HLog.w(TAG, klass, "queryPurchases() got an error response code: ${purchasesResult?.responseCode}")
@@ -286,7 +286,7 @@ class BillingManager(
         }
         executeServiceRequest(queryToExecute)
     }
-    
+
     fun startServiceConnection(executeOnSuccess: Runnable?) {
         billingClient?.startConnection(object : BillingClientStateListener{
             override fun onBillingServiceDisconnected() {
@@ -296,7 +296,7 @@ class BillingManager(
             override fun onBillingSetupFinished(@BillingClient.BillingResponse responseCode: Int) {
                 HLog.d(TAG, klass, "Setup finished. Response code: $responseCode")
                 billingClientResponseCode = responseCode
-                if (responseCode == BillingClient.BillingResponse.OK) {
+                if (responseCode == OK) {
                     isServiceConnected = true
                     executeOnSuccess?.run()
                 }
@@ -323,11 +323,11 @@ class BillingManager(
      * </p>
      */
     private fun verifyValidSignature(signedData: String, signature: String): Boolean {
-        try {
-            return Security.verifyPurchase(BASE_64_ENCODED_PUBLIC_KEY, signedData, signature)
+        return try {
+            Security.verifyPurchase(BASE_64_ENCODED_PUBLIC_KEY, signedData, signature)
         } catch (e: IOException) {
             HLog.e(TAG, klass, "Got an exception trying to validate a purchase: $e")
-            return false
+            false
         }
     }
 }
