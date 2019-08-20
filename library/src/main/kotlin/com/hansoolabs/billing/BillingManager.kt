@@ -72,10 +72,11 @@ class BillingManager(
      */
     interface BillingUpdatesListener {
         fun onBillingClientSetupFinished()
-        fun onConsumeFinished(token: String, @BillingClient.BillingResponse result: Int)
-        fun onPurchasesUpdated(purchases: List<Purchase>)
+        fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponse result: Int)
+        fun onBillingPurchasesUpdated(purchases: List<Purchase>)
         // Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
-        fun onPurchasesCreated(purchases: List<Purchase>)
+        fun onBillingPurchasesCreated(purchases: List<Purchase>)
+        fun onBillingError(@BillingClient.BillingResponse response: Int)
     }
     
     /**
@@ -101,7 +102,7 @@ class BillingManager(
     
     // Start setup. This is asynchronous and the specified listener will be called
     // once setup completes.
-    // It also starts to report all the new purchases through onPurchasesUpdated() callback
+    // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
     fun init() {
         billingClient = BillingClient.newBuilder(activity).setListener(this).build()
         HLog.d(TAG, klass, "starting ")
@@ -122,14 +123,14 @@ class BillingManager(
     /**
      * Handle a callback that purchases were updated from the Billing library
      */
-    override fun onPurchasesUpdated(responseCode: Int,
+    override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int,
                                     purchases: MutableList<Purchase>?) {
         if (responseCode == OK) {
             if (purchases != null) {
                 for (purchase in purchases) {
                     handlePurchase(purchase)
                 }
-                updatesListener.onPurchasesUpdated(this.mPurchases)
+                updatesListener.onBillingPurchasesUpdated(this.mPurchases)
                 val now = Date().time
                 val newPurchases = ArrayList<Purchase>()
                 for (p in this.mPurchases) {
@@ -140,20 +141,23 @@ class BillingManager(
                     }
                 }
                 if (newPurchases.isNotEmpty()) {
-                    updatesListener.onPurchasesCreated(newPurchases)
+                    updatesListener.onBillingPurchasesCreated(newPurchases)
                 }
             }
         } else if (responseCode == USER_CANCELED) {
             HLog.i(TAG, klass, "user cancelled")
         } else {
-            HLog.w(TAG, klass, "onPurchasesUpdated unknown : $responseCode")
+            HLog.w(TAG, klass, "onBillingPurchasesUpdated error : ${errorMessage(responseCode)}")
+            if (responseCode == ITEM_ALREADY_OWNED && !handledAlreadyOwned) {
+                handledAlreadyOwned = true
+                queryPurchases()
+            }
+            updatesListener.onBillingError(responseCode)
         }
     }
-    
-    fun initiatePurchaseFlow(skuDetails: SkuDetails) {
-        initiatePurchaseFlow(skuDetails, null)
-    }
-    
+
+    private var handledAlreadyOwned = false
+
     /**
      * 구매 과정 시작
      */
@@ -199,7 +203,7 @@ class BillingManager(
         tokensToBeConsumed!!.add(purchaseToken)
         // Generating Consume Response listener
         val onConsumeListener = ConsumeResponseListener { responseCode, token ->
-            updatesListener.onConsumeFinished(token, responseCode)
+            updatesListener.onBillingConsumeFinished(token, responseCode)
         }
         // Creating a runnable from the request to use it inside our connection retry policy below
         val consumeRequest = Runnable {
