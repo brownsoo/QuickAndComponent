@@ -74,7 +74,9 @@ class BillingManager(
         fun onBillingClientSetupFinished()
         fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponse result: Int)
         fun onBillingPurchasesUpdated(purchases: List<Purchase>)
-        // Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
+        /**
+         * Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
+         */
         fun onBillingPurchasesCreated(purchases: List<Purchase>)
         fun onBillingError(@BillingClient.BillingResponse response: Int)
     }
@@ -92,7 +94,7 @@ class BillingManager(
     private var tokensToBeConsumed: MutableSet<String>? = null
     /**
      * Returns the value BillingController client response code or BILLING_MANAGER_NOT_INITIALIZED if the
-     * clien connection response was not received yet.
+     * client connection response was not received yet.
      */
     @BillingClient.BillingResponse
     var billingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED
@@ -149,7 +151,7 @@ class BillingManager(
         } else {
             HLog.w(TAG, klass, "onBillingPurchasesUpdated error : ${errorMessage(responseCode)}")
             if (responseCode == ITEM_ALREADY_OWNED && !handledAlreadyOwned) {
-                handledAlreadyOwned = true
+                handledAlreadyOwned = true // 이미 소지한 것으로 보면, 한번 구매이력을 검색한다.
                 queryPurchases()
             }
             updatesListener.onBillingError(responseCode)
