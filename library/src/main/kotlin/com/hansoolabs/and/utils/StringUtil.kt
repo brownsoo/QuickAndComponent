@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 object StringUtil {
 
     @JvmStatic
-    fun constant(name: String) = BuildConfig.APPLICATION_ID + "." + name
+    fun constant(name: String) = BuildConfig.LIBRARY_PACKAGE_NAME + "." + name
 
     @JvmStatic
     fun isNullOrEmpty(str: String?): Boolean {
