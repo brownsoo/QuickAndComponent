@@ -2,7 +2,6 @@ package com.hansoolabs.and.app
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.*
 import androidx.annotation.CallSuper
@@ -17,7 +16,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.hansoolabs.and.*
 import com.hansoolabs.and.utils.UiUtil
@@ -28,7 +26,6 @@ import com.trello.rxlifecycle3.android.ActivityEvent
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import java.lang.ref.WeakReference
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
@@ -62,8 +59,8 @@ open class BaseActivity : RxAppCompatActivity(),
 
     protected val compositeBag by lazy { CompositeDisposable() }
 
-    private var finishDisposable: Disposable? = null
     private val mainHandler by lazy {  BaseHandler(this) }
+
     private class BaseHandler(activity: BaseActivity) : Handler() {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
@@ -140,11 +137,8 @@ open class BaseActivity : RxAppCompatActivity(),
         }
     }
 
-    override fun <T : View?> findViewById(id: Int): T {
-        if (contentMain != null) {
-            return contentMain!!.findViewById<T>(id)
-        }
-        return super.findViewById<T>(id)
+    override fun <T : View> findViewById(id: Int): T? {
+        return contentMain?.findViewById(id) ?: super.findViewById(id)
     }
 
     override fun onStart() {
@@ -273,16 +267,6 @@ open class BaseActivity : RxAppCompatActivity(),
     protected fun finishApplication() {
         setResult(Activity.RESULT_CANCELED)
         ActivityCompat.finishAffinity(this)
-    }
-
-    fun deferredFinish(muteAnimation: Boolean = false) {
-        if (finishDisposable == null || finishDisposable!!.isDisposed) {
-            finishDisposable = lifecycle()
-                .filter { it == ActivityEvent.PAUSE }
-                .take(1)
-                .compose(bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribe { safeFinish(muteAnimation) }
-        }
     }
 
     fun safeFinish(muteAnimation: Boolean = false) {
