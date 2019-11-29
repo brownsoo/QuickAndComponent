@@ -26,6 +26,7 @@ import android.widget.Toast
 import com.hansoolabs.and.R
 import java.io.ByteArrayOutputStream
 import java.util.*
+import kotlin.math.roundToInt
 
 @Suppress("unused")
 object UiUtil {
@@ -33,7 +34,7 @@ object UiUtil {
     @JvmStatic
     fun dp2px(dpSize: Float): Int {
         val metrics = Resources.getSystem().displayMetrics
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, metrics))
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, metrics).roundToInt()
     }
 
     @JvmStatic
