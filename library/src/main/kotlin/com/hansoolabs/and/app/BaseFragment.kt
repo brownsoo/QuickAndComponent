@@ -36,7 +36,10 @@ open class BaseFragment : RxFragment(),
 
     protected var resumed = false
 
-    protected val mainHandler = Handler()
+    protected val mainHandler: Handler by lazy {
+        Handler(Looper.getMainLooper())
+    }
+
     protected var loadingBar: ContentLoadingProgressBar? = null
     private var progressMsgView: MessageProgressView? = null
     private var baseFrame: FrameLayout? = null
