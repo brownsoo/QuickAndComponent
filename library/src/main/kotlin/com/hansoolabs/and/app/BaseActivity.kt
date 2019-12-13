@@ -61,7 +61,7 @@ open class BaseActivity : RxAppCompatActivity(),
 
     private val mainHandler by lazy {  BaseHandler(this) }
 
-    private class BaseHandler(activity: BaseActivity) : Handler() {
+    private class BaseHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
             val base = ref.get()
