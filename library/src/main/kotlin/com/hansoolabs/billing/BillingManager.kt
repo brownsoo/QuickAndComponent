@@ -3,7 +3,7 @@ package com.hansoolabs.billing
 import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
-import com.android.billingclient.api.BillingClient.BillingResponse.*
+import com.android.billingclient.api.BillingClient.BillingResponseCode.*
 import com.hansoolabs.and.utils.HLog
 import java.io.IOException
 import java.util.*
@@ -37,7 +37,7 @@ class BillingManager(
          */
         var BASE_64_ENCODED_PUBLIC_KEY = ""
 
-        fun errorMessage(@BillingClient.BillingResponse code: Int): String {
+        fun errorMessage(@BillingClient.BillingResponseCode code: Int): String {
             when(code) {
                 FEATURE_NOT_SUPPORTED ->
                     return "Requested feature is not supported by Play Store on the current device.[-2]"
@@ -72,20 +72,20 @@ class BillingManager(
      */
     interface BillingUpdatesListener {
         fun onBillingClientSetupFinished()
-        fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponse result: Int)
+        fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponseCode result: Int)
         fun onBillingPurchasesUpdated(purchases: List<Purchase>)
         /**
          * Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
          */
         fun onBillingPurchasesCreated(purchases: List<Purchase>)
-        fun onBillingError(@BillingClient.BillingResponse response: Int)
+        fun onBillingError(@BillingClient.BillingResponseCode response: Int)
     }
     
     /**
      * Listener for the Billing client state to become connected
      */
     interface ServiceConnectedListener {
-        fun onServiceConnected(@BillingClient.BillingResponse resultCode: Int)
+        fun onServiceConnected(@BillingClient.BillingResponseCode resultCode: Int)
     }
     private val klass = "BillingManager@${Integer.toHexString(hashCode())}"
     private var billingClient: BillingClient? = null
@@ -96,7 +96,7 @@ class BillingManager(
      * Returns the value BillingController client response code or BILLING_MANAGER_NOT_INITIALIZED if the
      * client connection response was not received yet.
      */
-    @BillingClient.BillingResponse
+    @BillingClient.BillingResponseCode
     var billingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED
         private set
     
@@ -125,8 +125,9 @@ class BillingManager(
     /**
      * Handle a callback that purchases were updated from the Billing library
      */
-    override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int,
+    override fun onPurchasesUpdated(result: BillingResult,
                                     purchases: MutableList<Purchase>?) {
+        val responseCode = result.responseCode
         if (responseCode == OK) {
             if (purchases != null) {
                 for (purchase in purchases) {
@@ -170,7 +171,7 @@ class BillingManager(
             val builder = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
             if (oldSku != null) {
-                builder.setOldSku(oldSku)
+                builder.setOldSku(oldSku, skuDetails.sku)
             }
             billingClient?.launchBillingFlow(activity, builder.build())
         }
@@ -183,9 +184,9 @@ class BillingManager(
         val queryRequest = Runnable {
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(itemType)
-            billingClient?.querySkuDetailsAsync(params.build()) { responseCode, skuDetailsList ->
-                billingClientResponseCode = responseCode
-                listener.onSkuDetailsResponse(responseCode, skuDetailsList)
+            billingClient?.querySkuDetailsAsync(params.build()) { result, skuDetailsList ->
+                billingClientResponseCode = result.responseCode
+                listener.onSkuDetailsResponse(result, skuDetailsList)
             }
         }
         executeServiceRequest(queryRequest)
@@ -204,12 +205,15 @@ class BillingManager(
         }
         tokensToBeConsumed!!.add(purchaseToken)
         // Generating Consume Response listener
-        val onConsumeListener = ConsumeResponseListener { responseCode, token ->
-            updatesListener.onBillingConsumeFinished(token, responseCode)
+        val onConsumeListener = ConsumeResponseListener { result, token ->
+            updatesListener.onBillingConsumeFinished(token, result.responseCode)
         }
         // Creating a runnable from the request to use it inside our connection retry policy below
+        val consumeParams = ConsumeParams.newBuilder()
+            .setPurchaseToken(purchaseToken)
+            .build()
         val consumeRequest = Runnable {
-            billingClient?.consumeAsync(purchaseToken, onConsumeListener)
+            billingClient?.consumeAsync(consumeParams, onConsumeListener)
         }
         executeServiceRequest(consumeRequest)
     }
@@ -241,7 +245,7 @@ class BillingManager(
         HLog.d(TAG, klass, "Query inventory was successful.")
         // Update the UI and purchases inventory with new list of purchases
         mPurchases.clear()
-        onPurchasesUpdated(OK, result.purchasesList)
+        onPurchasesUpdated(result.billingResult, result.purchasesList)
     }
     
     /**
@@ -252,11 +256,11 @@ class BillingManager(
      * </p>
      */
     fun areSubscriptionsSupported(): Boolean {
-        val responseCode = billingClient?.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
-        if (responseCode != OK) {
-            HLog.w(TAG, klass, "areSubscriptionsSupported() got an error response: $responseCode")
+        val result = billingClient?.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
+        if (result == null) {
+            HLog.w(TAG, klass, "areSubscriptionsSupported() got an error response: $result")
         }
-        return responseCode == OK
+        return result?.responseCode == OK
     }
     
     /**
@@ -299,7 +303,8 @@ class BillingManager(
                 isServiceConnected = false
             }
             
-            override fun onBillingSetupFinished(@BillingClient.BillingResponse responseCode: Int) {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                val responseCode = result.responseCode
                 HLog.d(TAG, klass, "Setup finished. Response code: $responseCode")
                 billingClientResponseCode = responseCode
                 if (responseCode == OK) {
