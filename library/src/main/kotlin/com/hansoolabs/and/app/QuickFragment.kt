@@ -1,27 +1,25 @@
 package com.hansoolabs.and.app
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.CallSuper
-import androidx.annotation.UiThread
-import androidx.core.widget.ContentLoadingProgressBar
-import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import com.hansoolabs.and.*
-import com.hansoolabs.and.utils.UiUtil
+import androidx.annotation.CallSuper
+import androidx.annotation.UiThread
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import com.hansoolabs.and.AppForegroundObserver
+import com.hansoolabs.and.R
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.utils.HLog
+import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgressView
-import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -31,7 +29,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
-open class BaseFragment : RxFragment(),
+open class QuickFragment : Fragment(),
         QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
@@ -40,10 +38,7 @@ open class BaseFragment : RxFragment(),
         Handler(Looper.getMainLooper())
     }
 
-    protected var loadingBar: ContentLoadingProgressBar? = null
     private var progressMsgView: MessageProgressView? = null
-    private var baseFrame: FrameLayout? = null
-    private var contentMain: View? = null
     private var errorView: View? = null
 
     private var viewForeground = false
@@ -54,7 +49,7 @@ open class BaseFragment : RxFragment(),
     val viewForegrounded: Boolean
         get() = viewForeground
 
-    val disposableBack by lazy { CompositeDisposable() }
+    val rxBag by lazy { CompositeDisposable() }
 
     protected val exceptionHandler: BaseExceptionHandler by lazy {
         createCommonExceptionHandler()
@@ -62,65 +57,64 @@ open class BaseFragment : RxFragment(),
 
     protected open fun createCommonExceptionHandler(): BaseExceptionHandler = BaseExceptionHandler(this)
 
-    open fun onNewArgument(data: Bundle) {
-        arguments?.let {
-            it.clear()
-            it.putAll(data)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        onCreatingView(view)
+        return view
     }
 
-    @Suppress("OverridingDeprecatedMember", "DEPRECATION")
-    @CallSuper
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        onAttachCompat(activity)
-    }
-
-    @CallSuper
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        onAttachCompat(context)
-    }
-
-    protected open fun onAttachCompat(context: Context?) {
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // 프레임 구조를 크게 4단 레이어로 구성
-        // baseFrame -> baseFrame -> loadingBar -> errorView
-        // 0
-        if (baseFrame == null) {
-            baseFrame = FrameLayout(context!!).apply {
-                layoutParams = ViewGroup.LayoutParams(
+    protected open fun onCreatingView(view: View?) {
+        HLog.d("quick", "onCreatingView")
+        val root = view as? ViewGroup ?: return
+        var err = errorView
+        if (err == null) {
+            err = layoutInflater.inflate(R.layout.and__error_content, root, false)
+            err.layoutParams =  ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT)
-            }
+            err.visibility = View.GONE
+            root.addView(err)
+            errorView = err
         }
-        baseFrame?.removeAllViews()
-        // 1
-        contentMain = createContentView(inflater, baseFrame, savedInstanceState)
-        if (contentMain != null) {
-            baseFrame?.addView(contentMain)
-        }
-        // 2
-        if (loadingBar == null) {
-            loadingBar = ContentLoadingProgressBar(context!!).apply {
-                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
-            }
-        }
-        baseFrame?.addView(loadingBar)
-        loadingBar?.visibility = View.GONE
-        // 3
-        if (errorView == null) {
-            errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-        }
-        errorView?.let { baseFrame?.addView(it) }
-        return baseFrame
+
     }
 
-    open fun createContentView(inflater: LayoutInflater?,
-                               container: ViewGroup?,
-                               savedInstanceState: Bundle?): View? = null
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        // 프레임 구조를 크게 4단 레이어로 구성
+//        // baseFrame -> baseFrame -> loadingBar -> errorView
+//        // 0
+//        if (baseFrame == null) {
+//            baseFrame = FrameLayout(context!!).apply {
+//                layoutParams = ViewGroup.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT,
+//                        ViewGroup.LayoutParams.MATCH_PARENT)
+//            }
+//        }
+//        baseFrame?.removeAllViews()
+//        // 1
+//        contentMain = createContentView(inflater, baseFrame, savedInstanceState)
+//        if (contentMain != null) {
+//            baseFrame?.addView(contentMain)
+//        }
+//        // 2
+//        if (loadingBar == null) {
+//            loadingBar = ContentLoadingProgressBar(context!!).apply {
+//                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
+//            }
+//        }
+//        baseFrame?.addView(loadingBar)
+//        loadingBar?.visibility = View.GONE
+//        // 3
+//        if (errorView == null) {
+//            errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
+//        }
+//        errorView?.let { baseFrame?.addView(it) }
+//        return baseFrame
+//    }
 
     @CallSuper
     override fun onStart() {
@@ -149,7 +143,7 @@ open class BaseFragment : RxFragment(),
     }
 
     override fun onDestroy() {
-        disposableBack.clear()
+        rxBag.clear()
         super.onDestroy()
     }
 
@@ -180,14 +174,6 @@ open class BaseFragment : RxFragment(),
     protected open fun onViewBackground() {
     }
 
-    protected fun showLoadingBar() {
-        loadingBar?.visibility = View.VISIBLE
-    }
-
-    protected fun hideLoadingBar() {
-        loadingBar?.visibility = View.GONE
-    }
-
     @UiThread
     open fun showProgressMsg() {
         showProgressMsg(null)
@@ -199,6 +185,12 @@ open class BaseFragment : RxFragment(),
     }
 
     open fun showProgressMsg(title: String?, message: String?) {
+
+        val root = view as? FrameLayout
+        if (root == null) {
+            HLog.e("quick", "root view need to be FRAME LAYOUT to show message view")
+            return
+        }
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mainHandler.post { showProgressMsg(title, message) }
             return
@@ -209,11 +201,10 @@ open class BaseFragment : RxFragment(),
                 progressMsgView?.apply {
                     layoutParams = FrameLayout.LayoutParams(-1, -1)
                 }
-                baseFrame?.addView(progressMsgView)
+                root.addView(progressMsgView)
             }
             progressMsgView?.setMessage(message)
             progressMsgView?.visibility = View.VISIBLE
-
         }
     }
 
