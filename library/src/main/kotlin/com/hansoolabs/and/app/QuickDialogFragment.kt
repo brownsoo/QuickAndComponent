@@ -54,7 +54,8 @@ open class QuickDialogFragment : DialogFragment() {
 
         @SuppressLint("ResourceType")
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
-            return if (resId >= 0x01000000) {   // start of real resource IDs.
+            HLog.i("QuickDialogFragment","resolveDialogTheme", resId)
+            return if (resId > 0) {   // start of real resource IDs.
                 resId
             } else {
                 val outValue = TypedValue()
@@ -88,7 +89,7 @@ open class QuickDialogFragment : DialogFragment() {
      *
      * 기본값: R.layout.and__alert_dialog
      */
-    @LayoutRes open var baseLayoutRes: Int = R.layout.and__alert_dialog
+    @LayoutRes open val baseLayoutRes: Int = R.layout.and__alert_dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
