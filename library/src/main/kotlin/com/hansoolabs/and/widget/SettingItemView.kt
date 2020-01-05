@@ -4,14 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.hansoolabs.and.R
-import com.hansoolabs.and.utils.HLog
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 /**
