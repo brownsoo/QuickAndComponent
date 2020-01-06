@@ -27,6 +27,7 @@ class SettingItemView
     private val accessoryTv: TextView
     private val accessoryContainer: LinearLayout
     private val switch: SwitchCompat
+    private val divider: View
 
     var title: CharSequence? = null
         set(value) {
@@ -74,6 +75,12 @@ class SettingItemView
             descTv.setTextColor(value)
         }
 
+    var dividerColor: Int =  Color.parseColor("#b3b8c5")
+        set(value) {
+            field = value
+            divider.setBackgroundColor(value)
+        }
+
     init {
 
         View.inflate(context, R.layout.and__setting_item_view, this)
@@ -83,6 +90,7 @@ class SettingItemView
         accessoryTv = findViewById(R.id.accessory_tv)
         accessoryContainer = findViewById(R.id.accessory_container)
         switch = findViewById(R.id.tailSwitch)
+        divider = findViewById(R.id.split_line)
 
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SettingItemView, defStyle, 0)
         setIcon(a.getResourceId(R.styleable.SettingItemView_itemIcon, -1))
@@ -96,6 +104,9 @@ class SettingItemView
         }
         a.getColor(R.styleable.SettingItemView_descriptionColor, -1).let {
             if (it > 0) descriptionColor = it
+        }
+        a.getColor(R.styleable.SettingItemView_dividerColor, -1).let {
+            if (it > 0) dividerColor = it
         }
         a.recycle()
     }
