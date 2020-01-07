@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top"
+        android:gravity="center_vertical"
         android:minHeight="48dp"
         android:orientation="horizontal"
         android:paddingStart="16dp"
@@ -34,20 +34,17 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
+                style="@style/TextAppearance.AppCompat.Menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@string/font_family_black"
-                android:textSize="14sp"
                 tools:text="title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/desc"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2sp"
-                android:fontFamily="@string/font_family_light"
-                android:textSize="14sp"
                 tools:text="description text" />
 
         </LinearLayout>
@@ -64,23 +61,22 @@
             android:id="@+id/accessory_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@string/font_family_light"
-            android:textSize="14sp"
-            tools:text="description text" />
+            style="@style/TextAppearance.AppCompat.Small"
+            tools:text="accessory" />
 
         <LinearLayout
             android:id="@+id/accessory_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
 
     </LinearLayout>
 
     <View
         android:id="@+id/split_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:layout_marginStart="16dp"
         android:background="#b3b8c5" />
 

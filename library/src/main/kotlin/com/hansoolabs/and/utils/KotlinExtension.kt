@@ -2,12 +2,14 @@ package com.hansoolabs.and.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
+
 
 /**
  * Created by brownsoo on 2017. 8. 3..
@@ -24,6 +26,14 @@ fun View.setVisible(visible: Boolean) {
         View.VISIBLE
     } else {
         View.GONE
+    }
+}
+
+fun Context.isNightMode(): Boolean {
+    val nightModeFlags: Int = this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    return when (nightModeFlags) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        else -> false
     }
 }
 
