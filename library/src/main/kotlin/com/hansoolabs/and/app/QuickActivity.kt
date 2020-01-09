@@ -106,7 +106,7 @@ open class QuickActivity : AppCompatActivity(),
      * add a fragment into containerView
      */
     protected fun setContentFragment(@IdRes containerId: Int,
-                                     forceNewInstance: Boolean = false,
+                                     forceNewInstance: Boolean = true,
                                      builder: (Bundle?) -> Fragment) {
         val fragmentManager = supportFragmentManager
         var fragment = fragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)

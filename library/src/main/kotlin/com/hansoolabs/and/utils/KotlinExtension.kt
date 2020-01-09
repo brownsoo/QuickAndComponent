@@ -30,8 +30,8 @@ fun View.setVisible(visible: Boolean) {
 }
 
 fun Context.isNightMode(): Boolean {
-    val nightModeFlags: Int = this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-    return when (nightModeFlags) {
+    val currentNightMode: Int = this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    return when (currentNightMode) {
         Configuration.UI_MODE_NIGHT_YES -> true
         else -> false
     }
