@@ -17,7 +17,6 @@
         android:ellipsize="end"
         android:fontFamily="@string/font_family_regular"
         android:maxLines="1"
-        android:textColor="@color/and__white"
         android:textSize="14sp"
         tools:text="12" />
 
@@ -27,7 +26,6 @@
         android:ellipsize="end"
         android:fontFamily="@string/font_family_regular"
         android:maxLines="1"
-        android:textColor="@color/and__shuttle_gray"
         android:textSize="14sp"
         tools:text="/" />
 
@@ -38,7 +36,6 @@
         android:ellipsize="end"
         android:fontFamily="@string/font_family_regular"
         android:maxLines="1"
-        android:textColor="@color/and__shuttle_gray"
         android:textSize="14sp"
         tools:text="12" />
 </LinearLayout>

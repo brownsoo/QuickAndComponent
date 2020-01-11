@@ -30,7 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class QuickFragment : Fragment(),
-        QuickDialogListener, AppForegroundObserver.AppForegroundListener {
+    QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
     protected var resumed = false
 
@@ -42,7 +42,7 @@ open class QuickFragment : Fragment(),
     private var errorView: View? = null
 
     private var viewForeground = false
-    
+
     protected val appForeground: Boolean
         get() = !AppForegroundObserver.instance.isAppInBackground
 
@@ -55,7 +55,8 @@ open class QuickFragment : Fragment(),
         createCommonExceptionHandler()
     }
 
-    protected open fun createCommonExceptionHandler(): BaseExceptionHandler = BaseExceptionHandler(this)
+    protected open fun createCommonExceptionHandler(): BaseExceptionHandler =
+        BaseExceptionHandler(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,9 +74,10 @@ open class QuickFragment : Fragment(),
         var err = errorView
         if (err == null) {
             err = layoutInflater.inflate(R.layout.and__error_content, root, false)
-            err.layoutParams =  ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT)
+            err.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             err.visibility = View.GONE
             root.addView(err)
             errorView = err
@@ -195,16 +197,18 @@ open class QuickFragment : Fragment(),
             mainHandler.post { showProgressMsg(title, message) }
             return
         }
+
         if (isLive() && context != null) {
-            if (progressMsgView == null) {
-                progressMsgView = MessageProgressView(context!!)
-                progressMsgView?.apply {
-                    layoutParams = FrameLayout.LayoutParams(-1, -1)
-                }
-                root.addView(progressMsgView)
+            var msgView = progressMsgView
+            if (msgView == null) {
+                msgView = MessageProgressView(context!!)
+                msgView.layoutParams = FrameLayout.LayoutParams(-1, -1)
+                progressMsgView = msgView
+                root.addView(msgView)
+            } else {
+                msgView.setMessage(message)
+                msgView.visibility = View.VISIBLE
             }
-            progressMsgView?.setMessage(message)
-            progressMsgView?.visibility = View.VISIBLE
         }
     }
 
@@ -239,11 +243,11 @@ open class QuickFragment : Fragment(),
             e.printStackTrace()
             context?.let {
                 AlertDialog.Builder(it)
-                        .setTitle("Failed to find proper app")
-                        .setMessage("Please install the app which can handle this command")
-                        .setPositiveButton("Close", null)
-                        .setCancelable(true)
-                        .show()
+                    .setTitle("Failed to find proper app")
+                    .setMessage("Please install the app which can handle this command")
+                    .setPositiveButton("Close", null)
+                    .setCancelable(true)
+                    .show()
             }
         }
     }

@@ -106,7 +106,9 @@ class BillingManager(
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
     fun init() {
-        billingClient = BillingClient.newBuilder(activity).setListener(this).build()
+        billingClient = BillingClient.newBuilder(activity)
+            .enablePendingPurchases()
+            .setListener(this).build()
         HLog.d(TAG, klass, "starting ")
         startServiceConnection(Runnable {
             updatesListener.onBillingClientSetupFinished()
