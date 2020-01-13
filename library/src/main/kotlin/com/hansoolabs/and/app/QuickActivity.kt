@@ -82,7 +82,7 @@ open class QuickActivity : AppCompatActivity(),
         postOnSetContentView(view, params)
     }
 
-    protected lateinit var rootLayout: FrameLayout
+    protected var rootLayout: FrameLayout? = null
     protected open lateinit var progressMsgView: MessageProgressView
 
     private fun postOnSetContentView(view: View?, params: ViewGroup.LayoutParams?) {
@@ -91,7 +91,7 @@ open class QuickActivity : AppCompatActivity(),
         if (view == null || view !is FrameLayout || view is ScrollView) {
             rootLayout = FrameLayout(this)
             view?.layoutParams = FrameLayout.LayoutParams(-1, -1)
-            rootLayout.addView(view)
+            rootLayout!!.addView(view)
         } else {
             rootLayout = view
         }
@@ -99,7 +99,7 @@ open class QuickActivity : AppCompatActivity(),
         progressMsgView = MessageProgressView(this)
         progressMsgView.layoutParams = FrameLayout.LayoutParams(-1, -1)
         progressMsgView.visibility = View.GONE
-        rootLayout.addView(progressMsgView)
+        rootLayout!!.addView(progressMsgView)
 
         if (params == null) {
             super.setContentView(rootLayout)
@@ -109,7 +109,7 @@ open class QuickActivity : AppCompatActivity(),
     }
 
     override fun <T : View> findViewById(id: Int): T? {
-        return rootLayout.findViewById(id) ?: super.findViewById(id)
+        return rootLayout?.findViewById(id) ?: super.findViewById(id)
     }
 
     /**
@@ -211,7 +211,7 @@ open class QuickActivity : AppCompatActivity(),
         if (!isFinishing) {
             if (progressMsgView.isShowing) {
                 progressMsgView.setMessage(message)
-                rootLayout.bringChildToFront(progressMsgView)
+                rootLayout?.bringChildToFront(progressMsgView)
                 return
             }
             progressMsgView.setMessage(message)
