@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     android:orientation="vertical">
 
     <TextView
@@ -57,10 +58,10 @@
         android:paddingRight="6dp"
         android:paddingTop="8dp">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_negative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@color/and__valencia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
@@ -72,9 +73,9 @@
             android:textSize="14sp"
             tools:text="ne" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_alternative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="?android:attr/textColorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,9 +88,10 @@
             android:textSize="14sp"
             tools:text="nu" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_positive"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"

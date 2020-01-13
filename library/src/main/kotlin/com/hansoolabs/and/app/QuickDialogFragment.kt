@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Point
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
+import com.hansoolabs.and.utils.UiUtil
 
 /**
  *
@@ -147,8 +149,24 @@ open class QuickDialogFragment : DialogFragment() {
         }
     }
     
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
+    protected open fun setupDialogWindow(dialog: Dialog) {
+        var width = -1
+        activity?.windowManager?.defaultDisplay?.let { display ->
+            val size = Point()
+            display.getSize(size)
+            width = size.x
+        }
+        HLog.d("quick", "setupDialogWindow", width)
+        dialog.window?.let {
+            val params = it.attributes
+            if (width < 0) {
+                params.width = UiUtil.dp2px(280f)
+            } else {
+                params.width = Math.min(UiUtil.dp2px(400f), (width * 0.8).toInt())
+            }
+            it.attributes = params
+        }
+    }
     
     protected open fun initLayout(view: View) {
         titleView = view.findViewById(R.id.alert_dialog_title)

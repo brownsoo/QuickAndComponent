@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?android:attr/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -56,9 +57,8 @@
         android:paddingLeft="6dp"
         android:paddingRight="6dp">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_negative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -66,13 +66,13 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/and__valencia"
+            style="?android:attr/buttonBarButtonStyle"
             android:textSize="14sp"
             tools:text="ne" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_alternative"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -81,12 +81,12 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:textColor="?android:attr/textColorSecondary"
+            style="?android:attr/buttonBarButtonStyle"
             android:textSize="14sp"
             tools:text="nu" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_positive"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -95,6 +95,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:textColor="?android:attr/textColorPrimary"
+            style="?android:attr/buttonBarButtonStyle"
             android:textSize="14sp"
             tools:text="p" />
 
