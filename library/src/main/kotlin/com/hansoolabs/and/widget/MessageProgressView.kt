@@ -14,9 +14,9 @@ import com.hansoolabs.and.R
  */
 
 class MessageProgressView
-    @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : ConstraintLayout(context, attrs, defStyleAttr) {
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    ConstraintLayout(context, attrs, defStyleAttr) {
 
     var isIndeterminate: Boolean
         get() = progressBar.isIndeterminate
@@ -28,12 +28,13 @@ class MessageProgressView
             field = value
             bg.isClickable = !isBackClickable
         }
-    var isShowing: Boolean = this.visibility == View.VISIBLE
-        private set
-    override fun setVisibility(visibility: Int) {
-        super.setVisibility(visibility)
-        isShowing = visibility == View.VISIBLE
-    }
+    var isShowing: Boolean
+        set(value) {
+            this.visibility = if (value) View.VISIBLE else View.GONE
+        }
+        get() {
+            return this.visibility == View.VISIBLE
+        }
 
     private var progressBar: ContentLoadingProgressBar
     private var textView: TextView

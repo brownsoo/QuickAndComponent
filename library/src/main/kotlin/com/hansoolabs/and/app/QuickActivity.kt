@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.UiThread
@@ -20,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.hansoolabs.and.AppForegroundObserver
-import com.hansoolabs.and.R
 import com.hansoolabs.and.error.BaseExceptionHandler
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
@@ -43,10 +43,6 @@ open class QuickActivity : AppCompatActivity(),
         get() = !AppForegroundObserver.instance.isAppInBackground
 
     protected var viewForeground = false
-
-    protected var errorView: View? = null
-
-    private var progressMsgView: MessageProgressView? = null
 
     protected val compositeBag by lazy { CompositeDisposable() }
 
@@ -72,34 +68,48 @@ open class QuickActivity : AppCompatActivity(),
         BaseExceptionHandler(this)
 
     override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        postOnSetContentView()
+        //super.setContentView(layoutResID)
+        val view = LayoutInflater.from(this).inflate(layoutResID, null)
+        postOnSetContentView(view, null)
     }
     override fun setContentView(view: View) {
-        super.setContentView(view)
-        postOnSetContentView()
+        // super.setContentView(view)
+        postOnSetContentView(view, null)
     }
 
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        super.setContentView(view, params)
-        postOnSetContentView()
+        //super.setContentView(view, params)
+        postOnSetContentView(view, params)
     }
 
-    @IdRes
-    protected open val rootViewId: Int? = null
+    protected lateinit var rootLayout: FrameLayout
+    protected open lateinit var progressMsgView: MessageProgressView
 
-    // TODO: remove
-    protected open fun postOnSetContentView() {
+    private fun postOnSetContentView(view: View?, params: ViewGroup.LayoutParams?) {
 
-        val rootId = rootViewId ?: return
-        val root = findViewById<ViewGroup>(rootId)
-        var err = errorView
-        if (err == null) {
-            err = LayoutInflater.from(this).inflate(R.layout.and__error_content, root, false)
-            err.layoutParams = ViewGroup.LayoutParams(-1, -1)
-            err.visibility = View.GONE
-            root.addView(err)
+        Log.d(TAG, "setContentView $view params=$params")
+        if (view == null || view !is FrameLayout || view is ScrollView) {
+            rootLayout = FrameLayout(this)
+            view?.layoutParams = FrameLayout.LayoutParams(-1, -1)
+            rootLayout.addView(view)
+        } else {
+            rootLayout = view
         }
+
+        progressMsgView = MessageProgressView(this)
+        progressMsgView.layoutParams = FrameLayout.LayoutParams(-1, -1)
+        progressMsgView.visibility = View.GONE
+        rootLayout.addView(progressMsgView)
+
+        if (params == null) {
+            super.setContentView(rootLayout)
+        } else {
+            super.setContentView(rootLayout, params)
+        }
+    }
+
+    override fun <T : View> findViewById(id: Int): T? {
+        return rootLayout.findViewById(id) ?: super.findViewById(id)
     }
 
     /**
@@ -191,34 +201,28 @@ open class QuickActivity : AppCompatActivity(),
 
     open fun showProgressMsg(title: String?, message: String?) {
 
-        val rootId = rootViewId ?: return
-        val root = findViewById<ViewGroup>(rootId)
+        //val rootId = rootLayout ?: return
+        //val root = findViewById<ViewGroup>(rootId)
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
             runOnUiThread { showProgressMsg(title, message) }
             return
         }
         if (!isFinishing) {
-            if (progressMsgView == null) {
-                progressMsgView = MessageProgressView(this)
-                progressMsgView?.apply {
-                    layoutParams = FrameLayout.LayoutParams(-1, -1)
-                }
-                root.addView(progressMsgView)
-            } else if (progressMsgView!!.isShowing) {
-                progressMsgView?.setMessage(message)
-                root.bringChildToFront(progressMsgView!!)
+            if (progressMsgView.isShowing) {
+                progressMsgView.setMessage(message)
+                rootLayout.bringChildToFront(progressMsgView)
                 return
             }
-            progressMsgView?.setMessage(message)
-            progressMsgView?.visibility = View.VISIBLE
+            progressMsgView.setMessage(message)
+            progressMsgView.isShowing = true
         }
     }
 
     @UiThread
     open fun hideProgressMsg() {
         Log.d(TAG, "hideProgressMsg")
-        progressMsgView?.visibility = View.GONE
+        progressMsgView.isShowing = false
     }
 
     @UiThread
