@@ -79,6 +79,17 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var altRunnable: Runnable? = null
     private var negativeRunnable: Runnable? = null
 
+    /**
+     * 기본 레이아웃
+     *
+     * 기본 다이어로그를 사용할 때 사용하는 레이아웃 값이다.
+     *
+     * (customView 와는 별개로 커스텀뷰를 사용할때는 적용되지 않는다.)
+     *
+     * 기본값: R.layout.and__bottom_dialog
+     */
+    @LayoutRes open val baseLayoutRes: Int = R.layout.and__bottom_dialog
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         setResult(RESULT_CANCELED)
@@ -106,7 +117,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.and__bottom_dialog, container, false)
+        return inflater.inflate(baseLayoutRes, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
