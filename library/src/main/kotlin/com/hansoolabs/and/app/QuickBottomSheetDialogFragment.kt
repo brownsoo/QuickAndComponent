@@ -416,22 +416,21 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
             return dialog
         }
 
-        fun show(fragmentManager: FragmentManager): T =
+        fun show(fragmentManager: FragmentManager) =
             show(fragmentManager, StringUtil.randomAlphaNumeric(20))
 
-        fun show(fragmentManager: FragmentManager, tag: String): T {
+        fun show(fragmentManager: FragmentManager, tag: String) {
+            if (fragmentManager.isStateSaved) return
             val dialog = build()
             dialog.show(fragmentManager, tag)
-            return dialog
         }
 
-        fun show(transaction: FragmentTransaction): T =
+        fun show(transaction: FragmentTransaction) =
             show(transaction, StringUtil.randomAlphaNumeric(20))
 
-        fun show(transaction: FragmentTransaction, tag: String): T {
+        fun show(transaction: FragmentTransaction, tag: String) {
             val dialog = build()
             dialog.show(transaction, tag)
-            return dialog
         }
     }
 }
