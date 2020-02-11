@@ -10,5 +10,6 @@
         <attr name="titleColor" format="color"/>
         <attr name="descriptionColor" format="color" />
         <attr name="dividerColor" format="color" />
+        <attr name="accessoryColor" format="color" />
     </declare-styleable>
 </resources>

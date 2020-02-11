@@ -81,6 +81,12 @@ class SettingItemView
             divider.setBackgroundColor(value)
         }
 
+    var accessoryColor: Int = Color.parseColor("#0d131b")
+        set(value) {
+            field = value
+            accessoryTv.setTextColor(value)
+        }
+
     init {
 
         View.inflate(context, R.layout.and__setting_item_view, this)
@@ -100,13 +106,18 @@ class SettingItemView
         switchVisible = a.getBoolean(R.styleable.SettingItemView_itemSwitch, false)
         isChecked = a.getBoolean(R.styleable.SettingItemView_itemChecked, false)
         a.getColor(R.styleable.SettingItemView_titleColor, -1).let {
-            if (it > 0) titleColor = it
+            if (it >= 0) titleColor = it
         }
         a.getColor(R.styleable.SettingItemView_descriptionColor, -1).let {
-            if (it > 0) descriptionColor = it
+            if (it >= 0) descriptionColor = it
         }
         a.getColor(R.styleable.SettingItemView_dividerColor, -1).let {
-            if (it > 0) dividerColor = it
+            if (it >= 0) dividerColor = it
+        }
+        a.getColor(R.styleable.SettingItemView_accessoryColor, -1).let {
+            if (it >= 0) {
+                accessoryColor = it
+            }
         }
         a.recycle()
     }
