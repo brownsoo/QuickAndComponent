@@ -64,59 +64,36 @@ open class QuickFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        onCreatingView(view)
-        return view
+        return onCreatingView(view, container)
     }
 
-    protected open fun onCreatingView(view: View?) {
+    protected open fun onCreatingView(view: View?, container: ViewGroup?): View? {
         HLog.d("quick", "onCreatingView")
-        val root = view as? ViewGroup ?: return
-        var err = errorView
-        if (err == null) {
-            err = layoutInflater.inflate(R.layout.and__error_content, root, false)
-            err.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            err.visibility = View.GONE
-            root.addView(err)
-            errorView = err
+        // 프레임 구조를 크게 4단 레이어로 구성
+        // baseFrame -> baseFrame -> loadingBar -> errorView
+        val context = this.context ?: return null
+        val baseFrame: FrameLayout
+        if (view == null) return null
+        if (view is FrameLayout) {
+            baseFrame = view
+        } else {
+            baseFrame = FrameLayout(context)
+            baseFrame.layoutParams = ViewGroup.LayoutParams(-1, -1)
+            view.layoutParams = FrameLayout.LayoutParams(-1, -1)
+            baseFrame.addView(view)
         }
 
+        val errorFrame = errorView ?: layoutInflater.inflate(R.layout.and__error_content, baseFrame, false)
+        if (!errorFrame.isInLayout) {
+            errorFrame.layoutParams = ViewGroup.LayoutParams(-1, -1)
+            errorFrame.visibility = View.GONE
+            baseFrame.addView(errorFrame)
+        }
+        errorView = errorFrame
+
+        return baseFrame
     }
 
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        // 프레임 구조를 크게 4단 레이어로 구성
-//        // baseFrame -> baseFrame -> loadingBar -> errorView
-//        // 0
-//        if (baseFrame == null) {
-//            baseFrame = FrameLayout(context!!).apply {
-//                layoutParams = ViewGroup.LayoutParams(
-//                        ViewGroup.LayoutParams.MATCH_PARENT,
-//                        ViewGroup.LayoutParams.MATCH_PARENT)
-//            }
-//        }
-//        baseFrame?.removeAllViews()
-//        // 1
-//        contentMain = createContentView(inflater, baseFrame, savedInstanceState)
-//        if (contentMain != null) {
-//            baseFrame?.addView(contentMain)
-//        }
-//        // 2
-//        if (loadingBar == null) {
-//            loadingBar = ContentLoadingProgressBar(context!!).apply {
-//                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, UiUtil.dp2px(5f))
-//            }
-//        }
-//        baseFrame?.addView(loadingBar)
-//        loadingBar?.visibility = View.GONE
-//        // 3
-//        if (errorView == null) {
-//            errorView = inflater.inflate(R.layout.and__error_content, baseFrame, false)
-//        }
-//        errorView?.let { baseFrame?.addView(it) }
-//        return baseFrame
-//    }
 
     @CallSuper
     override fun onStart() {
