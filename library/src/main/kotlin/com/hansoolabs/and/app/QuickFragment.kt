@@ -1,6 +1,7 @@
 package com.hansoolabs.and.app
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,7 +9,9 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
@@ -64,23 +67,23 @@ open class QuickFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        return onCreatingView(view, container)
+        return setupContentView(view, container)
     }
 
-    protected open fun onCreatingView(view: View?, container: ViewGroup?): View? {
+    protected open fun setupContentView(view: View?, container: ViewGroup?): View? {
         HLog.d("quick", "onCreatingView")
         // 프레임 구조를 크게 4단 레이어로 구성
         // baseFrame -> baseFrame -> loadingBar -> errorView
         val context = this.context ?: return null
         val baseFrame: FrameLayout
         if (view == null) return null
-        if (view is FrameLayout) {
-            baseFrame = view
-        } else {
+        if (view !is FrameLayout || view is ScrollView) {
             baseFrame = FrameLayout(context)
             baseFrame.layoutParams = ViewGroup.LayoutParams(-1, -1)
             view.layoutParams = FrameLayout.LayoutParams(-1, -1)
             baseFrame.addView(view)
+        } else {
+            baseFrame = view
         }
 
         val errorFrame = errorView ?: layoutInflater.inflate(R.layout.and__error_content, baseFrame, false)
@@ -209,7 +212,13 @@ open class QuickFragment : Fragment(),
 
     @UiThread
     open fun hideKeyboard(focusView: View?) {
-        UiUtil.hideKeyboard(this)
+        val target = focusView ?: activity?.currentFocus
+        if (target != null) {
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(target.windowToken, 0)
+        } else {
+            UiUtil.hideKeyboard(this)
+        }
     }
 
     @CallSuper

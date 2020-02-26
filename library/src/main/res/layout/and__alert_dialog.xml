@@ -61,7 +61,7 @@
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_negative"
-            android:textColor="@color/and__valencia"
+            android:textColor="?android:attr/textColorSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"

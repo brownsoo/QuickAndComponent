@@ -2,6 +2,7 @@ package com.hansoolabs.and.app
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ScrollView
 import androidx.annotation.CallSuper
@@ -68,26 +70,22 @@ open class QuickActivity : AppCompatActivity(),
         BaseExceptionHandler(this)
 
     override fun setContentView(layoutResID: Int) {
-        //super.setContentView(layoutResID)
         val view = LayoutInflater.from(this).inflate(layoutResID, null)
-        postOnSetContentView(view, null)
+        setupContentView(view, null)
     }
     override fun setContentView(view: View) {
-        // super.setContentView(view)
-        postOnSetContentView(view, null)
+        setupContentView(view, null)
     }
 
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        //super.setContentView(view, params)
-        postOnSetContentView(view, params)
+        setupContentView(view, params)
     }
 
     protected var rootLayout: FrameLayout? = null
     protected open lateinit var progressMsgView: MessageProgressView
 
-    private fun postOnSetContentView(view: View?, params: ViewGroup.LayoutParams?) {
-
-        Log.d(TAG, "setContentView $view params=$params")
+    private fun setupContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        Log.d(TAG, "setupContentView $view params=$params")
         if (view == null || view !is FrameLayout || view is ScrollView) {
             rootLayout = FrameLayout(this)
             view?.layoutParams = FrameLayout.LayoutParams(-1, -1)
@@ -227,12 +225,22 @@ open class QuickActivity : AppCompatActivity(),
 
     @UiThread
     open fun hideKeyboard() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post { hideKeyboard() }
+            return
+        }
         hideKeyboard(null)
     }
 
     @UiThread
     open fun hideKeyboard(focusView: View?) {
-        UiUtil.hideKeyboard(this)
+        val target = focusView ?: this.currentFocus
+        if (target != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(target.windowToken, 0)
+        } else {
+            UiUtil.hideKeyboard(this)
+        }
     }
 
     @CallSuper
