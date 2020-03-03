@@ -34,8 +34,8 @@ open class BaseActivity : RxAppCompatActivity(),
     AppForegroundObserver.AppForegroundListener {
 
     companion object {
-        const val CONTENT_FRAGMENT_TAG = "content-fragment+"
-        const val TAG = "BaseActivity"
+        private const val CONTENT_FRAGMENT_TAG = "content-fragment+"
+        private const val TAG = "BaseActivity"
     }
 
     protected var resumed = false
