@@ -61,8 +61,21 @@ object UiUtil {
     }
     
     @JvmStatic
-    fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT) =
-        toast(context, context.getString(textResId), time)
+    fun toastShort(context: Context?, @StringRes textResId: Int): Toast  {
+        if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_SHORT)
+        return toast(context, context.getString(textResId), Toast.LENGTH_SHORT)
+    }
+
+    @JvmStatic
+    fun toastLong(context: Context?, @StringRes textResId: Int): Toast  {
+        if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_LONG)
+        return toast(context, context.getString(textResId), Toast.LENGTH_LONG)
+    }
+
+    @JvmStatic
+    fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT): Toast {
+        return toast(context, context.getString(textResId), time)
+    }
 
     @SuppressLint("InflateParams")
     @JvmStatic

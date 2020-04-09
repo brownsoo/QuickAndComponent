@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.hansoolabs.and.app
 
 import android.content.ActivityNotFoundException
@@ -6,43 +8,51 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
+import android.os.Message
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.hansoolabs.and.AppForegroundObserver
-import com.hansoolabs.and.R
 import com.hansoolabs.and.error.BaseExceptionHandler
-import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
-import com.hansoolabs.and.widget.MessageProgressView
+import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
-
-/**
- *
- * Created by brownsoo on 2017. 5. 12..
- */
-
+import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class QuickFragment : Fragment(),
     QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 
-    protected var resumed = false
-
-    protected val mainHandler: Handler by lazy {
-        Handler(Looper.getMainLooper())
+    companion object {
+        private const val WHAT_DISMISS_PROGRESS = -11
     }
 
-    private var progressMsgView: MessageProgressView? = null
-    private var errorView: View? = null
+    protected var resumed = false
+
+    private val mainHandler by lazy { QuickMainHandler(this) }
+
+    private class QuickMainHandler(fragment: QuickFragment) : Handler(Looper.getMainLooper()) {
+        private val ref = WeakReference(fragment)
+        override fun handleMessage(msg: Message?) {
+            val base = ref.get()
+            base?.handleMainHandlerMessage(msg)
+        }
+    }
+
+    @CallSuper
+    protected open fun handleMainHandlerMessage(msg: Message?) {
+        if (msg?.what == WHAT_DISMISS_PROGRESS) {
+            progressDialog?.dismiss()
+        }
+    }
+
+    protected fun getMainHandler(): Handler? = if (!isLive()) null else mainHandler
+
+    protected open var progressDialog: MessageProgressDialog? = null
 
     private var viewForeground = false
 
@@ -61,42 +71,10 @@ open class QuickFragment : Fragment(),
     protected open fun createCommonExceptionHandler(): BaseExceptionHandler =
         BaseExceptionHandler(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-        return setupContentView(view, container)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        progressDialog = MessageProgressDialog(this.context!!)
     }
-
-    protected open fun setupContentView(view: View?, container: ViewGroup?): View? {
-        HLog.d("quick", "onCreatingView")
-        // 프레임 구조를 크게 4단 레이어로 구성
-        // baseFrame -> baseFrame -> loadingBar -> errorView
-        val context = this.context ?: return null
-        val baseFrame: FrameLayout
-        if (view == null) return null
-        if (view !is FrameLayout || view is ScrollView) {
-            baseFrame = FrameLayout(context)
-            baseFrame.layoutParams = ViewGroup.LayoutParams(-1, -1)
-            view.layoutParams = FrameLayout.LayoutParams(-1, -1)
-            baseFrame.addView(view)
-        } else {
-            baseFrame = view
-        }
-
-        val errorFrame = errorView ?: layoutInflater.inflate(R.layout.and__error_content, baseFrame, false)
-        if (!errorFrame.isInLayout) {
-            errorFrame.layoutParams = ViewGroup.LayoutParams(-1, -1)
-            errorFrame.visibility = View.GONE
-            baseFrame.addView(errorFrame)
-        }
-        errorView = errorFrame
-
-        return baseFrame
-    }
-
 
     @CallSuper
     override fun onStart() {
@@ -167,38 +145,28 @@ open class QuickFragment : Fragment(),
     }
 
     open fun showProgressMsg(title: String?, message: String?) {
-
-        val root = view as? FrameLayout
-        if (root == null) {
-            HLog.e("quick", "root view need to be FRAME LAYOUT to show message view")
-            return
-        }
+        if (!isLive()) return
+        val context = this.context ?: return
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mainHandler.post { showProgressMsg(title, message) }
             return
         }
-
-        if (isLive() && context != null) {
-            var msgView = progressMsgView
-            if (msgView == null) {
-                msgView = MessageProgressView(context!!)
-                msgView.layoutParams = FrameLayout.LayoutParams(-1, -1)
-                progressMsgView = msgView
-                root.addView(msgView)
-            } else {
-                msgView.setMessage(message)
-                msgView.visibility = View.VISIBLE
-            }
+        val dialog = progressDialog ?: return
+        getMainHandler()?.removeMessages(WHAT_DISMISS_PROGRESS)
+        if (dialog.isShowing) {
+            dialog.message = message
+            return
         }
+        dialog.message = message
+        dialog.show()
     }
 
     @UiThread
     open fun hideProgressMsg() {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            mainHandler.post { hideProgressMsg() }
-            return
+        getMainHandler()?.let {
+            it.removeMessages(WHAT_DISMISS_PROGRESS)
+            it.sendEmptyMessageDelayed(WHAT_DISMISS_PROGRESS, 100)
         }
-        progressMsgView?.visibility = View.GONE
     }
 
     @UiThread

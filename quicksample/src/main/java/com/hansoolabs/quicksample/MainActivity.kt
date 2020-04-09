@@ -7,14 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
+import com.hansoolabs.and.app.QuickActivity
 import com.hansoolabs.and.app.QuickBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : QuickActivity() {
+
+    private var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +25,13 @@ class MainActivity : AppCompatActivity() {
                 .setView(R.layout.bottom_input_dialog)
                 .build()
                 .show(supportFragmentManager, "tag-bottom-dialog")
+        }
+
+        btn_progress_show.setOnClickListener {
+            count ++
+            showProgressMsg("$count")
+
+            getMainHandler()?.postDelayed({ hideProgressMsg() }, 2000)
         }
     }
 }
@@ -55,11 +62,11 @@ class BottomDialog: QuickBottomSheetDialogFragment() {
     override fun initLayout(view: View) {
         super.initLayout(view)
 
-
         val contentView = view.rootView
         Log.d("quick_test", "contentView=$contentView")
         Log.d("quick_test", "contentView.rootView=${contentView.rootView}")
         contentView.viewTreeObserver.addOnGlobalLayoutListener {
+            val dialog = this.dialog ?: return@addOnGlobalLayoutListener
             val r = Rect()
             contentView.getWindowVisibleDisplayFrame(r)
             val screenHeight = dialog.window!!.decorView.height

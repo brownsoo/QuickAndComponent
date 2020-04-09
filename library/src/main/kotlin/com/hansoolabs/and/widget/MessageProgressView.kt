@@ -41,8 +41,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var bg: View
 
     init {
-        View.inflate(context, R.layout.and__message_progress, this)
-        progressBar = findViewById(R.id.message_loading_progressbar)
+        View.inflate(context, R.layout.quick__message_view, this)
+        progressBar = findViewById(R.id.message_progressbar)
         textView = findViewById(R.id.message)
         bg = findViewById(R.id.background)
         bg.isClickable = true

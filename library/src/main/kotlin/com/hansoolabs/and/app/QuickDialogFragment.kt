@@ -144,8 +144,8 @@ open class QuickDialogFragment : DialogFragment() {
     
     override fun onStart() {
         super.onStart()
-        if (dialog != null) {
-            setupDialogWindow(dialog!!)
+        this.dialog?.let {
+            setupDialogWindow(it)
         }
     }
     
@@ -188,50 +188,56 @@ open class QuickDialogFragment : DialogFragment() {
         val alt = args.getCharSequence(EXTRA_ALT_BUTTON)
         
         if (TextUtils.isEmpty(title)) {
-            titleView!!.visibility = View.GONE
+            titleView?.visibility = View.GONE
         } else {
-            titleView!!.visibility = View.VISIBLE
-            titleView!!.text = title
+            titleView?.visibility = View.VISIBLE
+            titleView?.text = title
         }
         if (TextUtils.isEmpty(message)) {
-            messageView!!.visibility = View.GONE
+            messageView?.visibility = View.GONE
         } else {
-            messageView!!.visibility = View.VISIBLE
-            messageView!!.text = message
+            messageView?.visibility = View.VISIBLE
+            messageView?.text = message
         }
         if (customLayoutResId > -1) {
             val inflater = LayoutInflater.from(context)
             customView = inflater.inflate(customLayoutResId, customViewFrame, true)
-            customViewFrame!!.visibility = View.VISIBLE
+            customViewFrame?.visibility = View.VISIBLE
         } else {
-            customViewFrame!!.visibility = View.GONE
+            customViewFrame?.visibility = View.GONE
         }
-        
-        if (TextUtils.isEmpty(positive)) {
-            positiveBtn!!.visibility = View.GONE
-            positiveBtn!!.setOnClickListener(null)
-        } else {
-            positiveBtn!!.text = positive
-            positiveBtn!!.visibility = View.VISIBLE
-            positiveBtn!!.setOnClickListener { onPositiveButtonClicked() }
+
+        positiveBtn?.let { btn ->
+            if (TextUtils.isEmpty(positive)) {
+                btn.visibility = View.GONE
+                btn.setOnClickListener(null)
+            } else {
+                btn.text = positive
+                btn.visibility = View.VISIBLE
+                btn.setOnClickListener { onPositiveButtonClicked() }
+            }
         }
-        
-        if (TextUtils.isEmpty(negative)) {
-            negativeBtn!!.visibility = View.GONE
-            negativeBtn!!.setOnClickListener(null)
-        } else {
-            negativeBtn!!.text = negative
-            negativeBtn!!.visibility = View.VISIBLE
-            negativeBtn!!.setOnClickListener { onNegativeButtonClicked() }
+
+        negativeBtn?.let { btn ->
+            if (TextUtils.isEmpty(negative)) {
+                btn.visibility = View.GONE
+                btn.setOnClickListener(null)
+            } else {
+                btn.text = negative
+                btn.visibility = View.VISIBLE
+                btn.setOnClickListener { onNegativeButtonClicked() }
+            }
         }
-        
-        if (TextUtils.isEmpty(alt)) {
-            alternativeBtn!!.visibility = View.GONE
-            alternativeBtn!!.setOnClickListener(null)
-        } else {
-            alternativeBtn!!.text = alt
-            alternativeBtn!!.visibility = View.VISIBLE
-            alternativeBtn!!.setOnClickListener { onAlternativeButtonClicked() }
+
+        alternativeBtn?.let { btn ->
+            if (TextUtils.isEmpty(alt)) {
+                btn.visibility = View.GONE
+                btn.setOnClickListener(null)
+            } else {
+                btn.text = alt
+                btn.visibility = View.VISIBLE
+                btn.setOnClickListener { onAlternativeButtonClicked() }
+            }
         }
     }
 

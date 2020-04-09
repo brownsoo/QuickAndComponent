@@ -8,13 +8,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.UiThread
@@ -26,7 +21,7 @@ import com.hansoolabs.and.AppForegroundObserver
 import com.hansoolabs.and.error.BaseExceptionHandler
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
-import com.hansoolabs.and.widget.MessageProgressView
+import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
@@ -38,6 +33,7 @@ open class QuickActivity : AppCompatActivity(),
     companion object {
         private const val CONTENT_FRAGMENT_TAG = "content-fragment+"
         private const val TAG = "BaseActivity"
+        private const val WHAT_DISMISS_PROGRESS = -10
     }
 
     protected var resumed = false
@@ -48,9 +44,9 @@ open class QuickActivity : AppCompatActivity(),
 
     protected val compositeBag by lazy { CompositeDisposable() }
 
-    private val mainHandler by lazy {  BaseHandler(this) }
+    private val mainHandler by lazy { QuickMainHandler(this) }
 
-    private class BaseHandler(activity: QuickActivity) : Handler(Looper.getMainLooper()) {
+    private class QuickMainHandler(activity: QuickActivity) : Handler(Looper.getMainLooper()) {
         private val ref = WeakReference(activity)
         override fun handleMessage(msg: Message?) {
             val base = ref.get()
@@ -64,50 +60,22 @@ open class QuickActivity : AppCompatActivity(),
 
     protected fun getMainHandler(): Handler? = if (isFinishing) null else mainHandler
 
-    protected open fun handleMainHandlerMessage(msg: Message?) {}
+    @CallSuper
+    protected open fun handleMainHandlerMessage(msg: Message?) {
+        if (msg?.what == WHAT_DISMISS_PROGRESS) {
+            progressDialog?.dismiss()
+        }
+    }
 
     protected open fun createCommonExceptionHandler(): BaseExceptionHandler =
         BaseExceptionHandler(this)
 
-    override fun setContentView(layoutResID: Int) {
-        val view = LayoutInflater.from(this).inflate(layoutResID, null)
-        setupContentView(view, null)
-    }
-    override fun setContentView(view: View) {
-        setupContentView(view, null)
-    }
 
-    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        setupContentView(view, params)
-    }
+    protected open var progressDialog: MessageProgressDialog? = null
 
-    protected var rootLayout: FrameLayout? = null
-    protected open lateinit var progressMsgView: MessageProgressView
-
-    private fun setupContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        Log.d(TAG, "setupContentView $view params=$params")
-        if (view == null || view !is FrameLayout || view is ScrollView) {
-            rootLayout = FrameLayout(this)
-            view?.layoutParams = FrameLayout.LayoutParams(-1, -1)
-            rootLayout!!.addView(view)
-        } else {
-            rootLayout = view
-        }
-
-        progressMsgView = MessageProgressView(this)
-        progressMsgView.layoutParams = FrameLayout.LayoutParams(-1, -1)
-        progressMsgView.visibility = View.GONE
-        rootLayout!!.addView(progressMsgView)
-
-        if (params == null) {
-            super.setContentView(rootLayout)
-        } else {
-            super.setContentView(rootLayout, params)
-        }
-    }
-
-    override fun <T : View> findViewById(id: Int): T? {
-        return rootLayout?.findViewById(id) ?: super.findViewById(id)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        progressDialog = MessageProgressDialog(this)
     }
 
     /**
@@ -198,35 +166,34 @@ open class QuickActivity : AppCompatActivity(),
     }
 
     open fun showProgressMsg(title: String?, message: String?) {
-
-        //val rootId = rootLayout ?: return
-        //val root = findViewById<ViewGroup>(rootId)
-
         if (Looper.myLooper() != Looper.getMainLooper()) {
             runOnUiThread { showProgressMsg(title, message) }
             return
         }
+        val dialog = progressDialog ?: return
         if (!isFinishing) {
-            if (progressMsgView.isShowing) {
-                progressMsgView.setMessage(message)
-                rootLayout?.bringChildToFront(progressMsgView)
+            getMainHandler()?.removeMessages(WHAT_DISMISS_PROGRESS)
+            if (dialog.isShowing) {
+                dialog.message = message
                 return
             }
-            progressMsgView.setMessage(message)
-            progressMsgView.isShowing = true
+            dialog.message = message
+            dialog.show()
         }
     }
 
     @UiThread
     open fun hideProgressMsg() {
-        Log.d(TAG, "hideProgressMsg")
-        progressMsgView.isShowing = false
+        getMainHandler()?.let {
+            it.removeMessages(WHAT_DISMISS_PROGRESS)
+            it.sendEmptyMessageDelayed(WHAT_DISMISS_PROGRESS, 100)
+        }
     }
 
     @UiThread
     open fun hideKeyboard() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            mainHandler.post { hideKeyboard() }
+            getMainHandler()?.post { hideKeyboard() }
             return
         }
         hideKeyboard(null)
