@@ -146,7 +146,7 @@ open class QuickFragment : Fragment(),
 
     open fun showProgressMsg(title: String?, message: String?) {
         if (!isLive()) return
-        val context = this.context ?: return
+        this.context ?: return
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mainHandler.post { showProgressMsg(title, message) }
             return
