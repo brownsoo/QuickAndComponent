@@ -11,6 +11,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.net.Uri
+import android.os.Bundle
+import android.os.ResultReceiver
 import android.provider.Settings
 import androidx.annotation.StringRes
 import android.text.InputFilter
@@ -59,15 +61,15 @@ object UiUtil {
         }
         return dialog
     }
-    
+
     @JvmStatic
-    fun toastShort(context: Context?, @StringRes textResId: Int): Toast  {
+    fun toastShort(context: Context?, @StringRes textResId: Int): Toast {
         if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_SHORT)
         return toast(context, context.getString(textResId), Toast.LENGTH_SHORT)
     }
 
     @JvmStatic
-    fun toastLong(context: Context?, @StringRes textResId: Int): Toast  {
+    fun toastLong(context: Context?, @StringRes textResId: Int): Toast {
         if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_LONG)
         return toast(context, context.getString(textResId), Toast.LENGTH_LONG)
     }
@@ -98,31 +100,32 @@ object UiUtil {
             return false
         }
         viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val handled: Boolean
-                        handled = try {
-                            action.invoke()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            true
-                        }
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val handled: Boolean
+                    handled = try {
+                        action.invoke()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        true
+                    }
 
-                        if (handled) {
-                            val observer = view.viewTreeObserver
-                            if (observer.isAlive) {
-                                observer.removeOnGlobalLayoutListener(this)
-                            }
+                    if (handled) {
+                        val observer = view.viewTreeObserver
+                        if (observer.isAlive) {
+                            observer.removeOnGlobalLayoutListener(this)
                         }
                     }
-                })
+                }
+            })
         return true
     }
 
     @JvmStatic
     fun allowOnlyAlphaNumeric(editText: EditText): EditText {
         val curInputFilters = ArrayList(
-                Arrays.asList(*editText.filters))
+            Arrays.asList(*editText.filters)
+        )
         curInputFilters.add(0, AlphaNumericInputFilter())
         val newInputFilters = curInputFilters.toTypedArray()
         editText.filters = newInputFilters
@@ -131,8 +134,10 @@ object UiUtil {
 
 
     class AlphaNumericInputFilter : InputFilter {
-        override fun filter(source: CharSequence, start: Int, end: Int,
-                            dest: Spanned, dstart: Int, dend: Int): CharSequence? {
+        override fun filter(
+            source: CharSequence, start: Int, end: Int,
+            dest: Spanned, dstart: Int, dend: Int
+        ): CharSequence? {
 
             // Only keep characters that are alphanumeric
             val builder = StringBuilder()
@@ -171,9 +176,11 @@ object UiUtil {
     }
 
     @JvmStatic
-    fun encodeToBase64(image: Bitmap,
-                       compressFormat: Bitmap.CompressFormat,
-                       quality: Int): String {
+    fun encodeToBase64(
+        image: Bitmap,
+        compressFormat: Bitmap.CompressFormat,
+        quality: Int
+    ): String {
         val byteArrayOS = ByteArrayOutputStream()
         image.compress(compressFormat, quality, byteArrayOS)
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT)
@@ -188,18 +195,22 @@ object UiUtil {
     @JvmStatic
     fun grantUriPermission(context: Context, intent: Intent, uri: Uri) {
         val resInfoList = context.packageManager
-                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         for (resolveInfo in resInfoList) {
             val packageName = resolveInfo.activityInfo.packageName
-            context.grantUriPermission(packageName, uri,
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            context.grantUriPermission(
+                packageName, uri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
         }
     }
 
     @JvmStatic
     fun revokeUriPermission(context: Context, uri: Uri) {
-        context.revokeUriPermission(uri,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.revokeUriPermission(
+            uri,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
     }
 
     @JvmStatic
@@ -209,25 +220,63 @@ object UiUtil {
     }
 
     @JvmStatic
-    fun hideKeyboard(context: Context, view: View) {
+    fun hideKeyboard(context: Context?, view: View, hiddenComplete: ((Boolean) -> Unit)? = null) {
+        if (context == null) {
+            hiddenComplete?.invoke(false)
+            return
+        }
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.SHOW_IMPLICIT)
-    }
-    
-    @JvmStatic
-    fun hideKeyboard(fragmentV4: androidx.fragment.app.Fragment) {
-        fragmentV4.activity?.let {
-            hideKeyboard(it)
+        val hidden =
+            imm.hideSoftInputFromWindow(view.windowToken, 0, object : ResultReceiver(null) {
+                override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+//                If non-null, this will be called by the IME when
+//                * it has processed your request to tell you what it has done.  The result
+//                * code you receive may be either {@link #RESULT_UNCHANGED_SHOWN},
+//                * {@link #RESULT_UNCHANGED_HIDDEN}, {@link #RESULT_SHOWN}, or
+//                * {@link #RESULT_HIDDEN}.
+                    when (resultCode) {
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN -> {
+                            hiddenComplete?.invoke(false)
+                        }
+                        InputMethodManager.RESULT_UNCHANGED_HIDDEN -> {
+                            hiddenComplete?.invoke(true)
+                        }
+                        InputMethodManager.RESULT_SHOWN -> {
+                            hiddenComplete?.invoke(false)
+                        }
+                        InputMethodManager.RESULT_HIDDEN -> {
+                            hiddenComplete?.invoke(true)
+                        }
+                        else -> {
+                            hiddenComplete?.invoke(false)
+                        }
+                    }
+                }
+            })
+        if (!hidden) {
+            val success =
+                imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            hiddenComplete?.invoke(success)
+        } else {
+            hiddenComplete?.invoke(true)
         }
     }
-    
+
     @JvmStatic
-    fun hideKeyboard(activity: Activity) {
+    fun hideKeyboard(
+        fragmentV4: androidx.fragment.app.Fragment,
+        hiddenComplete: ((Boolean) -> Unit)? = null
+    ) {
+        fragmentV4.activity?.let {
+            hideKeyboard(it, hiddenComplete)
+        }
+    }
+
+    @JvmStatic
+    fun hideKeyboard(activity: Activity, hiddenComplete: ((Boolean) -> Unit)? = null) {
         val v = activity.window.currentFocus
         if (v != null) {
-            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(v.windowToken, 0)
-            v.clearFocus()
+            hideKeyboard(activity, v, hiddenComplete)
         }
     }
 
@@ -237,7 +286,7 @@ object UiUtil {
         activity.windowManager.defaultDisplay.getMetrics(metrics)
         return metrics
     }
-    
+
     @JvmStatic
     fun getScreenInches(activity: Activity): Double {
         val dm = getScreenMetrics(activity)

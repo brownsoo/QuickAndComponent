@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.hansoolabs.and.AppForegroundObserver
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgressDialog
@@ -31,8 +32,8 @@ open class QuickActivity : AppCompatActivity(),
     AppForegroundObserver.AppForegroundListener {
 
     companion object {
+        private const val TAG = "QuickActivity"
         private const val CONTENT_FRAGMENT_TAG = "content-fragment+"
-        private const val TAG = "BaseActivity"
         private const val WHAT_DISMISS_PROGRESS = -10
     }
 
@@ -203,8 +204,9 @@ open class QuickActivity : AppCompatActivity(),
     open fun hideKeyboard(focusView: View?) {
         val target = focusView ?: this.currentFocus
         if (target != null) {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(target.windowToken, 0)
+            UiUtil.hideKeyboard(this, target) {
+                HLog.d(TAG, "QuickActivity", it)
+            }
         } else {
             UiUtil.hideKeyboard(this)
         }

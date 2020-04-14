@@ -88,7 +88,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
      *
      * 기본값: R.layout.and__bottom_dialog
      */
-    @LayoutRes open val baseLayoutRes: Int = R.layout.and__bottom_dialog
+    @LayoutRes open val baseLayoutRes: Int = R.layout.quick__bottom_dialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

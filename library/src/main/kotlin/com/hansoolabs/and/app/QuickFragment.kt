@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.hansoolabs.and.AppForegroundObserver
 import com.hansoolabs.and.error.BaseExceptionHandler
+import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgressDialog
@@ -29,6 +30,7 @@ open class QuickFragment : Fragment(),
 
     companion object {
         private const val WHAT_DISMISS_PROGRESS = -11
+        private const val TAG = "Quick"
     }
 
     protected var resumed = false
@@ -182,11 +184,16 @@ open class QuickFragment : Fragment(),
     open fun hideKeyboard(focusView: View?) {
         val target = focusView ?: activity?.currentFocus
         if (target != null) {
-            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(target.windowToken, 0)
+            UiUtil.hideKeyboard(context, target) {
+                HLog.d(TAG, "QuickFragment", it)
+            }
         } else {
             UiUtil.hideKeyboard(this)
         }
+    }
+
+    override fun onQuickDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
+        exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
 
     @CallSuper
@@ -206,8 +213,5 @@ open class QuickFragment : Fragment(),
         }
     }
 
-    override fun onQuickDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
-        exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
-    }
 
 }
