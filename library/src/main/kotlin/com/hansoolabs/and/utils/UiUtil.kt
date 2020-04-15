@@ -236,15 +236,19 @@ object UiUtil {
 //                * {@link #RESULT_HIDDEN}.
                     when (resultCode) {
                         InputMethodManager.RESULT_UNCHANGED_SHOWN -> {
+                            HLog.d("Quick", "hideSoftInputFromWindow", "RESULT_UNCHANGED_SHOWN")
                             hiddenComplete?.invoke(false)
                         }
                         InputMethodManager.RESULT_UNCHANGED_HIDDEN -> {
+                            HLog.d("Quick", "hideSoftInputFromWindow", "RESULT_UNCHANGED_HIDDEN")
                             hiddenComplete?.invoke(true)
                         }
                         InputMethodManager.RESULT_SHOWN -> {
+                            HLog.d("Quick", "hideSoftInputFromWindow", "RESULT_SHOWN")
                             hiddenComplete?.invoke(false)
                         }
                         InputMethodManager.RESULT_HIDDEN -> {
+                            HLog.d("Quick", "hideSoftInputFromWindow", "RESULT_HIDDEN")
                             hiddenComplete?.invoke(true)
                         }
                         else -> {
@@ -253,6 +257,8 @@ object UiUtil {
                     }
                 }
             })
+
+        HLog.d("Quick", "hideSoftInputFromWindow", "flag 0 failed")
         if (!hidden) {
             val success =
                 imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
@@ -268,7 +274,11 @@ object UiUtil {
         hiddenComplete: ((Boolean) -> Unit)? = null
     ) {
         fragmentV4.activity?.let {
-            hideKeyboard(it, hiddenComplete)
+            it.window?.decorView?.let { view ->
+                hideKeyboard(it, view, hiddenComplete)
+            } ?: kotlin.run {
+                hideKeyboard(it, hiddenComplete)
+            }
         }
     }
 
@@ -277,6 +287,8 @@ object UiUtil {
         val v = activity.window.currentFocus
         if (v != null) {
             hideKeyboard(activity, v, hiddenComplete)
+        } else {
+            hideKeyboard(activity, View(activity), hiddenComplete)
         }
     }
 

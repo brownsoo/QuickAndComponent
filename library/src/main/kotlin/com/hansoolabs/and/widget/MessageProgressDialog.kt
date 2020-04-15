@@ -3,24 +3,25 @@ package com.hansoolabs.and.widget
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.hansoolabs.and.R
 
 class MessageProgressDialog(
-        context: Context,
-        private var msg: String? = null
+    context: Context,
+    private var message: String? = null
 ) : Dialog(context) {
 
     private var textView: TextView? = null
     private var progressBar: ProgressBar? = null
 
-    var message: String? = null
-        set(value) {
-            field = value
-            textView?.text = value
-        }
+    fun setMessage(text: String?) {
+        this.message = text
+        textView?.text = text
+        textView?.visibility = if (text == null) View.GONE else View.VISIBLE
+    }
 
     var progress: Int = 0
         set(value) {
@@ -47,7 +48,7 @@ class MessageProgressDialog(
         textView = findViewById(R.id.message)
         progressBar = findViewById(R.id.message_progressbar)
 
-        textView?.text = msg
+        setMessage(message)
         progressBar?.max = maxProgress
         progressBar?.progress = progress
         progressBar?.isIndeterminate = isIndeterminate

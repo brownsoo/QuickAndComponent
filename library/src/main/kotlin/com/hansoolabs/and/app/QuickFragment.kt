@@ -3,14 +3,12 @@
 package com.hansoolabs.and.app
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.CallSuper
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
@@ -20,13 +18,15 @@ import com.hansoolabs.and.error.BaseExceptionHandler
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
+import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
 open class QuickFragment : Fragment(),
-    QuickDialogListener, AppForegroundObserver.AppForegroundListener {
+    QuickDialogListener, AppForegroundObserver.AppForegroundListener,
+    MessageProgress {
 
     companion object {
         private const val WHAT_DISMISS_PROGRESS = -11
@@ -87,8 +87,7 @@ open class QuickFragment : Fragment(),
     @CallSuper
     override fun onStop() {
         AppForegroundObserver.instance.unregisterObserver(this)
-        hideProgressMsg()
-        hideKeyboard()
+        hideMessageProgress()
         super.onStop()
     }
 
@@ -137,34 +136,35 @@ open class QuickFragment : Fragment(),
     }
 
     @UiThread
-    open fun showProgressMsg() {
-        showProgressMsg(null)
+    override fun showMessageProgress() {
+        showMessageProgress(null)
     }
 
     @UiThread
-    open fun showProgressMsg(message: String?) {
-        showProgressMsg(null, message)
+    override fun showMessageProgress(message: String?) {
+        showMessageProgress(null, message)
     }
 
-    open fun showProgressMsg(title: String?, message: String?) {
+    @UiThread
+    override fun showMessageProgress(title: String?, message: String?) {
         if (!isLive()) return
         this.context ?: return
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            mainHandler.post { showProgressMsg(title, message) }
+            mainHandler.post { showMessageProgress(title, message) }
             return
         }
         val dialog = progressDialog ?: return
         getMainHandler()?.removeMessages(WHAT_DISMISS_PROGRESS)
         if (dialog.isShowing) {
-            dialog.message = message
+            dialog.setMessage(message)
             return
         }
-        dialog.message = message
+        dialog.setMessage(message)
         dialog.show()
     }
 
     @UiThread
-    open fun hideProgressMsg() {
+    override fun hideMessageProgress() {
         getMainHandler()?.let {
             it.removeMessages(WHAT_DISMISS_PROGRESS)
             it.sendEmptyMessageDelayed(WHAT_DISMISS_PROGRESS, 100)
@@ -185,10 +185,12 @@ open class QuickFragment : Fragment(),
         val target = focusView ?: activity?.currentFocus
         if (target != null) {
             UiUtil.hideKeyboard(context, target) {
-                HLog.d(TAG, "QuickFragment", it)
+                HLog.d(TAG, "QuickFragment", "hideKeyboard", it)
             }
         } else {
-            UiUtil.hideKeyboard(this)
+            UiUtil.hideKeyboard(this) {
+                HLog.d(TAG, "QuickFragment", "hideKeyboard", it)
+            }
         }
     }
 

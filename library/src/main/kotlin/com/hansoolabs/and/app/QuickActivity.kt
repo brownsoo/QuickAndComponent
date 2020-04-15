@@ -2,14 +2,12 @@ package com.hansoolabs.and.app
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.UiThread
@@ -22,14 +20,16 @@ import com.hansoolabs.and.error.BaseExceptionHandler
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
+import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class QuickActivity : AppCompatActivity(),
-    QuickDialogListener,
-    AppForegroundObserver.AppForegroundListener {
+        QuickDialogListener,
+        AppForegroundObserver.AppForegroundListener,
+        MessageProgress {
 
     companion object {
         private const val TAG = "QuickActivity"
@@ -69,7 +69,7 @@ open class QuickActivity : AppCompatActivity(),
     }
 
     protected open fun createCommonExceptionHandler(): BaseExceptionHandler =
-        BaseExceptionHandler(this)
+            BaseExceptionHandler(this)
 
 
     protected open var progressDialog: MessageProgressDialog? = null
@@ -82,9 +82,11 @@ open class QuickActivity : AppCompatActivity(),
     /**
      * add a fragment into containerView
      */
-    protected fun setContentFragment(@IdRes containerId: Int,
-                                     builder: (Bundle?) -> Fragment,
-                                     forceNewInstance: Boolean = true) {
+    protected fun setContentFragment(
+            @IdRes containerId: Int,
+            builder: (Bundle?) -> Fragment,
+            forceNewInstance: Boolean = true
+    ) {
         val fragmentManager = supportFragmentManager
         var fragment = fragmentManager.findFragmentByTag(CONTENT_FRAGMENT_TAG)
         if (forceNewInstance || fragment == null) {
@@ -94,8 +96,8 @@ open class QuickActivity : AppCompatActivity(),
             }
             fragment = builder.invoke(intent.extras)
             transaction
-                .replace(containerId, fragment, CONTENT_FRAGMENT_TAG)
-                .commit()
+                    .replace(containerId, fragment, CONTENT_FRAGMENT_TAG)
+                    .commit()
             fragmentManager.executePendingTransactions()
         }
     }
@@ -107,8 +109,7 @@ open class QuickActivity : AppCompatActivity(),
 
     @CallSuper
     override fun onStop() {
-        hideProgressMsg()
-        hideKeyboard()
+        hideMessageProgress()
         AppForegroundObserver.instance.unregisterObserver(this)
         super.onStop()
     }
@@ -157,34 +158,34 @@ open class QuickActivity : AppCompatActivity(),
     }
 
     @UiThread
-    open fun showProgressMsg() {
-        showProgressMsg(null)
+    override fun showMessageProgress() {
+        showMessageProgress(null)
     }
 
     @UiThread
-    open fun showProgressMsg(message: String?) {
-        showProgressMsg(null, message)
+    override fun showMessageProgress(message: String?) {
+        showMessageProgress(null, message)
     }
 
-    open fun showProgressMsg(title: String?, message: String?) {
+    override fun showMessageProgress(title: String?, message: String?) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            runOnUiThread { showProgressMsg(title, message) }
+            runOnUiThread { showMessageProgress(title, message) }
             return
         }
         val dialog = progressDialog ?: return
         if (!isFinishing) {
             getMainHandler()?.removeMessages(WHAT_DISMISS_PROGRESS)
             if (dialog.isShowing) {
-                dialog.message = message
+                dialog.setMessage(message)
                 return
             }
-            dialog.message = message
+            dialog.setMessage(message)
             dialog.show()
         }
     }
 
     @UiThread
-    open fun hideProgressMsg() {
+    override fun hideMessageProgress() {
         getMainHandler()?.let {
             it.removeMessages(WHAT_DISMISS_PROGRESS)
             it.sendEmptyMessageDelayed(WHAT_DISMISS_PROGRESS, 100)
@@ -250,11 +251,11 @@ open class QuickActivity : AppCompatActivity(),
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
             AlertDialog.Builder(this)
-                .setTitle("Failed to find proper app")
-                .setMessage("Please install the app which can handle this command")
-                .setPositiveButton("Close", null)
-                .setCancelable(true)
-                .show()
+                    .setTitle("Failed to find proper app")
+                    .setMessage("Please install the app which can handle this command")
+                    .setPositiveButton("Close", null)
+                    .setCancelable(true)
+                    .show()
         }
 
     }
