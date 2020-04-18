@@ -30,7 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
  */
 
 
-@Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
+@Deprecated("use QuickFragment instead.")
 open class BaseFragment : RxFragment(),
         QuickDialogListener, AppForegroundObserver.AppForegroundListener {
 

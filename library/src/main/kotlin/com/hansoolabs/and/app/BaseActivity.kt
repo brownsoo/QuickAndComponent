@@ -28,7 +28,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
-@Suppress("MemberVisibilityCanBePrivate", "unused")
+@Deprecated("use QuickActivity instead.")
 open class BaseActivity : RxAppCompatActivity(),
     QuickDialogListener,
     AppForegroundObserver.AppForegroundListener {

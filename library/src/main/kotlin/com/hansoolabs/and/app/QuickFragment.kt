@@ -13,6 +13,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.hansoolabs.and.AppForegroundObserver
 import com.hansoolabs.and.error.BaseExceptionHandler
 import com.hansoolabs.and.utils.HLog
@@ -21,6 +22,7 @@ import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
+import java.lang.IllegalStateException
 import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
@@ -75,7 +77,7 @@ open class QuickFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        progressDialog = MessageProgressDialog(this.context!!)
+        progressDialog = MessageProgressDialog(this.requireContext())
     }
 
     @CallSuper
@@ -106,6 +108,15 @@ open class QuickFragment : Fragment(),
     override fun onDestroy() {
         rxBag.clear()
         super.onDestroy()
+    }
+
+    protected fun getFragmentManagerOrNull(): FragmentManager? {
+        try {
+            return parentFragmentManager
+        } catch (e: IllegalStateException) {
+            HLog.e(TAG, "QuickFragment", e)
+            return null
+        }
     }
 
     override fun onAppDidForeground() {
