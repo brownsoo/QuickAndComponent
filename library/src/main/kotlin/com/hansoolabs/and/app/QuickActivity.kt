@@ -38,6 +38,7 @@ open class QuickActivity : AppCompatActivity(),
     }
 
     protected var resumed = false
+
     protected val appForeground: Boolean
         get() = !AppForegroundObserver.instance.isAppInBackground
 
