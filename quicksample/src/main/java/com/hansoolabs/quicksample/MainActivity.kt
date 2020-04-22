@@ -29,9 +29,9 @@ class MainActivity : QuickActivity() {
 
         btn_progress_show.setOnClickListener {
             count ++
-            showProgressMsg("$count")
+            showMessageProgress("$count")
 
-            getMainHandler()?.postDelayed({ hideProgressMsg() }, 2000)
+            getMainHandler()?.postDelayed({ hideMessageProgress() }, 2000)
         }
     }
 }
