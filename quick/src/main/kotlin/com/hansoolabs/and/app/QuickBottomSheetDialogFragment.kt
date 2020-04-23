@@ -52,6 +52,8 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         const val RESULT_OK = QuickDialog.RESULT_OK
         const val RESULT_CANCELED = QuickDialog.RESULT_CANCELED
 
+        private const val TAG = "quick"
+
         @SuppressLint("ResourceType")
         @StyleRes
         protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
@@ -62,6 +64,172 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
                 outValue.resourceId
             }
+        }
+    }
+
+
+    class BasicBuilder(context: Context,
+                       themeResId: Int = 0) : Builder<QuickBottomSheetDialogFragment>(context, themeResId) {
+        override fun newInstance(): QuickBottomSheetDialogFragment {
+            return QuickBottomSheetDialogFragment()
+        }
+    }
+
+    @Suppress("unused")
+    abstract class Builder<T: QuickBottomSheetDialogFragment>
+    @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
+
+        @StyleRes
+        private val themeResId: Int = resolveDialogTheme(context, themeResId)
+
+        private var title: CharSequence? = null
+        private var message: CharSequence? = null
+
+        private var positiveButtonText: CharSequence? = null
+        private var altButtonText: CharSequence? = null
+        private var negativeButtonText: CharSequence? = null
+        private var defaultResultData: Bundle? = null
+        private var cancelable = true
+        private var targetFragment: Fragment? = null
+        private var requestCode: Int = 0
+        private var customViewResId = -1
+        private var positiveRunnable: Runnable? = null
+        private var altRunnable: Runnable? = null
+        private var negativeRunnable: Runnable? = null
+
+        fun setTitle(@StringRes titleId: Int): Builder<T> {
+            this.title = context.getText(titleId)
+            return this
+        }
+
+        fun setTitle(title: CharSequence?): Builder<T> {
+            this.title = title
+            return this
+        }
+
+        fun setMessage(@StringRes messageId: Int): Builder<T> {
+            this.message = context.getText(messageId)
+            return this
+        }
+
+        fun setMessage(message: CharSequence): Builder<T> {
+            this.message = message
+            return this
+        }
+
+        fun setPositiveButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
+            this.positiveButtonText = context.getText(textId)
+            this.positiveRunnable = runnable
+            return this
+        }
+
+        fun setPositiveButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
+            this.positiveButtonText = text
+            this.positiveRunnable = runnable
+            return this
+        }
+
+        fun setNegativeButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
+            this.negativeButtonText = context.getText(textId)
+            this.negativeRunnable = runnable
+            return this
+        }
+
+        fun setNegativeButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
+            this.negativeButtonText = text
+            this.negativeRunnable = runnable
+            return this
+        }
+
+        fun setAltButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
+            this.altButtonText = context.getText(textId)
+            this.altRunnable = runnable
+            return this
+        }
+
+        fun setAltButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
+            this.altButtonText = text
+            this.altRunnable = runnable
+            return this
+        }
+
+        fun setCancelable(cancelable: Boolean): Builder<T> {
+            this.cancelable = cancelable
+            return this
+        }
+
+        fun setView(@LayoutRes layoutResId: Int): Builder<T> {
+            this.customViewResId = layoutResId
+            return this
+        }
+
+        fun setDefaultResultData(data: Bundle): Builder<T> {
+            this.defaultResultData = data
+            return this
+        }
+
+        /**
+         * Optional target for this fragment.  This may be used, for example,
+         * if this fragment is being started by another, and when done wants to
+         * give a result back to the first.  The target set here is retained
+         * across instances via {@link FragmentManager#putFragment
+         * FragmentManager.putFragment()}.
+         *
+         * @param fragment The fragment that is the target of this one.
+         * @param requestCode Optional request code, for convenience if you
+         * are going to call back with {@link Fragment#onActivityResult(int, int, Intent)}.
+         */
+        fun setTargetFragment(fragment: Fragment?, requestCode: Int): Builder<T> {
+            this.targetFragment = fragment
+            this.requestCode = requestCode
+            return this
+        }
+
+        protected open fun buildArguments(): Bundle {
+            val args = Bundle()
+            args.putBoolean(EXTRA_CANCELABLE, cancelable)
+            args.putInt(EXTRA_THEME_RES_ID, themeResId)
+            if (customViewResId > -1) {
+                args.putInt(EXTRA_CUSTOM_VIEW_RES_ID, customViewResId)
+            }
+            args.putCharSequence(EXTRA_TITLE, title)
+            args.putCharSequence(EXTRA_MESSAGE, message)
+            args.putCharSequence(EXTRA_POSITIVE_BUTTON, positiveButtonText)
+            args.putCharSequence(EXTRA_NEGATIVE_BUTTON, negativeButtonText)
+            args.putCharSequence(EXTRA_ALT_BUTTON, altButtonText)
+            if (defaultResultData != null) {
+                args.putBundle(EXTRA_DEFAULT_RESULT_DATA, defaultResultData)
+            }
+            return args
+        }
+
+        abstract fun newInstance(): T
+
+        open fun build(): T {
+            val dialog = newInstance()
+            dialog.arguments = buildArguments()
+            if (targetFragment != null) dialog.setTargetFragment(targetFragment, requestCode)
+            dialog.altRunnable = this.altRunnable
+            dialog.positiveRunnable = this.positiveRunnable
+            dialog.negativeRunnable = this.negativeRunnable
+            return dialog
+        }
+
+        fun show(fragmentManager: FragmentManager) =
+                show(fragmentManager, StringUtil.randomAlphaNumeric(20))
+
+        fun show(fragmentManager: FragmentManager, tag: String) {
+            if (fragmentManager.isStateSaved) return
+            val dialog = build()
+            dialog.show(fragmentManager, tag)
+        }
+
+        fun show(transaction: FragmentTransaction) =
+                show(transaction, StringUtil.randomAlphaNumeric(20))
+
+        fun show(transaction: FragmentTransaction, tag: String) {
+            val dialog = build()
+            dialog.show(transaction, tag)
         }
     }
 
@@ -97,19 +265,19 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         if (tag != null) {
             if (parentFragment != null && (parentFragment as? QuickDialogListener) != null) {
                 listener = parentFragment as QuickDialogListener
-                HLog.d("quick", "base-dialog", "onAttach : parentFragment")
+                HLog.d(TAG, "base-dialog", "onAttach : parentFragment")
             }
             else if (targetFragment != null && (targetFragment as? QuickDialogListener) != null) {
                 listener = targetFragment as QuickDialogListener
-                HLog.d("quick", "base-dialog", "onAttach : targetFragment")
+                HLog.d(TAG, "base-dialog", "onAttach : targetFragment")
             }
             else {
                 val activity = activity
                 if (activity != null && activity is QuickDialogListener) {
                     listener = activity
-                    HLog.d("quick", "base-dialog", "onAttach : activity")
+                    HLog.d(TAG, "base-dialog", "onAttach : activity")
                 } else {
-                    HLog.d("quick", "base-dialog", "onAttach : no listener")
+                    HLog.d(TAG, "base-dialog", "onAttach : no listener")
                 }
             }
         }
@@ -269,168 +437,13 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    class BasicBuilder(context: Context,
-                       themeResId: Int = 0) : Builder<QuickBottomSheetDialogFragment>(context, themeResId) {
-        override fun newInstance(): QuickBottomSheetDialogFragment {
-            return QuickBottomSheetDialogFragment()
+    protected fun getFragmentManagerOrNull(): FragmentManager? {
+        try {
+            return fragmentManager
+        } catch (e: IllegalStateException) {
+            HLog.e(TAG, "QuickFragment", e)
+            return null
         }
     }
 
-    @Suppress("unused")
-    abstract class Builder<T: QuickBottomSheetDialogFragment>
-        @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
-
-        @StyleRes
-        private val themeResId: Int = resolveDialogTheme(context, themeResId)
-
-        private var title: CharSequence? = null
-        private var message: CharSequence? = null
-
-        private var positiveButtonText: CharSequence? = null
-        private var altButtonText: CharSequence? = null
-        private var negativeButtonText: CharSequence? = null
-        private var defaultResultData: Bundle? = null
-        private var cancelable = true
-        private var targetFragment: Fragment? = null
-        private var requestCode: Int = 0
-        private var customViewResId = -1
-        private var positiveRunnable: Runnable? = null
-        private var altRunnable: Runnable? = null
-        private var negativeRunnable: Runnable? = null
-
-        fun setTitle(@StringRes titleId: Int): Builder<T> {
-            this.title = context.getText(titleId)
-            return this
-        }
-
-        fun setTitle(title: CharSequence?): Builder<T> {
-            this.title = title
-            return this
-        }
-
-        fun setMessage(@StringRes messageId: Int): Builder<T> {
-            this.message = context.getText(messageId)
-            return this
-        }
-
-        fun setMessage(message: CharSequence): Builder<T> {
-            this.message = message
-            return this
-        }
-
-        fun setPositiveButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
-            this.positiveButtonText = context.getText(textId)
-            this.positiveRunnable = runnable
-            return this
-        }
-
-        fun setPositiveButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
-            this.positiveButtonText = text
-            this.positiveRunnable = runnable
-            return this
-        }
-
-        fun setNegativeButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
-            this.negativeButtonText = context.getText(textId)
-            this.negativeRunnable = runnable
-            return this
-        }
-
-        fun setNegativeButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
-            this.negativeButtonText = text
-            this.negativeRunnable = runnable
-            return this
-        }
-
-        fun setAltButton(@StringRes textId: Int, runnable: Runnable? = null): Builder<T> {
-            this.altButtonText = context.getText(textId)
-            this.altRunnable = runnable
-            return this
-        }
-
-        fun setAltButton(text: CharSequence, runnable: Runnable? = null): Builder<T> {
-            this.altButtonText = text
-            this.altRunnable = runnable
-            return this
-        }
-
-        fun setCancelable(cancelable: Boolean): Builder<T> {
-            this.cancelable = cancelable
-            return this
-        }
-
-        fun setView(@LayoutRes layoutResId: Int): Builder<T> {
-            this.customViewResId = layoutResId
-            return this
-        }
-
-        fun setDefaultResultData(data: Bundle): Builder<T> {
-            this.defaultResultData = data
-            return this
-        }
-
-        /**
-         * Optional target for this fragment.  This may be used, for example,
-         * if this fragment is being started by another, and when done wants to
-         * give a result back to the first.  The target set here is retained
-         * across instances via {@link FragmentManager#putFragment
-         * FragmentManager.putFragment()}.
-         *
-         * @param fragment The fragment that is the target of this one.
-         * @param requestCode Optional request code, for convenience if you
-         * are going to call back with {@link Fragment#onActivityResult(int, int, Intent)}.
-         */
-        fun setTargetFragment(fragment: Fragment?, requestCode: Int): Builder<T> {
-            this.targetFragment = fragment
-            this.requestCode = requestCode
-            return this
-        }
-
-        protected open fun buildArguments(): Bundle {
-            val args = Bundle()
-            args.putBoolean(EXTRA_CANCELABLE, cancelable)
-            args.putInt(EXTRA_THEME_RES_ID, themeResId)
-            if (customViewResId > -1) {
-                args.putInt(EXTRA_CUSTOM_VIEW_RES_ID, customViewResId)
-            }
-            args.putCharSequence(EXTRA_TITLE, title)
-            args.putCharSequence(EXTRA_MESSAGE, message)
-            args.putCharSequence(EXTRA_POSITIVE_BUTTON, positiveButtonText)
-            args.putCharSequence(EXTRA_NEGATIVE_BUTTON, negativeButtonText)
-            args.putCharSequence(EXTRA_ALT_BUTTON, altButtonText)
-            if (defaultResultData != null) {
-                args.putBundle(EXTRA_DEFAULT_RESULT_DATA, defaultResultData)
-            }
-            return args
-        }
-
-        abstract fun newInstance(): T
-
-        open fun build(): T {
-            val dialog = newInstance()
-            dialog.arguments = buildArguments()
-            if (targetFragment != null) dialog.setTargetFragment(targetFragment, requestCode)
-            dialog.altRunnable = this.altRunnable
-            dialog.positiveRunnable = this.positiveRunnable
-            dialog.negativeRunnable = this.negativeRunnable
-            return dialog
-        }
-
-        fun show(fragmentManager: FragmentManager) =
-            show(fragmentManager, StringUtil.randomAlphaNumeric(20))
-
-        fun show(fragmentManager: FragmentManager, tag: String) {
-            if (fragmentManager.isStateSaved) return
-            val dialog = build()
-            dialog.show(fragmentManager, tag)
-        }
-
-        fun show(transaction: FragmentTransaction) =
-            show(transaction, StringUtil.randomAlphaNumeric(20))
-
-        fun show(transaction: FragmentTransaction, tag: String) {
-            val dialog = build()
-            dialog.show(transaction, tag)
-        }
-    }
 }
