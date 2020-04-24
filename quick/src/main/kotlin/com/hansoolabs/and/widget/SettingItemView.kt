@@ -1,14 +1,16 @@
 package com.hansoolabs.and.widget
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import com.hansoolabs.and.R
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
@@ -21,10 +23,11 @@ class SettingItemView
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
 
-    private val iconIv: ImageView
+    private val iconIv: AppCompatImageView
     private val titleTv: TextView
     private val descTv: TextView
     private val accessoryTv: TextView
+    private val tailIconIv: AppCompatImageView
     private val accessoryContainer: LinearLayout
     private val switch: SwitchCompat
     private val divider: View
@@ -95,11 +98,13 @@ class SettingItemView
         descTv = findViewById(R.id.desc)
         accessoryTv = findViewById(R.id.accessory_tv)
         accessoryContainer = findViewById(R.id.accessory_container)
-        switch = findViewById(R.id.tailSwitch)
+        tailIconIv = findViewById(R.id.tail_icon)
+        switch = findViewById(R.id.tail_switch)
         divider = findViewById(R.id.split_line)
 
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SettingItemView, defStyle, 0)
         setIcon(a.getResourceId(R.styleable.SettingItemView_itemIcon, -1))
+        setTailIcon(a.getResourceId(R.styleable.SettingItemView_itemTailIcon, -1))
         title = a.getString(R.styleable.SettingItemView_itemTitle)
         description = a.getString(R.styleable.SettingItemView_itemDescription)
         accessory = a.getString(R.styleable.SettingItemView_itemAccessory)
@@ -119,7 +124,17 @@ class SettingItemView
                 accessoryColor = it
             }
         }
+
+        if (a.hasValue(R.styleable.SettingItemView_iconTint)) {
+            val colorList = a.getColorStateList(R.styleable.SettingItemView_iconTint)
+            setIconTint(colorList)
+        }
         a.recycle()
+    }
+
+    fun setIconTint(colorList: ColorStateList?) {
+        ImageViewCompat.setImageTintList(iconIv, colorList)
+        ImageViewCompat.setImageTintList(tailIconIv, colorList)
     }
 
     fun setIconVisible(visible: Boolean) {
@@ -130,6 +145,17 @@ class SettingItemView
         setIconVisible(resId > 0)
         if (resId > 0) {
             iconIv.setImageDrawable(ContextCompat.getDrawable(context, resId))
+        }
+    }
+
+    fun setTailIconVisible(visible: Boolean) {
+        tailIconIv.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    fun setTailIcon(resId: Int) {
+        setTailIconVisible(resId > 0)
+        if (resId > 0) {
+            tailIconIv.setImageDrawable(ContextCompat.getDrawable(context, resId))
         }
     }
 

@@ -7,9 +7,11 @@
         <attr name="itemSwitch" format="boolean" />
         <attr name="itemChecked" format="boolean" />
         <attr name="itemAccessory" format="string" />
+        <attr name="itemTailIcon" format="reference" />
         <attr name="titleColor" format="color"/>
         <attr name="descriptionColor" format="color" />
         <attr name="dividerColor" format="color" />
         <attr name="accessoryColor" format="color" />
+        <attr name="iconTint" format="color" />
     </declare-styleable>
 </resources>

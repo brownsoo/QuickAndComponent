@@ -22,7 +22,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
-            android:scaleType="center"
+            android:scaleType="centerInside"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
@@ -49,15 +49,23 @@
 
         </LinearLayout>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/tail_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerInside"
+            tools:ignore="ContentDescription" />
+
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/tailSwitch"
+            android:id="@+id/tail_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:clickable="false"
             app:showText="false" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/accessory_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
