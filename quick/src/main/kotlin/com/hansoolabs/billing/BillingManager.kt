@@ -3,7 +3,6 @@ package com.hansoolabs.billing
 import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
-import com.android.billingclient.api.BillingClient.BillingResponseCode.*
 import com.hansoolabs.and.utils.HLog
 import java.io.IOException
 import java.util.*
@@ -39,27 +38,27 @@ class BillingManager(
 
         fun errorMessage(@BillingClient.BillingResponseCode code: Int): String {
             when(code) {
-                FEATURE_NOT_SUPPORTED ->
+                BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED ->
                     return "Requested feature is not supported by Play Store on the current device.[-2]"
-                SERVICE_DISCONNECTED ->
+                BillingClient.BillingResponseCode.SERVICE_DISCONNECTED ->
                     return "Play Store service is not connected now[-1]"
-                OK ->
+                BillingClient.BillingResponseCode.OK ->
                     return "Success"
-                USER_CANCELED ->
+                BillingClient.BillingResponseCode.USER_CANCELED ->
                     return "User pressed back or canceled a dialog[1]"
-                SERVICE_UNAVAILABLE ->
+                BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE ->
                     return "Network connection is down[2]"
-                BILLING_UNAVAILABLE ->
+                BillingClient.BillingResponseCode.BILLING_UNAVAILABLE ->
                     return "Billing API version is not supported for the type requested[3]"
-                ITEM_UNAVAILABLE ->
+                BillingClient.BillingResponseCode.ITEM_UNAVAILABLE ->
                     return "Requested product is not available for purchase[4]"
-                DEVELOPER_ERROR ->
+                BillingClient.BillingResponseCode.DEVELOPER_ERROR ->
                     return "Invalid arguments provided to the API.[5]"
-                ERROR ->
+                BillingClient.BillingResponseCode.ERROR ->
                     return "Fatal error during the API action[6]"
-                ITEM_ALREADY_OWNED ->
+                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED ->
                     return "Failure to purchase since item is already owned[7]"
-                ITEM_NOT_OWNED ->
+                BillingClient.BillingResponseCode.ITEM_NOT_OWNED ->
                     return "Failure to consume since item is not owned[8]"
                 else ->
                     return "Unknown code [$code]"
@@ -72,7 +71,7 @@ class BillingManager(
      */
     interface BillingUpdatesListener {
         fun onBillingClientSetupFinished()
-        fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponseCode result: Int)
+        fun onBillingConsumeFinished(token: String, @BillingClient.BillingResponseCode response: Int)
         fun onBillingPurchasesUpdated(purchases: List<Purchase>)
         /**
          * Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
@@ -99,9 +98,7 @@ class BillingManager(
     @BillingClient.BillingResponseCode
     var billingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED
         private set
-    
-    val context: Context = activity
-    
+
     // Start setup. This is asynchronous and the specified listener will be called
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
@@ -124,36 +121,47 @@ class BillingManager(
             billingClient = null
         }
     }
+
     /**
      * Handle a callback that purchases were updated from the Billing library
      */
     override fun onPurchasesUpdated(result: BillingResult,
                                     purchases: MutableList<Purchase>?) {
         val responseCode = result.responseCode
-        if (responseCode == OK) {
+        if (responseCode == BillingClient.BillingResponseCode.OK) {
             if (purchases != null) {
+                val size = purchases.size
+                var handleCount = 0
                 for (purchase in purchases) {
-                    handlePurchase(purchase)
-                }
-                updatesListener.onBillingPurchasesUpdated(this.mPurchases)
-                val now = Date().time
-                val newPurchases = ArrayList<Purchase>()
-                for (p in this.mPurchases) {
-                    if (abs(now - p.purchaseTime) < 4000) {
-                        // Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
-                        newPurchases.add(p)
-                        HLog.d(TAG, klass, "새로 구매 ${p.orderId}")
+                    // 검사
+                    handlePurchase(purchase) {
+                        handleCount ++
+                        HLog.d(TAG, klass, "handlePurchase $handleCount / $size")
+                        if (handleCount == size) {
+                            // 최종
+                            updatesListener.onBillingPurchasesUpdated(this.mPurchases)
+                            // 새로 구매한 것 추측
+                            val now = Date().time
+                            val newPurchases = ArrayList<Purchase>()
+                            for (p in this.mPurchases) {
+                                if (abs(now - p.purchaseTime) < 4000) {
+                                    // Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
+                                    newPurchases.add(p)
+                                    HLog.d(TAG, klass, "새로 구매 ${p.orderId}")
+                                }
+                            }
+                            if (newPurchases.isNotEmpty()) {
+                                updatesListener.onBillingPurchasesCreated(newPurchases)
+                            }
+                        }
                     }
                 }
-                if (newPurchases.isNotEmpty()) {
-                    updatesListener.onBillingPurchasesCreated(newPurchases)
-                }
             }
-        } else if (responseCode == USER_CANCELED) {
+        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             HLog.i(TAG, klass, "user cancelled")
         } else {
             HLog.w(TAG, klass, "onBillingPurchasesUpdated error : ${errorMessage(responseCode)}")
-            if (responseCode == ITEM_ALREADY_OWNED && !handledAlreadyOwned) {
+            if (responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED && !handledAlreadyOwned) {
                 handledAlreadyOwned = true // 이미 소지한 것으로 보면, 한번 구매이력을 검색한다.
                 queryPurchases()
             }
@@ -166,14 +174,14 @@ class BillingManager(
     /**
      * 구매 과정 시작
      */
-    fun initiatePurchaseFlow(skuDetails: SkuDetails, oldSku: String?) {
+    fun initiatePurchaseFlow(skuDetails: SkuDetails, oldPurchase: Purchase? = null) {
         if (billingClient == null) return
         val purchaseFlowRequest = Runnable {
-            HLog.d(TAG, klass, "Launching in-app purchase flow. Replace old SKU? ${oldSku != null}")
+            HLog.d(TAG, klass, "Launching in-app purchase flow. Replace old SKU? ${oldPurchase != null}")
             val builder = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
-            if (oldSku != null) {
-                builder.setOldSku(oldSku, skuDetails.sku)
+            if (oldPurchase != null) {
+                builder.setOldSku(oldPurchase.sku, oldPurchase.purchaseToken)
             }
             billingClient?.launchBillingFlow(activity, builder.build())
         }
@@ -228,18 +236,41 @@ class BillingManager(
      * </p>
      * @param purchase Purchase to be handled
      */
-    private fun handlePurchase(purchase: Purchase) {
-        if (!verifyValidSignature(purchase.originalJson, purchase.signature)) {
-            HLog.i(TAG, klass, "Got a purchase: $purchase; but signature is bad. Skipping..")
-            return
+    private fun handlePurchase(purchase: Purchase, complete: (()-> Unit)?) {
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (!verifyValidSignature(purchase.originalJson, purchase.signature)) {
+                HLog.i(TAG, klass, "Got a purchase: $purchase; but signature is bad. Skipping..")
+                complete?.invoke()
+                return
+            }
+            // Acknowledge the purchase if it hasn't already been acknowledged.
+            if (!purchase.isAcknowledged) {
+                HLog.w(TAG, klass, "acknowledgePurchase ${purchase.sku}")
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken)
+                    .build()
+                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) {
+                    HLog.v(TAG, klass, it.debugMessage)
+                    if (it.responseCode == BillingClient.BillingResponseCode.OK || it.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+                        mPurchases.add(purchase)
+                    } else {
+                        HLog.e(TAG, klass, it.debugMessage)
+                    }
+                    complete?.invoke()
+                }
+            } else {
+                mPurchases.add(purchase)
+                complete?.invoke()
+            }
+        } else {
+            complete?.invoke()
         }
-        mPurchases.add(purchase)
     }
     /**
      * Handle a result from querying of purchases and report an updated list to the listener
      */
     private fun onQueryPurchasesFinished(result: Purchase.PurchasesResult) {
-        if (billingClient == null || result.responseCode != OK) {
+        if (billingClient == null || result.responseCode != BillingClient.BillingResponseCode.OK) {
             // Have we been disposed of in the meantime? If so, or bad result code, then quit
             HLog.w(TAG, klass, "BillingController client was null or result code (${result.responseCode}) was bad")
             return
@@ -262,7 +293,7 @@ class BillingManager(
         if (result == null) {
             HLog.w(TAG, klass, "areSubscriptionsSupported() got an error response: $result")
         }
-        return result?.responseCode == OK
+        return result?.responseCode == BillingClient.BillingResponseCode.OK
     }
     
     /**
@@ -282,12 +313,12 @@ class BillingManager(
                 HLog.i(TAG, klass,"Querying subscriptions result code: "
                     + subscriptionResult?.responseCode
                     + " res: " + subscriptionResult?.purchasesList?.size)
-                if (subscriptionResult?.responseCode == OK) {
+                if (subscriptionResult?.responseCode == BillingClient.BillingResponseCode.OK) {
                     purchasesResult?.purchasesList?.addAll(subscriptionResult.purchasesList)
                 } else {
                     HLog.e(TAG, klass, "Got an error response trying to query subscription purchases")
                 }
-            } else if (purchasesResult?.responseCode == OK) {
+            } else if (purchasesResult?.responseCode == BillingClient.BillingResponseCode.OK) {
                 HLog.i(TAG, klass, "Skipped subscription purchases query since they are not supported")
             } else {
                 HLog.w(TAG, klass, "queryPurchases() got an error response code: ${purchasesResult?.responseCode}")
@@ -309,7 +340,7 @@ class BillingManager(
                 val responseCode = result.responseCode
                 HLog.d(TAG, klass, "Setup finished. Response code: $responseCode")
                 billingClientResponseCode = responseCode
-                if (responseCode == OK) {
+                if (responseCode == BillingClient.BillingResponseCode.OK) {
                     isServiceConnected = true
                     executeOnSuccess?.run()
                 }
