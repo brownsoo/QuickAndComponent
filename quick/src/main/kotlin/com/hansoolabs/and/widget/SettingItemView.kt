@@ -132,6 +132,12 @@ class SettingItemView
         a.recycle()
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        switch.isEnabled = enabled
+        accessoryContainer.isEnabled = enabled
+    }
+
     fun setIconTint(colorList: ColorStateList?) {
         ImageViewCompat.setImageTintList(iconIv, colorList)
         ImageViewCompat.setImageTintList(tailIconIv, colorList)
