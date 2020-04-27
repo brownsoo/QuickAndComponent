@@ -15,18 +15,10 @@ import kotlin.collections.HashSet
  */
 
 @Suppress("MemberVisibilityCanBePrivate")
-class BillingManager private constructor(private val application: Application) :
+open class BillingManager(private val application: Application) :
     PurchasesUpdatedListener {
 
     companion object {
-
-        @Volatile
-        private var INSTANCE: BillingManager? = null
-
-        fun getInstance(application: Application): BillingManager =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: BillingManager(application).also { INSTANCE = it }
-            }
 
         private const val TAG = "quick"
         const val BILLING_MANAGER_NOT_INITIALIZED = -1
@@ -104,7 +96,7 @@ class BillingManager private constructor(private val application: Application) :
      * This is the only billing client an app is actually required to have on Android. The other
      * two (webServerBillingClient and localCacheBillingClient) are optional.
      *
-     * ASIDE. Notice that the connection to [playStoreBillingClient] is created using the
+     * ASIDE. Notice that the connection to [billingClient] is created using the
      * applicationContext. This means the instance is not [Activity]-specific. And since it's also
      * not expensive, it can remain open for the life of the entire [Application]. So whether it is
      * (re)created for each [Activity] or [Fragment] or is kept open for the life of the application
@@ -112,11 +104,7 @@ class BillingManager private constructor(private val application: Application) :
      */
     private lateinit var billingClient: BillingClient
 
-    private val klass = "BillingManager@${Integer.toHexString(hashCode())}"
-
-//    private val mPurchases = ArrayList<Purchase>()
-
-//    private var tokensToBeConsumed: MutableSet<String>? = null
+    private val klass = "BillingManager@${Integer.toHexString(this.hashCode())}"
 
     /**
      * Returns the value BillingController client response code or BILLING_MANAGER_NOT_INITIALIZED if the
@@ -126,7 +114,19 @@ class BillingManager private constructor(private val application: Application) :
     var billingClientResponseCode = BILLING_MANAGER_NOT_INITIALIZED
         private set
 
-    var updatesListener: BillingUpdatesListener? = null
+    private val updatesListeners = HashSet<BillingUpdatesListener>()
+    fun addUpdateListener(listener: BillingUpdatesListener): Boolean {
+        if (!updatesListeners.contains(listener)) {
+            return updatesListeners.add(listener)
+        }
+        return false
+    }
+    fun removeUpdateListener(listener: BillingUpdatesListener): Boolean {
+        return updatesListeners.remove(listener)
+    }
+    fun removeAllUpdateListeners() {
+        updatesListeners.clear()
+    }
 
     private var consumableSkus: Set<String> = emptySet()
     private var nonConsumableSkus: Set<String> = emptySet()
@@ -134,7 +134,7 @@ class BillingManager private constructor(private val application: Application) :
     // Start setup. This is asynchronous and the specified listener will be called
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
-    fun init(consumableSkus: Set<String>, nonConsumableSkus: Set<String>) {
+    fun startConnection(consumableSkus: Set<String>, nonConsumableSkus: Set<String>) {
         this.consumableSkus = consumableSkus
         this.nonConsumableSkus = nonConsumableSkus
         billingClient = BillingClient.newBuilder(application.applicationContext)
@@ -144,12 +144,13 @@ class BillingManager private constructor(private val application: Application) :
 
         startServiceConnection(Runnable {
             HLog.d(TAG, klass, "setup successful.")
-            updatesListener?.onBillingClientSetupFinished()
+            updatesListeners.forEach { it.onBillingClientSetupFinished() }
             queryPurchases()
         })
     }
 
-    fun destroy() {
+    fun endConnection() {
+        removeAllUpdateListeners()
         billingClient.endConnection()
         HLog.d(TAG, klass, "end billing manager")
     }
@@ -185,7 +186,7 @@ class BillingManager private constructor(private val application: Application) :
             BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
                 startServiceConnection(Runnable {
                     HLog.d(TAG, klass, "re-start connection successful.")
-                    updatesListener?.onBillingClientSetupFinished()
+                    updatesListeners.forEach { it.onBillingClientSetupFinished() }
                     queryPurchases()
                 })
             }
@@ -193,52 +194,10 @@ class BillingManager private constructor(private val application: Application) :
                 HLog.i(TAG, klass, "user cancelled")
             }
             else -> {
-                updatesListener?.onBillingError(result.responseCode)
+                updatesListeners.forEach { it.onBillingError(result.responseCode) }
             }
         }
-
-//        if (responseCode == BillingClient.BillingResponseCode.OK) {
-//            if (purchases != null) {
-//                val size = purchases.size
-//                var handleCount = 0
-//                for (purchase in purchases) {
-//                    // 검사
-//                    handlePurchase(purchase) {
-//                        handleCount ++
-//                        HLog.d(TAG, klass, "handlePurchase $handleCount / $size")
-//                        if (handleCount == size) {
-//                            // 최종
-//                            updatesListener.onBillingPurchasesUpdated(this.mPurchases)
-//                            // 새로 구매한 것 추측
-//                            val now = Date().time
-//                            val newPurchases = ArrayList<Purchase>()
-//                            for (p in this.mPurchases) {
-//                                if (abs(now - p.purchaseTime) < 4000) {
-//                                    // Considers this is new purchasing if the differ from purchased time to now is within 4 secs.
-//                                    newPurchases.add(p)
-//                                    HLog.d(TAG, klass, "새로 구매 ${p.orderId}")
-//                                }
-//                            }
-//                            if (newPurchases.isNotEmpty()) {
-//                                updatesListener.onBillingPurchasesCreated(newPurchases)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-//            HLog.i(TAG, klass, "user cancelled")
-//        } else {
-//            HLog.w(TAG, klass, "onBillingPurchasesUpdated error : ${errorMessage(responseCode)}")
-//            if (responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED && !handledAlreadyOwned) {
-//                handledAlreadyOwned = true // 이미 소지한 것으로 보면, 한번 구매이력을 검색한다.
-//                queryPurchases()
-//            }
-//            updatesListener.onBillingError(responseCode)
-//        }
     }
-
-//    private var handledAlreadyOwned = false
 
     private fun processPurchases(
         purchasesResult: Set<Purchase>,
@@ -293,7 +252,7 @@ class BillingManager private constructor(private val application: Application) :
                 .setPurchaseToken(it.purchaseToken)
                 .build()
             billingClient.consumeAsync(params) { billingResult, purchaseToken ->
-                updatesListener?.onBillingConsumeFinished(purchaseToken, billingResult.responseCode)
+                updatesListeners.forEach { it.onBillingConsumeFinished(purchaseToken, billingResult.responseCode) }
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         // Update the appropriate tables/databases to grant user the items
@@ -320,7 +279,7 @@ class BillingManager private constructor(private val application: Application) :
                 billingClient.acknowledgePurchase(params) { billingResult ->
                     when (billingResult.responseCode) {
                         BillingClient.BillingResponseCode.OK -> {
-                            updatesListener?.onBillingPurchasesCreated(listOf(purchase))
+                            updatesListeners.forEach { it.onBillingPurchasesCreated(listOf(purchase)) }
                         }
                         else -> {
                             HLog.w(
@@ -344,11 +303,7 @@ class BillingManager private constructor(private val application: Application) :
         oldPurchase: Purchase? = null
     ) {
         val purchaseFlowRequest = Runnable {
-            HLog.d(
-                TAG,
-                klass,
-                "Launching in-app purchase flow. Replace old SKU? ${oldPurchase != null}"
-            )
+            HLog.d(TAG, klass, "Launching Flow, old SKU? ${oldPurchase != null}")
             val builder = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
             if (oldPurchase != null) {
@@ -379,85 +334,6 @@ class BillingManager private constructor(private val application: Application) :
         }
         executeServiceRequest(queryRequest)
     }
-
-//    @Suppress("unused")
-//    fun consumeAsync(purchaseToken: String) {
-//        // If we've already scheduled to consume this token - no action is needed (this could happen
-//        // if you received the token when querying purchases inside onReceive() and later from
-//        // onActivityResult()
-//        if (tokensToBeConsumed == null) {
-//            tokensToBeConsumed = HashSet()
-//        } else if (tokensToBeConsumed!!.contains(purchaseToken)) {
-//            HLog.i(TAG, klass, "Token was already scheduled to be consumed = skipping...")
-//            return
-//        }
-//        tokensToBeConsumed!!.add(purchaseToken)
-//        // Generating Consume Response listener
-//        val onConsumeListener = ConsumeResponseListener { result, token ->
-//            updatesListener?.onBillingConsumeFinished(token, result.responseCode)
-//        }
-//        // Creating a runnable from the request to use it inside our connection retry policy below
-//        val consumeParams = ConsumeParams.newBuilder()
-//            .setPurchaseToken(purchaseToken)
-//            .build()
-//        val consumeRequest = Runnable {
-//            billingClient.consumeAsync(consumeParams, onConsumeListener)
-//        }
-//        executeServiceRequest(consumeRequest)
-//    }
-
-    /**
-     * Handles the purchase
-     * <p>Note: Notice that for each purchase, we check if signature is valid on the client.
-     * It's recommended to move this check into your backend.
-     * See {@link Security#verifyPurchase(String, String, String)}
-     * </p>
-     * @param purchase Purchase to be handled
-     */
-//    private fun handlePurchase(purchase: Purchase, complete: (()-> Unit)?) {
-//        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-//            if (!verifyValidSignature(purchase)) {
-//                HLog.i(TAG, klass, "Got a purchase: $purchase; but signature is bad. Skipping..")
-//                complete?.invoke()
-//                return
-//            }
-//            // Acknowledge the purchase if it hasn't already been acknowledged.
-//            if (purchase.isAcknowledged) {
-//                mPurchases.add(purchase)
-//                complete?.invoke()
-//            } else {
-//                HLog.w(TAG, klass, "acknowledgePurchase ${purchase.sku}")
-//                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-//                    .setPurchaseToken(purchase.purchaseToken)
-//                    .build()
-//                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) {
-//                    HLog.v(TAG, klass, it.debugMessage)
-//                    if (it.responseCode == BillingClient.BillingResponseCode.OK || it.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-//                        mPurchases.add(purchase)
-//                    } else {
-//                        HLog.e(TAG, klass, it.debugMessage)
-//                    }
-//                    complete?.invoke()
-//                }
-//            }
-//        } else {
-//            complete?.invoke()
-//        }
-//    }
-    /**
-     * Handle a result from querying of purchases and report an updated list to the listener
-     */
-//    private fun onQueryPurchasesFinished(result: Purchase.PurchasesResult) {
-//        if (result.responseCode != BillingClient.BillingResponseCode.OK) {
-//            // Have we been disposed of in the meantime? If so, or bad result code, then quit
-//            HLog.w(TAG, klass, "BillingController client was null or result code (${result.responseCode}) was bad")
-//            return
-//        }
-//        HLog.d(TAG, klass, "Query inventory was successful.")
-//        // Update the UI and purchases inventory with new list of purchases
-//        mPurchases.clear()
-//        onPurchasesUpdated(result.billingResult, result.purchasesList)
-//    }
 
     /**
      * Checks if subscriptions are supported for current client
@@ -495,8 +371,8 @@ class BillingManager private constructor(private val application: Application) :
                 )
                 result.purchasesList.let { purchasesResult.addAll(it) }
             }
-            processPurchases(purchasesResult) {
-                updatesListener?.onBillingPurchasesUpdated(it.toList())
+            processPurchases(purchasesResult) { valid ->
+                updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
             }
         })
     }
@@ -518,7 +394,7 @@ class BillingManager private constructor(private val application: Application) :
                             executeOnSuccess?.run()
                         }
                         BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
-                            updatesListener?.onBillingError(responseCode)
+                            updatesListeners.forEach { it.onBillingError(responseCode) }
                         }
                         else -> {
                             //do nothing. Someone else will connect it through retry policy.
@@ -526,9 +402,7 @@ class BillingManager private constructor(private val application: Application) :
                             HLog.d(TAG, klass, result.debugMessage)
                         }
                     }
-                    //connectedListener?.onServiceConnected(responseCode)
                 }
-
             })
         } else {
             executeOnSuccess?.run()
