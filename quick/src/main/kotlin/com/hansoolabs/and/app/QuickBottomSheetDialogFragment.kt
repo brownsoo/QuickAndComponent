@@ -439,7 +439,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     protected fun getFragmentManagerOrNull(): FragmentManager? {
         try {
-            return fragmentManager
+            return parentFragmentManager
         } catch (e: IllegalStateException) {
             HLog.e(TAG, "QuickFragment", e)
             return null
