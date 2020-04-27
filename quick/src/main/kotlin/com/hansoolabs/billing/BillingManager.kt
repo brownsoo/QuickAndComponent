@@ -5,7 +5,6 @@ import android.app.Application
 import com.android.billingclient.api.*
 import com.hansoolabs.and.utils.HLog
 import kotlinx.coroutines.*
-import java.io.IOException
 import java.lang.Runnable
 import kotlin.collections.HashSet
 
@@ -15,26 +14,25 @@ import kotlin.collections.HashSet
  */
 
 @Suppress("MemberVisibilityCanBePrivate")
-open class BillingManager(private val application: Application) :
-    PurchasesUpdatedListener {
+class BillingManager private constructor(
+    private val application: Application,
+    private val verification: BillingVerification
+) : PurchasesUpdatedListener {
 
     companion object {
 
+        @Volatile
+        private var INSTANCE: BillingManager? = null
+
+        fun getInstance(application: Application, verification: BillingVerification): BillingManager =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: BillingManager(application, verification).also {
+                    INSTANCE = it
+                }
+            }
+
         private const val TAG = "quick"
         const val BILLING_MANAGER_NOT_INITIALIZED = -1
-
-        /* BASE_64_ENCODED_PUBLIC_KEY should be YOUR APPLICATION'S PUBLIC KEY
-         * (that you got from the Google Play developer console). This is not your
-         * developer public key, it's the *app-specific* public key.
-         *
-         * Instead of just storing the entire literal string here embedded in the
-         * program,  construct the key at runtime from pieces or
-         * use bit manipulation (for example, XOR with some other string) to hide
-         * the actual key.  The key itself is not secret information, but we don't
-         * want to make it easy for an attacker to replace the public key with one
-         * of their own and then fake messages from the server.
-         */
-        var BASE_64_ENCODED_PUBLIC_KEY = ""
 
         fun errorMessage(@BillingClient.BillingResponseCode code: Int): String {
             when (code) {
@@ -64,6 +62,14 @@ open class BillingManager(private val application: Application) :
                     return "Unknown code [$code]"
             }
         }
+    }
+
+    interface BillingVerification {
+        fun verifyValidSignature(purchase: Purchase, result: BillingVerificationResult)
+    }
+
+    interface BillingVerificationResult {
+        fun onVerificationResult(purchase: Purchase, verified: Boolean)
     }
 
     /**
@@ -121,22 +127,29 @@ open class BillingManager(private val application: Application) :
         }
         return false
     }
+
     fun removeUpdateListener(listener: BillingUpdatesListener): Boolean {
         return updatesListeners.remove(listener)
     }
+
     fun removeAllUpdateListeners() {
         updatesListeners.clear()
     }
 
-    private var consumableSkus: Set<String> = emptySet()
-    private var nonConsumableSkus: Set<String> = emptySet()
+    private val consumableSkus = HashSet<String>()
+    private val nonConsumableSkus = HashSet<String>()
 
     // Start setup. This is asynchronous and the specified listener will be called
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
-    fun startConnection(consumableSkus: Set<String>, nonConsumableSkus: Set<String>) {
-        this.consumableSkus = consumableSkus
-        this.nonConsumableSkus = nonConsumableSkus
+    fun startConnection(
+        consumableSkus: Set<String> = emptySet(),
+        nonConsumableSkus: Set<String> = emptySet()
+    ) {
+        this.consumableSkus.clear()
+        this.consumableSkus.addAll(consumableSkus)
+        this.nonConsumableSkus.clear()
+        this.nonConsumableSkus.addAll(nonConsumableSkus)
         billingClient = BillingClient.newBuilder(application.applicationContext)
             .enablePendingPurchases()
             .setListener(this).build()
@@ -155,6 +168,15 @@ open class BillingManager(private val application: Application) :
         HLog.d(TAG, klass, "end billing manager")
     }
 
+    fun setConsumableSkus(skus: Set<String>) {
+        this.consumableSkus.clear()
+        this.consumableSkus.addAll(skus)
+    }
+
+    fun setNonConsumableSkus(skus: Set<String>) {
+        this.nonConsumableSkus.clear()
+        this.nonConsumableSkus.addAll(skus)
+    }
 
     /**
      * This method is called by the [billingClient] when new purchases are detected.
@@ -205,41 +227,61 @@ open class BillingManager(private val application: Application) :
     ) =
         CoroutineScope(Job() + Dispatchers.IO).launch {
             val validPurchases = HashSet<Purchase>(purchasesResult.size)
-            HLog.d(TAG, klass, "processPurchases newBatch content $purchasesResult")
-            purchasesResult.forEach { purchase ->
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    if (verifyValidSignature(purchase)) {
+            var verifyTotal = purchasesResult.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }.size
+
+            val verificationResult = object : BillingVerificationResult {
+                override fun onVerificationResult(purchase: Purchase, verified: Boolean) {
+                    if (verified) {
                         validPurchases.add(purchase)
+                    } else {
+                        HLog.w(TAG, klass, "NOT valid ${purchase.sku}")
                     }
+                    verifyTotal --
+                    if (verifyTotal <= 0) {
+                        HLog.d(TAG, klass, "verifyValidSignature complete ")
+                        queryCallback?.let { callback ->
+                            GlobalScope.launch(Dispatchers.Main) {
+                                callback.invoke(validPurchases)
+                            }
+                        }
+
+                        val (consumables, nonConsumables) = validPurchases.partition {
+                            consumableSkus.contains(it.sku)
+                        }
+                        HLog.d(TAG, klass, "processPurchases consumables content $consumables")
+                        HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
+                        /*
+                          As is being done in this sample, for extra reliability you may store the
+                          receipts/purchases to a your own remote/local database for until after you
+                          disburse entitlements. That way if the Google Play Billing library fails at any
+                          given point, you can independently verify whether entitlements were accurately
+                          disbursed. In this sample, the receipts are then removed upon entitlement
+                          disbursement.
+                         */
+                        GlobalScope.launch(Dispatchers.Main) {
+                            handleConsumablePurchasesAsync(consumables)
+                            acknowledgeNonConsumablePurchasesAsync(nonConsumables)
+                        }
+                    } else {
+                        HLog.d(TAG, klass, "verifyValidSignature $verifyTotal ")
+                    }
+                }
+            }
+
+            purchasesResult.forEach { purchase ->
+                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.sku}")
+                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                    verification.verifyValidSignature(purchase, verificationResult)
+//                    if (verification.verifyValidSignature(purchase)) {
+//                        validPurchases.add(purchase)
+//                    } else {
+//                        HLog.w(TAG, klass, "NOT valid ${purchase.sku}")
+//                    }
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                     // handle pending purchases, e.g. confirm with users about the pending
                     // purchases, prompt them to complete it, etc.
                     HLog.w(TAG, klass, "PENDING ${purchase.sku}")
                 }
-            }
-
-            queryCallback?.let { callback ->
-                GlobalScope.launch(Dispatchers.Main) {
-                    callback.invoke(validPurchases)
-                }
-            }
-
-            val (consumables, nonConsumables) = validPurchases.partition {
-                consumableSkus.contains(it.sku)
-            }
-            HLog.d(TAG, klass, "processPurchases consumables content $consumables")
-            HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
-            /*
-              As is being done in this sample, for extra reliability you may store the
-              receipts/purchases to a your own remote/local database for until after you
-              disburse entitlements. That way if the Google Play Billing library fails at any
-              given point, you can independently verify whether entitlements were accurately
-              disbursed. In this sample, the receipts are then removed upon entitlement
-              disbursement.
-             */
-            GlobalScope.launch(Dispatchers.Main) {
-                handleConsumablePurchasesAsync(consumables)
-                acknowledgeNonConsumablePurchasesAsync(nonConsumables)
             }
         }
 
@@ -252,7 +294,12 @@ open class BillingManager(private val application: Application) :
                 .setPurchaseToken(it.purchaseToken)
                 .build()
             billingClient.consumeAsync(params) { billingResult, purchaseToken ->
-                updatesListeners.forEach { it.onBillingConsumeFinished(purchaseToken, billingResult.responseCode) }
+                updatesListeners.forEach {
+                    it.onBillingConsumeFinished(
+                        purchaseToken,
+                        billingResult.responseCode
+                    )
+                }
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         // Update the appropriate tables/databases to grant user the items
@@ -366,8 +413,9 @@ open class BillingManager(private val application: Application) :
             if (isSubscriptionSupported()) {
                 result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
                 HLog.i(
-                    TAG, klass, "Querying purchases and subscriptions elapsed time: "
-                            + (System.currentTimeMillis() - time) + "ms"
+                    TAG,
+                    klass,
+                    "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
                 )
                 result.purchasesList.let { purchasesResult.addAll(it) }
             }
@@ -416,25 +464,6 @@ open class BillingManager(private val application: Application) :
             // If billing service was disconnected, we try to reconnect 1 time.
             // (feel free to introduce your retry policy here).
             startServiceConnection(runnable)
-        }
-    }
-
-    /**
-     * Verifies that the purchase was signed correctly for this developer's public key.
-     * <p>Note: It's strongly recommended to perform such check on your backend since hackers can
-     * replace this method with "constant true" if they decompile/rebuild your app.
-     * </p>
-     */
-    private fun verifyValidSignature(purchase: Purchase): Boolean {
-        return try {
-            Security.verifyPurchase(
-                BASE_64_ENCODED_PUBLIC_KEY,
-                purchase.originalJson,
-                purchase.signature
-            )
-        } catch (e: IOException) {
-            HLog.e(TAG, klass, "Got an exception trying to validate a purchase: $e")
-            false
         }
     }
 }
