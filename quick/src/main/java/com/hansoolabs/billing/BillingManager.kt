@@ -408,7 +408,7 @@ class BillingManager private constructor(
                 klass,
                 "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
             )
-            result.purchasesList.let { purchasesResult.addAll(it) }
+            result.purchasesList?.let { purchasesResult.addAll(it) }
 
             if (isSubscriptionSupported()) {
                 result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
@@ -417,7 +417,7 @@ class BillingManager private constructor(
                     klass,
                     "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
                 )
-                result.purchasesList.let { purchasesResult.addAll(it) }
+                result.purchasesList?.let { purchasesResult.addAll(it) }
             }
             processPurchases(purchasesResult) { valid ->
                 updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
