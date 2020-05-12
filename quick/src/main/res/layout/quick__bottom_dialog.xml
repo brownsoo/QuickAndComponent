@@ -2,9 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?android:attr/colorBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -14,10 +13,10 @@
         android:fontFamily="@string/font_family_black"
         android:gravity="center_vertical"
         android:minHeight="28dp"
-        android:paddingStart="24dp"
-        android:paddingTop="18dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="6dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="6dp"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
         tools:text="Discard Changes" />
@@ -55,47 +54,57 @@
         android:background="?attr/colorBackgroundFloating"
         android:orientation="horizontal">
 
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btn_negative"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:textColor="@color/and__valencia"
-            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             tools:text="ne" />
 
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btn_alternative"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:textColor="?android:attr/textColorSecondary"
-            style="?android:attr/buttonBarButtonStyle"
             android:textSize="14sp"
             tools:text="nu" />
 
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btn_positive"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@string/font_family_regular"
             android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:textColor="?android:attr/textColorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
             android:textSize="14sp"
             tools:text="p" />
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </LinearLayout>

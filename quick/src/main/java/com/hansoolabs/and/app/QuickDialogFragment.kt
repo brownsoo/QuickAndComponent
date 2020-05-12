@@ -53,18 +53,6 @@ open class QuickDialogFragment : DialogFragment() {
         const val BUTTON_ALTERNATIVE = QuickDialog.BUTTON_ALTERNATIVE
         const val RESULT_OK = QuickDialog.RESULT_OK
         const val RESULT_CANCELED = QuickDialog.RESULT_CANCELED
-
-        @SuppressLint("ResourceType")
-        protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
-            HLog.i("QuickDialogFragment","resolveDialogTheme", resId)
-            return if (resId > 0) {   // start of real resource IDs.
-                resId
-            } else {
-                val outValue = TypedValue()
-                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
-                outValue.resourceId
-            }
-        }
     }
     
     private var titleView: TextView? = null
@@ -95,14 +83,13 @@ open class QuickDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args = arguments
-        val style = args?.getInt(
+        val style = arguments?.getInt(
             EXTRA_THEME_RES_ID,
             R.style.AndTheme_Dialog
         )
         style?.let { setStyle(STYLE_NO_TITLE, style) }
         
-        val defaultResultData = args?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
+        val defaultResultData = arguments?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
         if (defaultResultData != null) {
             addDefaultResultData(defaultResultData)
         }
@@ -323,7 +310,19 @@ open class QuickDialogFragment : DialogFragment() {
     }
     
     abstract class Builder<T : QuickDialogFragment> @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
-        
+
+        @SuppressLint("ResourceType")
+        private fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
+            HLog.i("QuickDialogFragment","resolveDialogTheme", resId)
+            return if (resId > 0) {   // start of real resource IDs.
+                resId
+            } else {
+                val outValue = TypedValue()
+                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
+                outValue.resourceId
+            }
+        }
+
         @StyleRes
         private val themeResId: Int =
             resolveDialogTheme(context, themeResId)
