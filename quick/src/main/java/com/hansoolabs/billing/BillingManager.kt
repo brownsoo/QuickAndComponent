@@ -3,6 +3,7 @@ package com.hansoolabs.billing
 import android.app.Activity
 import android.app.Application
 import com.android.billingclient.api.*
+import com.hansoolabs.and.BuildConfig
 import com.hansoolabs.and.utils.HLog
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -224,8 +225,19 @@ class BillingManager private constructor(
     private fun processPurchases(
         purchasesResult: Set<Purchase>,
         queryCallback: ((Set<Purchase>) -> Unit)?
-    ) =
+    ) {
+    
+        if (purchasesResult.isEmpty()) {
+            queryCallback?.let { callback ->
+                GlobalScope.launch(Dispatchers.Main) {
+                    callback.invoke(emptySet())
+                }
+            }
+            return
+        }
+        
         CoroutineScope(Job() + Dispatchers.IO).launch {
+            
             val validPurchases = HashSet<Purchase>(purchasesResult.size)
             var verifyTotal = purchasesResult.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }.size
 
@@ -267,16 +279,11 @@ class BillingManager private constructor(
                     }
                 }
             }
-
+            
             purchasesResult.forEach { purchase ->
                 HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.sku}")
                 if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     verification.verifyValidSignature(purchase, verificationResult)
-//                    if (verification.verifyValidSignature(purchase)) {
-//                        validPurchases.add(purchase)
-//                    } else {
-//                        HLog.w(TAG, klass, "NOT valid ${purchase.sku}")
-//                    }
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                     // handle pending purchases, e.g. confirm with users about the pending
                     // purchases, prompt them to complete it, etc.
@@ -284,6 +291,7 @@ class BillingManager private constructor(
                 }
             }
         }
+    }
 
 
     private fun handleConsumablePurchasesAsync(consumables: List<Purchase>) {
@@ -403,21 +411,21 @@ class BillingManager private constructor(
             val time = System.currentTimeMillis()
             val purchasesResult = HashSet<Purchase>()
             var result = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-            HLog.i(
-                TAG,
-                klass,
+            HLog.d(TAG, klass,
                 "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
             )
             result.purchasesList?.let { purchasesResult.addAll(it) }
 
             if (isSubscriptionSupported()) {
                 result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
-                HLog.i(
-                    TAG,
-                    klass,
+                HLog.d(TAG, klass,
                     "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
                 )
                 result.purchasesList?.let { purchasesResult.addAll(it) }
+            }
+            
+            if (BuildConfig.DEBUG) {
+                HLog.i(TAG, klass, "Queried", purchasesResult.map { it.sku })
             }
             processPurchases(purchasesResult) { valid ->
                 updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
