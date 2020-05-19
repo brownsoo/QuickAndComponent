@@ -42,8 +42,7 @@ open class QuickFragment : Fragment(),
     private class QuickMainHandler(fragment: QuickFragment) : Handler(Looper.getMainLooper()) {
         private val ref = WeakReference(fragment)
         override fun handleMessage(msg: Message?) {
-            val base = ref.get()
-            base?.handleMainHandlerMessage(msg)
+            ref.get()?.handleMainHandlerMessage(msg)
         }
     }
 
@@ -225,6 +224,4 @@ open class QuickFragment : Fragment(),
             }
         }
     }
-
-
 }

@@ -17,78 +17,78 @@ object HLog {
     }
 
     @JvmStatic
-    fun e(TAG: String, methodName: String, e: Throwable?) {
-        e(TAG, methodName, Log.getStackTraceString(e))
+    fun e(TAG: String, className: String, e: Throwable?) {
+        e(TAG, className, Log.getStackTraceString(e))
     }
 
     @JvmStatic
-    fun e(TAG: String, methodName: String, msg: String? = null) {
+    fun e(TAG: String, className: String, msg: String? = null) {
         if (LogLevel.ERROR.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
-            val text = "[$thr] $methodName ${msg ?: ""}"
+            val text = "[$thr] $className ${msg ?: ""}"
             Log.e(TAG, text)
         }
     }
 
     @JvmStatic
-    fun w(TAG: String, methodName: String, vararg args: Any?) {
+    fun w(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.WARNING.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
             val msg = args.joinToString { it.toString() }
-            val text = "[$thr] $methodName $msg"
+            val text = "[$thr] $className $msg"
             Log.w(TAG, text)
         }
     }
 
     @JvmStatic
-    fun i(TAG: String, methodName: String, msg: Any? = null) {
+    fun i(TAG: String, className: String, msg: Any? = null) {
         val thr = Thread.currentThread().name
-        val text = "[$thr] $methodName ${msg?.toString() ?: ""}"
+        val text = "[$thr] $className ${msg?.toString() ?: ""}"
         Log.i(TAG, text)
     }
 
     @JvmStatic
-    fun i(TAG: String, methodName: String, vararg args: Any?) {
+    fun i(TAG: String, className: String, vararg args: Any?) {
         val thr = Thread.currentThread().name
         val msg = args.joinToString { it.toString() }
-        val text = "[$thr] $methodName $msg"
+        val text = "[$thr] $className $msg"
         Log.i(TAG, text)
     }
 
     @JvmStatic
-    fun d(TAG: String, methodName: String, msg: Any? = null) {
+    fun d(TAG: String, className: String, msg: Any? = null) {
         if (BuildConfig.DEBUG && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
             val the = Thread.currentThread().name
-            val text = "[$the] $methodName ${msg?.toString() ?: ""}"
+            val text = "[$the] $className ${msg?.toString() ?: ""}"
             Log.d(TAG, text)
         }
     }
 
     @JvmStatic
-    fun d(TAG: String, methodName: String, vararg args: Any?) {
+    fun d(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
             val the = Thread.currentThread().name
             val msg = args.joinToString { it.toString() }
-            val text = "[$the] $methodName $msg"
+            val text = "[$the] $className $msg"
             Log.d(TAG, text)
         }
     }
 
     @JvmStatic
-    fun v(TAG: String, methodName: String, msg: Any? = null) {
+    fun v(TAG: String, className: String, msg: Any? = null) {
         if (BuildConfig.DEBUG && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
-            val text = "[$thr] $methodName ${msg?.toString() ?: ""}"
+            val text = "[$thr] $className ${msg?.toString() ?: ""}"
             Log.v(TAG, text)
         }
     }
 
     @JvmStatic
-    fun v(TAG: String, methodName: String, vararg args: Any?) {
+    fun v(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
             val msg = args.joinToString { it.toString() }
-            val text = "[$thr] $methodName $msg"
+            val text = "[$thr] $className $msg"
             Log.v(TAG, text)
         }
     }
