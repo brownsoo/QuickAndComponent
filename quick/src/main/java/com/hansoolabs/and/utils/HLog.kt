@@ -34,7 +34,7 @@ object HLog {
     fun w(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.WARNING.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
-            val msg = args.joinToString { it.toString() }
+            val msg = args.joinToString()
             val text = "[$thr] $className $msg"
             Log.w(TAG, text)
         }
@@ -43,14 +43,14 @@ object HLog {
     @JvmStatic
     fun i(TAG: String, className: String, msg: Any? = null) {
         val thr = Thread.currentThread().name
-        val text = "[$thr] $className ${msg?.toString() ?: ""}"
+        val text = "[$thr] $className $msg"
         Log.i(TAG, text)
     }
 
     @JvmStatic
     fun i(TAG: String, className: String, vararg args: Any?) {
         val thr = Thread.currentThread().name
-        val msg = args.joinToString { it.toString() }
+        val msg = args.joinToString()
         val text = "[$thr] $className $msg"
         Log.i(TAG, text)
     }
@@ -68,7 +68,7 @@ object HLog {
     fun d(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.DEBUG.ordinal <= logLevel.ordinal) {
             val the = Thread.currentThread().name
-            val msg = args.joinToString { it.toString() }
+            val msg = args.joinToString()
             val text = "[$the] $className $msg"
             Log.d(TAG, text)
         }
@@ -87,7 +87,7 @@ object HLog {
     fun v(TAG: String, className: String, vararg args: Any?) {
         if (BuildConfig.DEBUG && LogLevel.VERBOSE.ordinal <= logLevel.ordinal) {
             val thr = Thread.currentThread().name
-            val msg = args.joinToString { it.toString() }
+            val msg = args.joinToString()
             val text = "[$thr] $className $msg"
             Log.v(TAG, text)
         }
