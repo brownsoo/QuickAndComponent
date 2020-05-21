@@ -32,9 +32,12 @@ open class QuickActivity : AppCompatActivity(),
         MessageProgress {
 
     companion object {
-        private const val TAG = "QuickActivity"
+        private const val TAG = "Quick"
         private const val CONTENT_FRAGMENT_TAG = "content-fragment+"
-        private const val WHAT_DISMISS_PROGRESS = -10
+        private const val WHAT_SHOW_PROGRESS = -12
+        private const val WHAT_DISMISS_PROGRESS = -11
+        private const val EXTRA_PROGRESS_TITLE = "q-p-title"
+        private const val EXTRA_PROGRESS_MESSAGE = "q-p-message"
     }
 
     protected var resumed = false
@@ -64,8 +67,18 @@ open class QuickActivity : AppCompatActivity(),
 
     @CallSuper
     protected open fun handleMainHandlerMessage(msg: Message?) {
-        if (msg?.what == WHAT_DISMISS_PROGRESS) {
-            progressDialog?.dismiss()
+        when(msg?.what) {
+            WHAT_SHOW_PROGRESS -> {
+                msg.data?.let {
+                    doShowMessageProgress(
+                        it.getString(EXTRA_PROGRESS_TITLE),
+                        it.getString(EXTRA_PROGRESS_MESSAGE)
+                    )
+                }
+            }
+            WHAT_DISMISS_PROGRESS -> {
+                progressDialog?.dismiss()
+            }
         }
     }
 
@@ -173,21 +186,33 @@ open class QuickActivity : AppCompatActivity(),
             runOnUiThread { showMessageProgress(title, message) }
             return
         }
-        val dialog = progressDialog ?: return
-        if (!isFinishing) {
-            getMainHandler()?.removeMessages(WHAT_DISMISS_PROGRESS)
-            if (dialog.isShowing) {
-                dialog.setMessage(message)
-                return
+        getMainHandler()?.let {
+            it.removeMessages(WHAT_DISMISS_PROGRESS)
+            it.removeMessages(WHAT_SHOW_PROGRESS)
+            val msg = Message()
+            msg.what = WHAT_SHOW_PROGRESS
+            msg.data = Bundle().apply {
+                putString(EXTRA_PROGRESS_TITLE, title)
+                putString(EXTRA_PROGRESS_MESSAGE, message)
             }
-            dialog.setMessage(message)
-            dialog.show()
+            it.sendMessageDelayed(msg, 200)
         }
+    }
+
+    private fun doShowMessageProgress(title: String?, message: String?) {
+        val dialog = progressDialog ?: return
+        dialog.setTitle(title)
+        dialog.setMessage(message)
+        if (dialog.isShowing) {
+            return
+        }
+        dialog.show()
     }
 
     @UiThread
     override fun hideMessageProgress() {
         getMainHandler()?.let {
+            it.removeMessages(WHAT_SHOW_PROGRESS)
             it.removeMessages(WHAT_DISMISS_PROGRESS)
             it.sendEmptyMessageDelayed(WHAT_DISMISS_PROGRESS, 100)
         }
