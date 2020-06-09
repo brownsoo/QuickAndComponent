@@ -24,5 +24,6 @@
     <string name="error__no_internet_dialog__msg">Please check network connection, and retry again.</string>
     <string name="error__undefined_title">Undefined Error TT</string>
     <string name="error__undefined_message">Undefined Error occurs.</string>
+    <string name="error__not_found_proper_app">Cannot find proper app to handle it.</string>
 
 </resources>

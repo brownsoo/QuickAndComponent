@@ -1,19 +1,46 @@
 package com.hansoolabs.and.utils
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import com.hansoolabs.and.R
 
 
 /**
  * Created by brownsoo on 2017. 8. 3..
  */
+
+
+fun Uri.resolveByActivity(activity: Activity): Boolean {
+    if (this.scheme != null) {
+        val intent = Intent(Intent.ACTION_VIEW, this)
+        try {
+            val chooser = Intent.createChooser(intent, "")
+            if (intent.resolveActivity(activity.packageManager) != null) {
+                activity.startActivity(chooser)
+            } else {
+                activity.startActivity(intent)
+            }
+        } catch (e: ActivityNotFoundException) {
+            MaterialAlertDialogBuilder(activity)
+                .setMessage(R.string.error__not_found_proper_app)
+                .create()
+                .show()
+        }
+        return true
+    }
+    return false
+}
 
 fun Activity.isLive() = !this.isFinishing && !this.isDestroyed
 
