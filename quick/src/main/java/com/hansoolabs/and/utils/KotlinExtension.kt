@@ -5,20 +5,29 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.hansoolabs.and.R
+import kotlin.math.roundToInt
 
 
 /**
  * Created by brownsoo on 2017. 8. 3..
  */
+
+
+fun Number.dp2px(): Int {
+    val metrics = Resources.getSystem().displayMetrics
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), metrics).roundToInt()
+}
 
 
 fun Uri.resolveByActivity(activity: Activity): Boolean {
