@@ -24,6 +24,10 @@ import kotlin.math.roundToInt
  */
 
 
+fun Any.klassName(): String {
+    return "${this.javaClass.simpleName}@${Integer.toHexString(this.hashCode())}"
+}
+
 fun Number.dp2px(): Int {
     val metrics = Resources.getSystem().displayMetrics
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), metrics).roundToInt()
