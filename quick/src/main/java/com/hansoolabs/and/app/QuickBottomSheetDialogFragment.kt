@@ -43,6 +43,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val EXTRA_POSITIVE_BUTTON = QuickDialog.EXTRA_POSITIVE_BUTTON
         val EXTRA_NEGATIVE_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
         val EXTRA_ALT_BUTTON = QuickDialog.EXTRA_ALT_BUTTON
+        @Deprecated("사용하지 않아도 될듯.")
         val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
         val EXTRA_CUSTOM_VIEW_RES_ID = QuickDialog.EXTRA_CUSTOM_VIEW_RES_ID
         val EXTRA_DEFAULT_RESULT_DATA = QuickDialog.EXTRA_DEFAULT_RESULT_DATA
@@ -84,11 +85,11 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val style = arguments?.getInt(
-            EXTRA_THEME_RES_ID,
-            R.style.AndTheme_BottomSheetDialog
-        )
-        style?.let { setStyle(STYLE_NO_TITLE, style) }
+//        val style = arguments?.getInt(
+//            EXTRA_THEME_RES_ID,
+//            R.style.AndTheme_BottomSheetDialog
+//        )
+//        style?.let { setStyle(STYLE_NO_TITLE, style) }
 
         val defaultResultData = arguments?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
         if (defaultResultData != null) {
