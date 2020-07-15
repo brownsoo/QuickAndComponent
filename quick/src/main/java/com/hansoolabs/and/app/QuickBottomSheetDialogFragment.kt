@@ -90,7 +90,6 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
 //            R.style.AndTheme_BottomSheetDialog
 //        )
 //        style?.let { setStyle(STYLE_NO_TITLE, style) }
-
         val defaultResultData = arguments?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
         if (defaultResultData != null) {
             addDefaultResultData(defaultResultData)
