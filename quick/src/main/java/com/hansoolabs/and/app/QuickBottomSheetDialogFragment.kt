@@ -84,11 +84,11 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val style = arguments?.getInt(
-            EXTRA_THEME_RES_ID,
-            R.style.AndTheme_BottomSheetDialog
-        )
-        style?.let { setStyle(STYLE_NO_TITLE, style) }
+//        val style = arguments?.getInt(
+//            EXTRA_THEME_RES_ID,
+//            R.style.AndTheme_BottomSheetDialog
+//        )
+        // style?.let { setStyle(STYLE_NO_TITLE, style) }
 
         val defaultResultData = arguments?.getBundle(EXTRA_DEFAULT_RESULT_DATA)
         if (defaultResultData != null) {
