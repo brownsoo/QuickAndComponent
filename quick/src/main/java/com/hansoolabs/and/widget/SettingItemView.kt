@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.hansoolabs.and.R
+import com.hansoolabs.and.utils.dp2px
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 /**
@@ -102,6 +104,7 @@ class SettingItemView
         switch = findViewById(R.id.tail_switch)
         divider = findViewById(R.id.split_line)
 
+
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SettingItemView, defStyle, 0)
         setIcon(a.getResourceId(R.styleable.SettingItemView_itemIcon, -1))
         setTailIcon(a.getResourceId(R.styleable.SettingItemView_itemTailIcon, -1))
@@ -129,6 +132,21 @@ class SettingItemView
             val colorList = a.getColorStateList(R.styleable.SettingItemView_iconTint)
             setIconTint(colorList)
         }
+
+        val itemWrap = findViewById<LinearLayout>(R.id.item_wrap)
+        itemWrap.setPadding(
+            a.getDimension(R.styleable.SettingItemView_itemPaddingStart, 16.dp2px().toFloat()).toInt(),
+            a.getDimension(R.styleable.SettingItemView_itemPaddingTop, 8.dp2px().toFloat()).toInt(),
+            a.getDimension(R.styleable.SettingItemView_itemPaddingEnd, 16.dp2px().toFloat()).toInt(),
+            a.getDimension(R.styleable.SettingItemView_itemPaddingBottom, 8.dp2px().toFloat()).toInt()
+        )
+
+        a.getDimension(R.styleable.SettingItemView_dividerPadding, 16.dp2px().toFloat()).let { padding ->
+            (divider.layoutParams as? MarginLayoutParams)?.let { params ->
+                params.marginStart = padding.toInt()
+            }
+        }
+
         a.recycle()
     }
 
