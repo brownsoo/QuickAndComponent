@@ -1,8 +1,8 @@
 <resources>
 
-    <style name="AndTheme" parent="Theme.MaterialComponents.Light"/>
-    <style name="AndTheme.Dialog" parent="Theme.MaterialComponents.Light.Dialog"/>
-    <style name="AndTheme.Dialog.Alert" parent="Theme.MaterialComponents.Light.Dialog.Alert"/>
-    <style name="AndTheme.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog"/>
+    <style name="AndTheme" parent="Theme.MaterialComponents.DayNight"/>
+    <style name="AndTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog"/>
+    <style name="AndTheme.Dialog.Alert" parent="Theme.MaterialComponents.DayNight.Dialog.Alert"/>
+    <style name="AndTheme.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog"/>
 
 </resources>
