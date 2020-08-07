@@ -132,11 +132,12 @@ class AppForegroundObserver : Observable<AppForegroundObserver.AppForegroundList
         override fun onActivityStopped(activity: Activity) {
         }
 
-        override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle?) {
+        override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {
         }
 
         override fun onActivityDestroyed(activity: Activity) {
         }
+
     }
 
     private val receiver = object : BroadcastReceiver() {

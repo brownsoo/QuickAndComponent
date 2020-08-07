@@ -53,7 +53,7 @@ open class QuickActivity : AppCompatActivity(),
 
     private class QuickMainHandler(activity: QuickActivity) : Handler(Looper.getMainLooper()) {
         private val ref = WeakReference(activity)
-        override fun handleMessage(msg: Message?) {
+        override fun handleMessage(msg: Message) {
             val base = ref.get()
             base?.handleMainHandlerMessage(msg)
         }
