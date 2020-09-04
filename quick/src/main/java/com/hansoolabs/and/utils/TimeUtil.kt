@@ -10,19 +10,19 @@ import java.util.TimeZone
 
 object TimeUtil {
 
-    @Synchronized fun getCalendar(locale: Locale): Calendar {
+    fun getCalendar(locale: Locale): Calendar {
         return Calendar.getInstance(locale)
     }
 
-    @Synchronized fun getCalendar(timezone: TimeZone): Calendar {
+    fun getCalendar(timezone: TimeZone): Calendar {
         return Calendar.getInstance(timezone)
     }
 
-    @Synchronized fun getCalendar(timezone: TimeZone, locale: Locale): Calendar {
+    fun getCalendar(timezone: TimeZone, locale: Locale): Calendar {
         return Calendar.getInstance(timezone, locale)
     }
 
-    @Synchronized fun getTimeFormat(timeMilli: Long, template: String): String {
+    fun getTimeFormat(timeMilli: Long, template: String): String {
         val dateFormat = SimpleDateFormat.getDateTimeInstance(
                 DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
         dateFormat.applyPattern(template)
@@ -33,7 +33,6 @@ object TimeUtil {
         return getTimeFormat(timeMilli, "yyyy-MM-dd")
     }
 
-    @JvmStatic
     fun getTimeFormat(timeMilli: Long): String {
         return getTimeFormat(timeMilli, "yyyy-MM-dd kk:mm:ss")
     }
@@ -45,7 +44,6 @@ object TimeUtil {
     val currentTime: String
         get() = getCurrentTime("yyyy-MM-dd kk:mm:ss")
 
-    @JvmStatic
     fun getTimeDiffFormat(timeMilli: Long): String {
         val time = timeMilli / 1000
         val format = String.format("%%0%dd", 2)
