@@ -1,13 +1,11 @@
 package com.hansoolabs.and.app
 
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +15,6 @@ import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -26,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
-
 
 /**
  * {@link BottomSheetDialogFragment} 를 상속받고,
@@ -285,8 +280,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
 
-    class BasicBuilder(context: Context,
-                       themeResId: Int = 0) : Builder<QuickBottomSheetDialogFragment>(context, themeResId) {
+    class BasicBuilder(context: Context) : Builder<QuickBottomSheetDialogFragment>(context) {
         override fun newInstance(): QuickBottomSheetDialogFragment {
             return QuickBottomSheetDialogFragment()
         }
@@ -301,22 +295,22 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
 
     abstract class Builder<T: QuickBottomSheetDialogFragment>
-    @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
+        constructor(private val context: Context) {
 
-        @SuppressLint("ResourceType")
-        @StyleRes
-        protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
-            return if (resId >= 0x01000000) {   // start of real resource IDs.
-                resId
-            } else {
-                val outValue = TypedValue()
-                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
-                outValue.resourceId
-            }
-        }
+//        @SuppressLint("ResourceType")
+//        @StyleRes
+//        protected fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
+//            return if (resId >= 0x01000000) {   // start of real resource IDs.
+//                resId
+//            } else {
+//                val outValue = TypedValue()
+//                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
+//                outValue.resourceId
+//            }
+//        }
 
-        @StyleRes
-        private val themeResId: Int = resolveDialogTheme(context, themeResId)
+//        @StyleRes
+//        private val themeResId: Int = resolveDialogTheme(context, themeResId)
 
         private var title: CharSequence? = null
         private var message: CharSequence? = null
@@ -424,7 +418,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
         protected open fun buildArguments(): Bundle {
             val args = Bundle()
             args.putBoolean(EXTRA_CANCELABLE, cancelable)
-            args.putInt(EXTRA_THEME_RES_ID, themeResId)
+//            args.putInt(EXTRA_THEME_RES_ID, themeResId)
             if (customViewResId > -1) {
                 args.putInt(EXTRA_CUSTOM_VIEW_RES_ID, customViewResId)
             }

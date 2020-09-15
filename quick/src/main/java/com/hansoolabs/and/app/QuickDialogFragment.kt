@@ -44,7 +44,7 @@ open class QuickDialogFragment : DialogFragment() {
         val EXTRA_POSITIVE_BUTTON = QuickDialog.EXTRA_POSITIVE_BUTTON
         val EXTRA_NEGATIVE_BUTTON = QuickDialog.EXTRA_NEGATIVE_BUTTON
         val EXTRA_ALT_BUTTON = QuickDialog.EXTRA_ALT_BUTTON
-        val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
+        // val EXTRA_THEME_RES_ID = QuickDialog.EXTRA_THEME_RES_ID
         val EXTRA_CUSTOM_VIEW_RES_ID = QuickDialog.EXTRA_CUSTOM_VIEW_RES_ID
         val EXTRA_DEFAULT_RESULT_DATA = QuickDialog.EXTRA_DEFAULT_RESULT_DATA
         const val EXTRA_WHICH = QuickDialog.EXTRA_WHICH
@@ -304,28 +304,27 @@ open class QuickDialogFragment : DialogFragment() {
         }
     }
     
-    class BasicBuilder(context: Context,
-                       themeResId: Int = 0) : Builder<QuickDialogFragment>(context, themeResId) {
+    class BasicBuilder(context: Context) : Builder<QuickDialogFragment>(context) {
         override fun newInstance() = QuickDialogFragment()
     }
     
-    abstract class Builder<T : QuickDialogFragment> @JvmOverloads constructor(private val context: Context, themeResId: Int = 0) {
+    abstract class Builder<T : QuickDialogFragment> constructor(private val context: Context) {
 
-        @SuppressLint("ResourceType")
-        private fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
-            HLog.i("QuickDialogFragment","resolveDialogTheme", resId)
-            return if (resId > 0) {   // start of real resource IDs.
-                resId
-            } else {
-                val outValue = TypedValue()
-                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
-                outValue.resourceId
-            }
-        }
+//        @SuppressLint("ResourceType")
+//        private fun resolveDialogTheme(context: Context, @StyleRes resId: Int): Int {
+//            HLog.i("QuickDialogFragment","resolveDialogTheme", resId)
+//            return if (resId > 0) {   // start of real resource IDs.
+//                resId
+//            } else {
+//                val outValue = TypedValue()
+//                context.theme.resolveAttribute(R.attr.dialogTheme, outValue, true)
+//                outValue.resourceId
+//            }
+//        }
 
-        @StyleRes
-        private val themeResId: Int =
-            resolveDialogTheme(context, themeResId)
+//        @StyleRes
+//        private val themeResId: Int =
+//            resolveDialogTheme(context, themeResId)
         
         private var title: CharSequence? = null
         private var message: CharSequence? = null
@@ -432,7 +431,7 @@ open class QuickDialogFragment : DialogFragment() {
         protected open fun buildArguments(): Bundle {
             val args = Bundle()
             args.putBoolean(EXTRA_CANCELABLE, cancelable)
-            args.putInt(EXTRA_THEME_RES_ID, themeResId)
+            // args.putInt(EXTRA_THEME_RES_ID, themeResId)
             if (customViewResId > -1) {
                 args.putInt(EXTRA_CUSTOM_VIEW_RES_ID, customViewResId)
             }
