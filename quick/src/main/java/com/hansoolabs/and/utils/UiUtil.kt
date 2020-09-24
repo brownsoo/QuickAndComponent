@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.provider.Settings
@@ -46,12 +47,20 @@ object UiUtil {
     }
 
     @JvmStatic
-    fun getDisplaySize(context: Context): Point {
+    fun getDisplaySize(context: Context): Point? {
         val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = manager.defaultDisplay
-        val point = Point()
-        display.getSize(point)
-        return point
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val rect = manager.currentWindowMetrics.bounds
+            return Point(rect.width(), rect.height())
+        } else {
+            @Suppress("DEPRECATION")
+            manager.defaultDisplay?.let { display ->
+                val point = Point()
+                display.getSize(point)
+                return point
+            }
+        }
+        return null
     }
 
     @JvmStatic
@@ -290,20 +299,5 @@ object UiUtil {
         } else {
             hideKeyboard(activity, View(activity), hiddenComplete)
         }
-    }
-
-    @JvmStatic
-    fun getScreenMetrics(activity: Activity): DisplayMetrics {
-        val metrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(metrics)
-        return metrics
-    }
-
-    @JvmStatic
-    fun getScreenInches(activity: Activity): Double {
-        val dm = getScreenMetrics(activity)
-        val x = Math.pow((dm.widthPixels / dm.xdpi).toDouble(), 2.0)
-        val y = Math.pow((dm.heightPixels / dm.ydpi).toDouble(), 2.0)
-        return Math.sqrt(x + y)
     }
 }

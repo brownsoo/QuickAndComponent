@@ -1,27 +1,23 @@
 package com.hansoolabs.and.app
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Point
 import android.os.Bundle
-import androidx.annotation.CallSuper
-import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.HLog
 import com.hansoolabs.and.utils.StringUtil
@@ -137,19 +133,14 @@ open class QuickDialogFragment : DialogFragment() {
     }
     
     protected open fun setupDialogWindow(dialog: Dialog) {
-        var width = -1
-        activity?.windowManager?.defaultDisplay?.let { display ->
-            val size = Point()
-            display.getSize(size)
-            width = size.x
-        }
+        val width = UiUtil.getDisplaySize(dialog.context)?.x ?: return
         HLog.d("quick", "setupDialogWindow", width)
         dialog.window?.let {
             val params = it.attributes
             if (width < 0) {
                 params.width = UiUtil.dp2px(280f)
             } else {
-                params.width = Math.min(UiUtil.dp2px(400f), (width * 0.8).toInt())
+                params.width = UiUtil.dp2px(400f).coerceAtMost((width * 0.8).toInt())
             }
             it.attributes = params
         }
