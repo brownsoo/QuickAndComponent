@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.os.SystemClock
 import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -18,11 +19,18 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hansoolabs.and.R
 import kotlin.math.roundToInt
 
+fun View.onClickThrottle(throttle: Long = 600L, action: (View) -> Unit) {
+    this.setOnClickListener(object : View.OnClickListener {
+        private var lastClickTime: Long = 0
 
-/**
- * Created by brownsoo on 2017. 8. 3..
- */
+        override fun onClick(v: View) {
+            if (SystemClock.elapsedRealtime() - lastClickTime < throttle) return
+            else action(v)
 
+            lastClickTime = SystemClock.elapsedRealtime()
+        }
+    })
+}
 
 fun Any.klassName(): String {
     return "${this.javaClass.simpleName}@${Integer.toHexString(this.hashCode())}"

@@ -21,7 +21,7 @@ class MainActivity : QuickActivity() {
         setContentView(R.layout.activity_main)
 
         btn_bottom_dialog.setOnClickListener {
-            BottomBuilder(this, R.style.Theme_MaterialComponents_BottomSheetDialog)
+            BottomBuilder(this)
                 .setView(R.layout.bottom_input_dialog)
                 .build()
                 .show(supportFragmentManager, "tag-bottom-dialog")
@@ -36,9 +36,8 @@ class MainActivity : QuickActivity() {
     }
 }
 
-class BottomBuilder(context: Context,
-                   themeResId: Int = 0)
-    : QuickBottomSheetDialogFragment.Builder<QuickBottomSheetDialogFragment>(context, themeResId) {
+class BottomBuilder(context: Context)
+    : QuickBottomSheetDialogFragment.Builder<QuickBottomSheetDialogFragment>(context) {
     override fun newInstance(): BottomDialog {
         return BottomDialog()
     }
