@@ -206,7 +206,9 @@ open class QuickActivity : AppCompatActivity(),
         if (dialog.isShowing) {
             return
         }
-        dialog.show()
+        if (isLive()) {
+            dialog.show()
+        }
     }
 
     @UiThread
