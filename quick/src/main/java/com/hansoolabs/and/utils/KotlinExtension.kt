@@ -32,7 +32,7 @@ fun View.onClickThrottle(throttle: Long = 600L, action: (View) -> Unit) {
     })
 }
 
-fun Any.klassName(): String {
+fun Any.getClassInstanceName(): String {
     return "${this.javaClass.simpleName}@${Integer.toHexString(this.hashCode())}"
 }
 
