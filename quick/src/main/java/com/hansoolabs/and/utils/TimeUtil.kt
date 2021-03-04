@@ -10,40 +10,45 @@ import java.util.TimeZone
 
 object TimeUtil {
 
+    var deviceTimeOffset: Long = 0
+    var defaultTimeZone: TimeZone = TimeZone.getDefault()
+    fun setTimeOffset(serverTime: Long) {
+        deviceTimeOffset = serverTime - Date().time
+    }
+    @JvmStatic
+    fun now(): Date {
+        return Date(Date().time + deviceTimeOffset)
+    }
+    @JvmStatic
+    fun nowMillis(): Long {
+        return Date().time + deviceTimeOffset
+    }
+    @JvmStatic
     fun getCalendar(locale: Locale): Calendar {
         return Calendar.getInstance(locale)
     }
-
+    @JvmStatic
     fun getCalendar(timezone: TimeZone): Calendar {
         return Calendar.getInstance(timezone)
     }
-
+    @JvmStatic
     fun getCalendar(timezone: TimeZone, locale: Locale): Calendar {
         return Calendar.getInstance(timezone, locale)
     }
-
-    fun getTimeFormat(timeMilli: Long, template: String): String {
-        val dateFormat = SimpleDateFormat.getDateTimeInstance(
-                DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
-        dateFormat.applyPattern(template)
-        return dateFormat.format(Date(timeMilli))
+    @JvmStatic
+    fun string(date: Date, pattern: String = "yyyy-MM-dd hh:mm:ss", locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        return formatter.format(date)
     }
-
-    fun getTimeFormatWithoutTime(timeMilli: Long): String {
-        return getTimeFormat(timeMilli, "yyyy-MM-dd")
+    /**
+     * yyyy.M.d (E)
+     */
+    @JvmStatic
+    fun msToYearMonthDayWeek(ms: Long?): String {
+        if (ms == null) return ""
+        return SimpleDateFormat("yyyy.M.d (E)", Locale.getDefault()).format(ms)
     }
-
-    fun getTimeFormat(timeMilli: Long): String {
-        return getTimeFormat(timeMilli, "yyyy-MM-dd kk:mm:ss")
-    }
-
-    fun getCurrentTime(template: String): String {
-        return getTimeFormat(System.currentTimeMillis(), template)
-    }
-
-    val currentTime: String
-        get() = getCurrentTime("yyyy-MM-dd kk:mm:ss")
-
+    @JvmStatic
     fun getTimeDiffFormat(timeMilli: Long): String {
         val time = timeMilli / 1000
         val format = String.format("%%0%dd", 2)
@@ -53,7 +58,7 @@ object TimeUtil {
         val text = "$hours:$minutes:$seconds"
         return text
     }
-
+    @JvmStatic
     fun getTimeDiffFormatKor(timeMilli: Long): String {
         val time = timeMilli / 1000
         val format = String.format("%%0%dd", 2)
