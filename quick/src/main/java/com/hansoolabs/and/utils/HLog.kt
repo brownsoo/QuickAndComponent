@@ -93,3 +93,40 @@ object HLog {
         }
     }
 }
+
+
+
+fun Any.hlogee(TAG: String, className: String, b: () -> Throwable?) {
+    if (BuildConfig.DEBUG) {
+        HLog.e(TAG, className, b.invoke())
+    }
+}
+
+fun Any.hloges(TAG: String, className: String, b: ()-> String?) {
+    if (BuildConfig.DEBUG) {
+        HLog.e(TAG, className, b.invoke())
+    }
+}
+fun Any.hlogi(TAG: String, className: String, b: ()-> String?) {
+    if (BuildConfig.DEBUG) {
+        HLog.i(TAG, className, b.invoke())
+    }
+}
+
+fun Any.hlogd(TAG: String, className: String, b: ()-> String?) {
+    if (BuildConfig.DEBUG) {
+        HLog.d(TAG, className, b.invoke())
+    }
+}
+
+fun Any.hlogv(TAG: String, className: String, b: ()-> String?) {
+    if (BuildConfig.DEBUG) {
+        HLog.v(TAG, className, b.invoke())
+    }
+}
+
+fun Any.hlogw(TAG: String, className: String, b: ()-> String?) {
+    if (BuildConfig.DEBUG) {
+        HLog.w(TAG, className, b.invoke())
+    }
+}
