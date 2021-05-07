@@ -186,6 +186,11 @@ open class QuickActivity : AppCompatActivity(),
             runOnUiThread { showMessageProgress(title, message) }
             return
         }
+        val hasProgressFragment = supportFragmentManager.fragments.firstOrNull { it is MessageProgress } != null
+        if (hasProgressFragment) {
+            return
+        }
+
         getMainHandler()?.let {
             it.removeMessages(WHAT_DISMISS_PROGRESS)
             it.removeMessages(WHAT_SHOW_PROGRESS)
