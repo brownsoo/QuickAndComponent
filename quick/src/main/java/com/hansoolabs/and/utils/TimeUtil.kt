@@ -37,7 +37,7 @@ object TimeUtil {
     }
     @JvmStatic
     fun string(date: Date, pattern: String = "yyyy-MM-dd hh:mm:ss", locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        val formatter = SimpleDateFormat(pattern, locale)
         return formatter.format(date)
     }
     /**

@@ -30,6 +30,7 @@ import com.hansoolabs.and.utils.UiUtil
 
 
 @Suppress("MemberVisibilityCanBePrivate")
+@Deprecated("Use MaterialComponents")
 open class QuickDialogFragment : DialogFragment() {
 
     companion object {
