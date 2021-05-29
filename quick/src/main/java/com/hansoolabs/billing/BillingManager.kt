@@ -246,7 +246,7 @@ class BillingManager private constructor(
                     if (verified) {
                         validPurchases.add(purchase)
                     } else {
-                        HLog.w(TAG, klass, "NOT valid ${purchase.sku}")
+                        HLog.w(TAG, klass, "NOT valid ${purchase.skus}")
                     }
                     verifyTotal --
                     if (verifyTotal <= 0) {
@@ -257,8 +257,8 @@ class BillingManager private constructor(
                             }
                         }
 
-                        val (consumables, nonConsumables) = validPurchases.partition {
-                            consumableSkus.contains(it.sku)
+                        val (consumables, nonConsumables) = validPurchases.partition { p ->
+                            consumableSkus.any { p.skus.contains(it) }
                         }
                         HLog.d(TAG, klass, "processPurchases consumables content $consumables")
                         HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
@@ -281,13 +281,13 @@ class BillingManager private constructor(
             }
             
             purchasesResult.forEach { purchase ->
-                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.sku}")
+                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.skus}")
                 if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     verification.verifyValidSignature(purchase, verificationResult)
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                     // handle pending purchases, e.g. confirm with users about the pending
                     // purchases, prompt them to complete it, etc.
-                    HLog.w(TAG, klass, "PENDING ${purchase.sku}")
+                    HLog.w(TAG, klass, "PENDING ${purchase.skus}")
                 }
             }
         }
@@ -362,7 +362,8 @@ class BillingManager private constructor(
             val builder = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
             if (oldPurchase != null) {
-                builder.setOldSku(oldPurchase.sku, oldPurchase.purchaseToken)
+                // TODO: CHECK
+                //builder.setOldSku(oldPurchase.sku, oldPurchase.purchaseToken)
             }
             billingClient.launchBillingFlow(activity, builder.build())
         }
@@ -425,7 +426,7 @@ class BillingManager private constructor(
             }
             
             if (BuildConfig.DEBUG) {
-                HLog.i(TAG, klass, "Queried", purchasesResult.map { it.sku })
+                HLog.i(TAG, klass, "Queried", purchasesResult.map { it.skus })
             }
             processPurchases(purchasesResult) { valid ->
                 updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
