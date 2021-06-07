@@ -362,8 +362,11 @@ class BillingManager private constructor(
             val builder = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
             if (oldPurchase != null) {
-                // TODO: CHECK
-                //builder.setOldSku(oldPurchase.sku, oldPurchase.purchaseToken)
+                builder.setSubscriptionUpdateParams(
+                    BillingFlowParams.SubscriptionUpdateParams.newBuilder()
+                        .setOldSkuPurchaseToken(oldPurchase.purchaseToken)
+                        .build()
+                )
             }
             billingClient.launchBillingFlow(activity, builder.build())
         }
