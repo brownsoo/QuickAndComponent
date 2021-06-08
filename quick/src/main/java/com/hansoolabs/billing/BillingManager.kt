@@ -93,22 +93,6 @@ class BillingManager private constructor(
         fun onBillingPurchasesCreated(purchases: List<Purchase>)
     }
 
-    /**
-     * The [BillingClient] is the most reliable and primary source of truth for all purchases
-     * made through the Google Play Store. The Play Store takes security precautions in guarding
-     * the data. Also, the data is available offline in most cases, which means the app incurs no
-     * network charges for checking for purchases using the [BillingClient]. The offline bit is
-     * because the Play Store caches every purchase the user owns, in an
-     * [eventually consistent manner](https://developer.android.com/google/play/billing/billing_library_overview#Keep-up-to-date).
-     * This is the only billing client an app is actually required to have on Android. The other
-     * two (webServerBillingClient and localCacheBillingClient) are optional.
-     *
-     * ASIDE. Notice that the connection to [billingClient] is created using the
-     * applicationContext. This means the instance is not [Activity]-specific. And since it's also
-     * not expensive, it can remain open for the life of the entire [Application]. So whether it is
-     * (re)created for each [Activity] or [Fragment] or is kept open for the life of the application
-     * is a matter of choice.
-     */
     private lateinit var billingClient: BillingClient
 
     private val klass = "BillingManager@${Integer.toHexString(this.hashCode())}"
@@ -229,7 +213,7 @@ class BillingManager private constructor(
     
         if (purchasesResult.isEmpty()) {
             queryCallback?.let { callback ->
-                GlobalScope.launch(Dispatchers.Main) {
+                CoroutineScope(Dispatchers.Main).launch {
                     callback.invoke(emptySet())
                 }
             }
@@ -252,7 +236,7 @@ class BillingManager private constructor(
                     if (verifyTotal <= 0) {
                         HLog.d(TAG, klass, "verifyValidSignature complete ")
                         queryCallback?.let { callback ->
-                            GlobalScope.launch(Dispatchers.Main) {
+                            CoroutineScope(Dispatchers.Main).launch {
                                 callback.invoke(validPurchases)
                             }
                         }
@@ -270,7 +254,7 @@ class BillingManager private constructor(
                           disbursed. In this sample, the receipts are then removed upon entitlement
                           disbursement.
                          */
-                        GlobalScope.launch(Dispatchers.Main) {
+                        CoroutineScope(Dispatchers.Main).launch {
                             handleConsumablePurchasesAsync(consumables)
                             acknowledgeNonConsumablePurchasesAsync(nonConsumables)
                         }
@@ -412,27 +396,29 @@ class BillingManager private constructor(
      */
     fun queryPurchases() {
         executeServiceRequest(Runnable {
-            val time = System.currentTimeMillis()
-            val purchasesResult = HashSet<Purchase>()
-            var result = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-            HLog.d(TAG, klass,
-                "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
-            )
-            result.purchasesList?.let { purchasesResult.addAll(it) }
-
-            if (isSubscriptionSupported()) {
-                result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
+            CoroutineScope(Job() + Dispatchers.Default).launch {
+                val time = System.currentTimeMillis()
+                val purchasesResult = HashSet<Purchase>()
+                var result = billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP)
                 HLog.d(TAG, klass,
-                    "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
+                    "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
                 )
-                result.purchasesList?.let { purchasesResult.addAll(it) }
-            }
-            
-            if (BuildConfig.DEBUG) {
-                HLog.i(TAG, klass, "Queried", purchasesResult.map { it.skus })
-            }
-            processPurchases(purchasesResult) { valid ->
-                updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
+                result.purchasesList.let { purchasesResult.addAll(it) }
+
+                if (isSubscriptionSupported()) {
+                    result = billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS)
+                    HLog.d(TAG, klass,
+                        "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
+                    )
+                    result.purchasesList.let { purchasesResult.addAll(it) }
+                }
+
+                if (BuildConfig.DEBUG) {
+                    HLog.i(TAG, klass, "Queried", purchasesResult.map { it.skus })
+                }
+                processPurchases(purchasesResult) { valid ->
+                    updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
+                }
             }
         })
     }
