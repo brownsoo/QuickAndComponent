@@ -34,7 +34,7 @@ open class MvpContract {
         fun showToast(message: String)
         fun showToast(@StringRes resId: Int)
 
-        fun foreground(): Observable<Boolean>
+//        fun foreground(): Observable<Boolean>
         fun addForegroundListener(listener: ViewForegroundListener)
         fun removeForegroundListener(listener: ViewForegroundListener)
 
@@ -44,8 +44,8 @@ open class MvpContract {
                                    title: String,
                                    message: String): Observable<T>
 
-        fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T>
-        fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T>
+//        fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T>
+//        fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T>
 
     }
 
