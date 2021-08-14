@@ -128,8 +128,8 @@ class BillingManager private constructor(
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
     fun startConnection(
-        consumableSkus: Set<String> = emptySet(),
-        nonConsumableSkus: Set<String> = emptySet()
+        consumableSkus: Set<String>,
+        nonConsumableSkus: Set<String>
     ) {
         this.consumableSkus.clear()
         this.consumableSkus.addAll(consumableSkus)
