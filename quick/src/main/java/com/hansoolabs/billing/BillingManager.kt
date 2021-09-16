@@ -2,6 +2,9 @@ package com.hansoolabs.billing
 
 import android.app.Activity
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
+import androidx.annotation.MainThread
 import com.android.billingclient.api.*
 import com.hansoolabs.and.BuildConfig
 import com.hansoolabs.and.utils.HLog
@@ -124,13 +127,17 @@ class BillingManager private constructor(
     private val consumableSkus = HashSet<String>()
     private val nonConsumableSkus = HashSet<String>()
 
+    private lateinit var mainHandler: Handler
+
     // Start setup. This is asynchronous and the specified listener will be called
     // once setup completes.
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
+    @MainThread
     fun startConnection(
         consumableSkus: Set<String>,
         nonConsumableSkus: Set<String>
     ) {
+        this.mainHandler = Handler(Looper.getMainLooper())
         this.consumableSkus.clear()
         this.consumableSkus.addAll(consumableSkus)
         this.nonConsumableSkus.clear()
@@ -142,7 +149,9 @@ class BillingManager private constructor(
 
         startServiceConnection(Runnable {
             HLog.d(TAG, klass, "setup successful.")
-            updatesListeners.forEach { it.onBillingClientSetupFinished() }
+            mainHandler.post {
+                updatesListeners.forEach { li -> li.onBillingClientSetupFinished() }
+            }
             queryPurchases()
         })
     }
@@ -193,7 +202,9 @@ class BillingManager private constructor(
             BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
                 startServiceConnection(Runnable {
                     HLog.d(TAG, klass, "re-start connection successful.")
-                    updatesListeners.forEach { it.onBillingClientSetupFinished() }
+                    mainHandler.post {
+                        updatesListeners.forEach { li -> li.onBillingClientSetupFinished() }
+                    }
                     queryPurchases()
                 })
             }
@@ -201,7 +212,9 @@ class BillingManager private constructor(
                 HLog.i(TAG, klass, "user cancelled")
             }
             else -> {
-                updatesListeners.forEach { it.onBillingError(result.responseCode) }
+                mainHandler.post {
+                    updatesListeners.forEach { li -> li.onBillingError(result.responseCode) }
+                }
             }
         }
     }
@@ -286,11 +299,8 @@ class BillingManager private constructor(
                 .setPurchaseToken(it.purchaseToken)
                 .build()
             billingClient.consumeAsync(params) { billingResult, purchaseToken ->
-                updatesListeners.forEach {
-                    it.onBillingConsumeFinished(
-                        purchaseToken,
-                        billingResult.responseCode
-                    )
+                mainHandler.post {
+                    updatesListeners.forEach { li -> li.onBillingConsumeFinished(purchaseToken, billingResult.responseCode) }
                 }
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
@@ -318,12 +328,12 @@ class BillingManager private constructor(
                 billingClient.acknowledgePurchase(params) { billingResult ->
                     when (billingResult.responseCode) {
                         BillingClient.BillingResponseCode.OK -> {
-                            updatesListeners.forEach { it.onBillingPurchasesCreated(listOf(purchase)) }
+                            mainHandler.post {
+                                updatesListeners.forEach { li -> li.onBillingPurchasesCreated(listOf(purchase)) }
+                            }
                         }
                         else -> {
-                            HLog.w(
-                                TAG,
-                                klass,
+                            HLog.w(TAG, klass,
                                 "acknowledgeNonConsumablePurchasesAsync response is ${billingResult.debugMessage}"
                             )
                         }
@@ -372,7 +382,9 @@ class BillingManager private constructor(
                 .build()
             billingClient.querySkuDetailsAsync(params) { result, skuDetailsList ->
                 billingClientResponseCode = result.responseCode
-                listener.onSkuDetailsResponse(result, skuDetailsList)
+                mainHandler.post {
+                    listener.onSkuDetailsResponse(result, skuDetailsList)
+                }
             }
         }
         executeServiceRequest(queryRequest)
@@ -417,7 +429,9 @@ class BillingManager private constructor(
                     HLog.i(TAG, klass, "Queried", purchasesResult.map { it.skus })
                 }
                 processPurchases(purchasesResult) { valid ->
-                    updatesListeners.forEach { it.onBillingPurchasesUpdated(valid.toList()) }
+                    mainHandler.post {
+                        updatesListeners.forEach { li -> li.onBillingPurchasesUpdated(valid.toList()) }
+                    }
                 }
             }
         })
@@ -440,7 +454,9 @@ class BillingManager private constructor(
                             executeOnSuccess?.run()
                         }
                         BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
-                            updatesListeners.forEach { it.onBillingError(responseCode) }
+                            mainHandler.post {
+                                updatesListeners.forEach { li -> li.onBillingError(responseCode) }
+                            }
                         }
                         else -> {
                             //do nothing. Someone else will connect it through retry policy.
