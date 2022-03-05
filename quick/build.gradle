@@ -40,8 +40,8 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
 
     // Billing
-    implementation "com.android.billingclient:billing:4.0.0"
-    implementation "com.android.billingclient:billing-ktx:4.0.0"
+    implementation "com.android.billingclient:billing:4.1.0"
+    implementation "com.android.billingclient:billing-ktx:4.1.0"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
