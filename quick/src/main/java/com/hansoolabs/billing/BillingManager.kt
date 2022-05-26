@@ -17,7 +17,7 @@ import kotlin.collections.HashSet
  * refer: https://github.com/googlesamples/android-play-billing/blob/master/TrivialDrive_v2/shared-module/src/main/java/com/example/billingmodule/billing/BillingManager.java
  */
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class BillingManager private constructor(
     private val application: Application,
     private val verification: BillingVerification
@@ -147,13 +147,13 @@ class BillingManager private constructor(
             .setListener(this).build()
         HLog.d(TAG, klass, "starting ")
 
-        startServiceConnection(Runnable {
+        startServiceConnection {
             HLog.d(TAG, klass, "setup successful.")
             mainHandler.post {
                 updatesListeners.forEach { li -> li.onBillingClientSetupFinished() }
             }
             queryPurchases()
-        })
+        }
     }
 
     fun endConnection() {
@@ -200,13 +200,13 @@ class BillingManager private constructor(
                 queryPurchases()
             }
             BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
-                startServiceConnection(Runnable {
+                startServiceConnection {
                     HLog.d(TAG, klass, "re-start connection successful.")
                     mainHandler.post {
                         updatesListeners.forEach { li -> li.onBillingClientSetupFinished() }
                     }
                     queryPurchases()
-                })
+                }
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> {
                 HLog.i(TAG, klass, "user cancelled")
