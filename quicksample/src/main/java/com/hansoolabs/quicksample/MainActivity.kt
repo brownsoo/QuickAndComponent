@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import com.google.android.material.textfield.TextInputEditText
 import com.hansoolabs.and.app.QuickActivity
 import com.hansoolabs.and.app.QuickBottomSheetDialogFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : QuickActivity() {
 
@@ -20,14 +20,14 @@ class MainActivity : QuickActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn_bottom_dialog.setOnClickListener {
+        findViewById<Button>(R.id.btn_bottom_dialog).setOnClickListener {
             BottomBuilder(this)
                 .setView(R.layout.bottom_input_dialog)
                 .build()
                 .show(supportFragmentManager, "tag-bottom-dialog")
         }
 
-        btn_progress_show.setOnClickListener {
+        findViewById<Button>(R.id.btn_progress_show).setOnClickListener {
             count ++
             showMessageProgress("$count")
 

@@ -12,11 +12,6 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 import kotlin.collections.HashSet
 
-/**
- * Created by brownsoo on 2018-09-08.
- * refer: https://github.com/googlesamples/android-play-billing/blob/master/TrivialDrive_v2/shared-module/src/main/java/com/example/billingmodule/billing/BillingManager.java
- */
-
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class BillingManager private constructor(
     private val application: Application,
@@ -96,6 +91,11 @@ class BillingManager private constructor(
         fun onBillingPurchasesCreated(purchases: List<Purchase>)
     }
 
+    data class QueryProduct(
+        @BillingClient.ProductType val productType: String,
+        val productId: String
+    )
+    
     private lateinit var billingClient: BillingClient
 
     private val klass = "BillingManager@${Integer.toHexString(this.hashCode())}"
@@ -175,7 +175,7 @@ class BillingManager private constructor(
     /**
      * This method is called by the [billingClient] when new purchases are detected.
      * The purchase list in this method is not the same as the one in
-     * [queryPurchases][BillingClient.queryPurchases]. Whereas queryPurchases returns everything
+     * [queryPurchases][BillingClient.queryPurchasesAsync]. Whereas queryPurchases returns everything
      * this user owns, [onPurchasesUpdated] only returns the items that were just now purchased or
      * billed.
      *
@@ -243,19 +243,13 @@ class BillingManager private constructor(
                     if (verified) {
                         validPurchases.add(purchase)
                     } else {
-                        HLog.w(TAG, klass, "NOT valid ${purchase.skus}")
+                        HLog.w(TAG, klass, "NOT valid ${purchase.products}")
                     }
                     verifyTotal --
                     if (verifyTotal <= 0) {
                         HLog.d(TAG, klass, "verifyValidSignature complete ")
-                        queryCallback?.let { callback ->
-                            CoroutineScope(Dispatchers.Main).launch {
-                                callback.invoke(validPurchases)
-                            }
-                        }
-
                         val (consumables, nonConsumables) = validPurchases.partition { p ->
-                            consumableSkus.any { p.skus.contains(it) }
+                            consumableSkus.any { p.products.contains(it) }
                         }
                         HLog.d(TAG, klass, "processPurchases consumables content $consumables")
                         HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
@@ -270,6 +264,7 @@ class BillingManager private constructor(
                         CoroutineScope(Dispatchers.Main).launch {
                             handleConsumablePurchasesAsync(consumables)
                             acknowledgeNonConsumablePurchasesAsync(nonConsumables)
+                            queryCallback?.invoke(validPurchases)
                         }
                     } else {
                         HLog.d(TAG, klass, "verifyValidSignature $verifyTotal ")
@@ -278,13 +273,13 @@ class BillingManager private constructor(
             }
             
             purchasesResult.forEach { purchase ->
-                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.skus}")
+                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.products}")
                 if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     verification.verifyValidSignature(purchase, verificationResult)
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                     // handle pending purchases, e.g. confirm with users about the pending
                     // purchases, prompt them to complete it, etc.
-                    HLog.w(TAG, klass, "PENDING ${purchase.skus}")
+                    HLog.w(TAG, klass, "PENDING ${purchase.products}")
                 }
             }
         }
@@ -294,7 +289,7 @@ class BillingManager private constructor(
     private fun handleConsumablePurchasesAsync(consumables: List<Purchase>) {
         HLog.d(TAG, klass, "handleConsumablePurchasesAsync called")
         consumables.forEach {
-            HLog.d(TAG, klass, "handleConsumablePurchasesAsync foreach it is $it")
+            HLog.v(TAG, klass, "handleConsumablePurchasesAsync foreach it is $it")
             val params = ConsumeParams.newBuilder()
                 .setPurchaseToken(it.purchaseToken)
                 .build()
@@ -348,17 +343,22 @@ class BillingManager private constructor(
      */
     fun launchPurchaseFlow(
         activity: Activity,
-        skuDetails: SkuDetails,
+        products: List<ProductDetails>,
         oldPurchase: Purchase? = null
     ) {
         val purchaseFlowRequest = Runnable {
             HLog.d(TAG, klass, "Launching Flow, old SKU? ${oldPurchase != null}")
+            val details = products.map {
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(it)
+                    .build()
+            }
             val builder = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetails)
+                .setProductDetailsParamsList(details)
             if (oldPurchase != null) {
                 builder.setSubscriptionUpdateParams(
                     BillingFlowParams.SubscriptionUpdateParams.newBuilder()
-                        .setOldSkuPurchaseToken(oldPurchase.purchaseToken)
+                        .setOldPurchaseToken(oldPurchase.purchaseToken)
                         .build()
                 )
             }
@@ -366,24 +366,36 @@ class BillingManager private constructor(
         }
         executeServiceRequest(purchaseFlowRequest)
     }
-
+    
+    @Deprecated("Use queryProductDetailsAsync",
+        ReplaceWith("queryProductDetailsAsync(products, listener)"),
+        DeprecationLevel.ERROR)
+    fun querySkuDetailsAsync(
+        @BillingClient.ProductType itemType: String,
+        skuList: List<String>,
+        listener: ProductDetailsResponseListener
+    ){}
     /**
      * 상품 조회
      */
-    fun querySkuDetailsAsync(
-        @BillingClient.SkuType itemType: String,
-        skuList: List<String>,
-        listener: SkuDetailsResponseListener
+    fun queryProductDetailsAsync(
+        products: List<QueryProduct>,
+        listener: ProductDetailsResponseListener
     ) {
         val queryRequest = Runnable {
-            val params = SkuDetailsParams.newBuilder()
-                .setSkusList(skuList)
-                .setType(itemType)
+            val items = products.map {
+                QueryProductDetailsParams.Product.newBuilder()
+                    .setProductId(it.productId)
+                    .setProductType(it.productType)
+                    .build()
+            }
+            val params = QueryProductDetailsParams.newBuilder()
+                .setProductList(items)
                 .build()
-            billingClient.querySkuDetailsAsync(params) { result, skuDetailsList ->
+            billingClient.queryProductDetailsAsync(params) { result, detailsList ->
                 billingClientResponseCode = result.responseCode
                 mainHandler.post {
-                    listener.onSkuDetailsResponse(result, skuDetailsList)
+                    listener.onProductDetailsResponse(result, detailsList)
                 }
             }
         }
@@ -392,7 +404,7 @@ class BillingManager private constructor(
 
     /**
      * Checks if subscriptions are supported for current client
-     * <p>Note: This method does not automatically retry for RESULT_SERVICE_DISCONNECTED.
+     * <p>This method does not automatically retry for RESULT_SERVICE_DISCONNECTED.
      * It is only used in unit tests and after queryPurchases execution, which already has
      * a retry-mechanism implemented.
      * </p>
@@ -407,26 +419,30 @@ class BillingManager private constructor(
      * a listener
      */
     fun queryPurchases() {
-        executeServiceRequest(Runnable {
+        executeServiceRequest {
             CoroutineScope(Job() + Dispatchers.Default).launch {
                 val time = System.currentTimeMillis()
                 val purchasesResult = HashSet<Purchase>()
-                var result = billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP)
-                HLog.d(TAG, klass,
+                var result = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
+                    .setProductType(BillingClient.ProductType.INAPP).build())
+                HLog.d(
+                    TAG, klass,
                     "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
                 )
                 result.purchasesList.let { purchasesResult.addAll(it) }
-
+        
                 if (isSubscriptionSupported()) {
-                    result = billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS)
-                    HLog.d(TAG, klass,
+                    result = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS).build())
+                    HLog.d(
+                        TAG, klass,
                         "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
                     )
                     result.purchasesList.let { purchasesResult.addAll(it) }
                 }
-
+        
                 if (BuildConfig.DEBUG) {
-                    HLog.i(TAG, klass, "Queried", purchasesResult.map { it.skus })
+                    HLog.i(TAG, klass, "Queried", purchasesResult.map { it.products })
                 }
                 processPurchases(purchasesResult) { valid ->
                     mainHandler.post {
@@ -434,7 +450,7 @@ class BillingManager private constructor(
                     }
                 }
             }
-        })
+        }
     }
 
     fun startServiceConnection(executeOnSuccess: Runnable?) {
