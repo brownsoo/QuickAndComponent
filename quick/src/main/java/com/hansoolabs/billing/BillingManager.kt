@@ -349,9 +349,12 @@ class BillingManager private constructor(
         val purchaseFlowRequest = Runnable {
             HLog.d(TAG, klass, "Launching Flow, old SKU? ${oldPurchase != null}")
             val details = products.map {
-                BillingFlowParams.ProductDetailsParams.newBuilder()
+                val builder = BillingFlowParams.ProductDetailsParams.newBuilder()
                     .setProductDetails(it)
-                    .build()
+                it.subscriptionOfferDetails?.firstOrNull()?.offerToken?.let { token ->
+                    builder.setOfferToken(token)
+                }
+                builder.build()
             }
             val builder = BillingFlowParams.newBuilder()
                 .setProductDetailsParamsList(details)
