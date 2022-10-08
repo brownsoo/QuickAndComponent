@@ -34,11 +34,15 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.2'
+    implementation 'androidx.fragment:fragment-ktx:1.5.3'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    // Billing
+    implementation "com.android.billingclient:billing:5.0.0"
+    implementation "com.android.billingclient:billing-ktx:5.0.0"
 
     // RxJava related
     implementation 'io.reactivex.rxjava3:rxjava:3.1.1'

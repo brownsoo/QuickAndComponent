@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
 import com.android.billingclient.api.*
-import com.hansoolabs.and.BuildConfig
 import com.hansoolabs.and.utils.HLog
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -444,9 +443,6 @@ class BillingManager private constructor(
                     result.purchasesList.let { purchasesResult.addAll(it) }
                 }
         
-                if (BuildConfig.DEBUG) {
-                    HLog.i(TAG, klass, "Queried", purchasesResult.map { it.products })
-                }
                 processPurchases(purchasesResult) { valid ->
                     mainHandler.post {
                         updatesListeners.forEach { li -> li.onBillingPurchasesUpdated(valid.toList()) }
