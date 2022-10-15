@@ -19,6 +19,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+    namespace 'com.hansoolabs.and'
 
 }
 
@@ -35,6 +36,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
