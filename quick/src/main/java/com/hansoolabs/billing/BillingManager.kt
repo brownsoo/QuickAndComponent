@@ -5,6 +5,9 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.android.billingclient.api.*
 import com.hansoolabs.and.utils.HLog
 import kotlinx.coroutines.*
@@ -12,7 +15,7 @@ import java.lang.Runnable
 import kotlin.collections.HashSet
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class BillingManager private constructor(
+class BillingManager constructor(
     private val application: Application,
     private val verification: BillingVerification
 ) : PurchasesUpdatedListener {
@@ -21,7 +24,8 @@ class BillingManager private constructor(
 
         @Volatile
         private var INSTANCE: BillingManager? = null
-
+        
+        @Deprecated("use single instance for app")
         fun getInstance(application: Application, verification: BillingVerification): BillingManager =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: BillingManager(application, verification).also {
@@ -61,7 +65,7 @@ class BillingManager private constructor(
             }
         }
     }
-
+    
     interface BillingVerification {
         fun verifyValidSignature(purchase: Purchase, result: BillingVerificationResult)
     }
@@ -457,7 +461,9 @@ class BillingManager private constructor(
             billingClient.startConnection(object : BillingClientStateListener {
                 override fun onBillingServiceDisconnected() {
                     HLog.d(TAG, klass, "onBillingServiceDisconnected")
-                    startServiceConnection(executeOnSuccess)
+                    if (ProcessLifecycleOwner.get().lifecycle.currentState == Lifecycle.State.STARTED) {
+                        startServiceConnection(executeOnSuccess)
+                    }
                 }
 
                 override fun onBillingSetupFinished(result: BillingResult) {
