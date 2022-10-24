@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -15,7 +14,6 @@ import androidx.core.widget.ImageViewCompat
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.dp2px
 
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 /**
  * Simple Item View
  * Created by brownsoo on 2017. 10. 13..
@@ -25,38 +23,38 @@ class SettingItemView
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
 
-    private val iconIv: AppCompatImageView
-    private val titleTv: TextView
-    private val descTv: TextView
-    private val accessoryTv: TextView
-    private val tailIconIv: AppCompatImageView
-    private val accessoryContainer: LinearLayout
-    private val switch: SwitchCompat
+    val iconView: AppCompatImageView
+    val titleView: TextView
+    val descriptionView: TextView
+    val accessoryView: TextView
+    val tailIconView: AppCompatImageView
+    val accessoryContainer: LinearLayout
+    val switchView: SwitchCompat
     private val divider: View
 
     var title: CharSequence? = null
         set(value) {
             field = value
-            titleTv.text = value
+            titleView.text = value
         }
     var description: CharSequence? = null
         set(value) {
             field = value
-            descTv.text = value
-            descTv.visibility = if (value != null) View.VISIBLE else View.GONE
+            descriptionView.text = value
+            descriptionView.visibility = if (value != null) View.VISIBLE else View.GONE
         }
 
     var accessory: CharSequence? = null
         set(value) {
             field = value
-            accessoryTv.text = value
-            accessoryTv.visibility = if (value == null) View.GONE else View.VISIBLE
+            accessoryView.text = value
+            accessoryView.visibility = if (value == null) View.GONE else View.VISIBLE
         }
 
     var switchVisible: Boolean = false
         set(value) {
             field = value
-            switch.visibility = if (value) {
+            switchView.visibility = if (value) {
                 View.VISIBLE
             } else {
                 View.GONE
@@ -66,18 +64,18 @@ class SettingItemView
     var isChecked: Boolean = false
         set(value) {
             field = value
-            switch.isChecked = value
+            switchView.isChecked = value
         }
 
     var titleColor: Int = Color.parseColor("#0d131b")
         set(value) {
             field = value
-            titleTv.setTextColor(value)
+            titleView.setTextColor(value)
         }
     var descriptionColor: Int = Color.parseColor("#0d131b")
         set(value) {
             field = value
-            descTv.setTextColor(value)
+            descriptionView.setTextColor(value)
         }
 
     var dividerColor: Int =  Color.parseColor("#b3b8c5")
@@ -89,19 +87,19 @@ class SettingItemView
     var accessoryColor: Int = Color.parseColor("#0d131b")
         set(value) {
             field = value
-            accessoryTv.setTextColor(value)
+            accessoryView.setTextColor(value)
         }
 
     init {
 
         View.inflate(context, R.layout.and__setting_item_view, this)
-        iconIv = findViewById(R.id.icon)
-        titleTv = findViewById(R.id.title)
-        descTv = findViewById(R.id.desc)
-        accessoryTv = findViewById(R.id.accessory_tv)
+        iconView = findViewById(R.id.icon)
+        titleView = findViewById(R.id.title)
+        descriptionView = findViewById(R.id.desc)
+        accessoryView = findViewById(R.id.accessory_tv)
         accessoryContainer = findViewById(R.id.accessory_container)
-        tailIconIv = findViewById(R.id.tail_icon)
-        switch = findViewById(R.id.tail_switch)
+        tailIconView = findViewById(R.id.tail_icon)
+        switchView = findViewById(R.id.tail_switch)
         divider = findViewById(R.id.split_line)
 
 
@@ -152,34 +150,34 @@ class SettingItemView
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        switch.isEnabled = enabled
+        switchView.isEnabled = enabled
         accessoryContainer.isEnabled = enabled
     }
 
     fun setIconTint(colorList: ColorStateList?) {
-        ImageViewCompat.setImageTintList(iconIv, colorList)
-        ImageViewCompat.setImageTintList(tailIconIv, colorList)
+        ImageViewCompat.setImageTintList(iconView, colorList)
+        ImageViewCompat.setImageTintList(tailIconView, colorList)
     }
 
     fun setIconVisible(visible: Boolean) {
-        iconIv.visibility = if (visible) View.VISIBLE else View.GONE
+        iconView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     fun setIcon(resId: Int) {
         setIconVisible(resId > 0)
         if (resId > 0) {
-            iconIv.setImageDrawable(ContextCompat.getDrawable(context, resId))
+            iconView.setImageDrawable(ContextCompat.getDrawable(context, resId))
         }
     }
 
     fun setTailIconVisible(visible: Boolean) {
-        tailIconIv.visibility = if (visible) View.VISIBLE else View.GONE
+        tailIconView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     fun setTailIcon(resId: Int) {
         setTailIconVisible(resId > 0)
         if (resId > 0) {
-            tailIconIv.setImageDrawable(ContextCompat.getDrawable(context, resId))
+            tailIconView.setImageDrawable(ContextCompat.getDrawable(context, resId))
         }
     }
 
