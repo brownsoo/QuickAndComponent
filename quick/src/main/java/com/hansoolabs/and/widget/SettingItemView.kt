@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.hansoolabs.and.R
 import com.hansoolabs.and.utils.dp2px
 
@@ -29,7 +29,7 @@ class SettingItemView
     val accessoryView: TextView
     val tailIconView: AppCompatImageView
     val accessoryContainer: LinearLayout
-    val switchView: SwitchCompat
+    val switchView: MaterialSwitch
     private val divider: View
 
     var title: CharSequence? = null

@@ -62,12 +62,13 @@
             android:scaleType="centerInside"
             tools:ignore="ContentDescription" />
 
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/tail_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:clickable="false"
+            tools:visibility="visible"
             app:showText="false" />
 
         <androidx.appcompat.widget.AppCompatTextView
