@@ -25,9 +25,9 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:runner:1.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -47,8 +47,8 @@ dependencies {
     implementation "com.android.billingclient:billing-ktx:5.1.0"
 
     // RxJava related
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.1'
-    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.2"
     
     implementation 'com.trello.rxlifecycle3:rxlifecycle:3.1.0'
     implementation 'com.trello.rxlifecycle3:rxlifecycle-android:3.1.0'
