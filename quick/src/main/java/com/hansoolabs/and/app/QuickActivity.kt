@@ -265,33 +265,6 @@ open class QuickActivity : AppCompatActivity(),
         }
     }
 
-    /**
-     * **Hack**
-     * Fixed for error: *Intent.migrateExtraStreamToClipData() on a null object reference*.
-     * Occurred only when rooted user or emulator
-     *
-     *
-     * [reference](http://stackoverflow.com/questions/38041230/intent-migrateextrastreamtoclipdata-on-a-null-object-reference)
-
-     * @param intent
-     * *
-     * @param requestCode
-     */
-    @CallSuper
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        try {
-            super.startActivityForResult(intent ?: Intent(), requestCode)
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-            AlertDialog.Builder(this)
-                    .setTitle("Failed to find proper app")
-                    .setMessage("Please install the app which can handle this command")
-                    .setPositiveButton("Close", null)
-                    .setCancelable(true)
-                    .show()
-        }
-    }
-
     @CallSuper
     override fun startActivity(intent: Intent?) {
         try {
