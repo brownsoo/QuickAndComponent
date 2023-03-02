@@ -19,14 +19,22 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hansoolabs.and.R
 import kotlin.math.roundToInt
 
+object ClickThrottle {
+    var lastClickTime: Long = 0
+}
+
 fun View.onClickThrottle(throttle: Long = 600L, action: (View) -> Unit) {
     this.setOnClickListener(object : View.OnClickListener {
-        private var lastClickTime: Long = 0
-
+        private var lastClickTime: Long
+            set(value) {
+                ClickThrottle.lastClickTime = value
+            }
+            get() = ClickThrottle.lastClickTime
+        
         override fun onClick(v: View) {
             if (SystemClock.elapsedRealtime() - lastClickTime < throttle) return
             else action(v)
-
+            
             lastClickTime = SystemClock.elapsedRealtime()
         }
     })
