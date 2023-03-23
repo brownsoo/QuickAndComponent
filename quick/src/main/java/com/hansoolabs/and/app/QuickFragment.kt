@@ -2,8 +2,6 @@
 
 package com.hansoolabs.and.app
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,7 +9,6 @@ import android.os.Message
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.UiThread
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hansoolabs.and.AppForegroundObserver
@@ -22,7 +19,6 @@ import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
 import io.reactivex.disposables.CompositeDisposable
-import java.lang.IllegalStateException
 import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
@@ -123,11 +119,11 @@ open class QuickFragment : Fragment(),
     }
 
     protected fun getFragmentManagerOrNull(): FragmentManager? {
-        try {
-            return parentFragmentManager
+        return try {
+            parentFragmentManager
         } catch (e: IllegalStateException) {
             HLog.e(TAG, "QuickFragment", e)
-            return null
+            null
         }
     }
 
@@ -234,21 +230,5 @@ open class QuickFragment : Fragment(),
     override fun onQuickDialogResult(tag: String, resultCode: Int, resultData: Bundle) {
         exceptionHandler.onAlertDialogResult(tag, resultCode, resultData)
     }
-
-    @CallSuper
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        try {
-            super.startActivityForResult(intent ?: Intent(), requestCode)
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-            context?.let {
-                AlertDialog.Builder(it)
-                    .setTitle("Failed to find proper app")
-                    .setMessage("Please install the app which can handle this command")
-                    .setPositiveButton("Close", null)
-                    .setCancelable(true)
-                    .show()
-            }
-        }
-    }
+    
 }

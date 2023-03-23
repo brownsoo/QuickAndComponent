@@ -1,10 +1,19 @@
 package com.hansoolabs.and.utils
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 
+
+fun Uri.isContentUri(): Boolean {
+    return scheme == "content"
+}
+
+fun Uri.isFileUri(): Boolean {
+    return scheme == "file"
+}
 
 fun<T: java.io.Serializable> Intent.getSerializableExtraCompat(key: String, kl: Class<T>): T? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

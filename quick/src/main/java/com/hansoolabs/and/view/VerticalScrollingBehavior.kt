@@ -1,12 +1,10 @@
 package com.hansoolabs.and.view
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.IntDef
-import androidx.annotation.RequiresApi
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.IntDef
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 
 
 /**
@@ -23,14 +21,14 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
         const val SCROLL_NONE = 0
     }
 
-    @IntDef(SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN)
+    @IntDef(SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN, SCROLL_NONE)
     @Retention(AnnotationRetention.SOURCE)
     annotation class ScrollDirection
 
     private var mTotalDyUnconsumed = 0
     private var mTotalDy = 0
     /*
-       @return Overscroll direction: SCROLL_DIRECTION_UP, CROLL_DIRECTION_DOWN, SCROLL_NONE
+       @return Overscroll direction: SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN, SCROLL_NONE
    */
     @ScrollDirection
     @get:ScrollDirection
@@ -62,15 +60,13 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
      * @param scrollDirection Direction of the overscroll: SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN
      */
     abstract fun onDirectionNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray, @ScrollDirection scrollDirection: Int)
-
-    @Suppress("OverridingDeprecatedMember")
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int): Boolean =
         nestedScrollAxes and View.SCROLL_AXIS_VERTICAL != 0
-
-    @Suppress("OverridingDeprecatedMember")
+    
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) {
-        @Suppress("DEPRECATION")
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed)
         if (dyUnconsumed > 0 && mTotalDyUnconsumed < 0) {
             mTotalDyUnconsumed = 0
@@ -83,9 +79,8 @@ abstract class VerticalScrollingBehavior<V : View> : CoordinatorLayout.Behavior<
         onNestedVerticalOverScroll(coordinatorLayout, child, overScrollDirection, dyConsumed, mTotalDyUnconsumed)
     }
 
-    @Suppress("OverridingDeprecatedMember")
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray) {
-        @Suppress("DEPRECATION")
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed)
         if (dy > 0 && mTotalDy < 0) {
             mTotalDy = 0
