@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.android.billingclient.api.*
 import com.hansoolabs.and.utils.HLog

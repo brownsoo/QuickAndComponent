@@ -1,9 +1,7 @@
 package com.hansoolabs.and.utils
 
-import com.hansoolabs.and.BuildConfig
 import java.util.regex.Pattern
 
-@Suppress("unused")
 /**
  * Created by brownsoo on 2017. 8. 14..
  */
@@ -11,7 +9,7 @@ import java.util.regex.Pattern
 object StringUtil {
 
     @JvmStatic
-    fun constant(name: String) = BuildConfig.LIBRARY_PACKAGE_NAME + "." + name
+    fun constant(name: String) = "hansoo.labs." + name
 
     @JvmStatic
     fun isNullOrEmpty(str: String?): Boolean {

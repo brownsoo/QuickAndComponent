@@ -92,7 +92,7 @@ class AccessTokenExpireHandler : ExceptionHandler {
 
     companion object {
         @JvmField
-        val ACTION_LOGOUT_REQUIRED = StringUtil.constant("ACTION_LOGOUT_REQUIRED")
+        val ACTION_LOGOUT_REQUIRED: String = StringUtil.constant("ACTION_LOGOUT_REQUIRED")
         private const val TAG_DIALOG = "AccessTokenExpireDialog"
     }
 }
