@@ -15,7 +15,6 @@ import kotlin.collections.HashSet
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class BillingManager constructor(
-    private val application: Application,
     private val verification: BillingVerification
 ) : PurchasesUpdatedListener {
 
@@ -24,10 +23,10 @@ class BillingManager constructor(
         @Volatile
         private var INSTANCE: BillingManager? = null
         
-        @Deprecated("use single instance for app")
+        @Deprecated("use single instance for app", level = DeprecationLevel.ERROR)
         fun getInstance(application: Application, verification: BillingVerification): BillingManager =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: BillingManager(application, verification).also {
+                INSTANCE ?: BillingManager(verification).also {
                     INSTANCE = it
                 }
             }
@@ -136,6 +135,7 @@ class BillingManager constructor(
     // It also starts to report all the new purchases through onBillingPurchasesUpdated() callback
     @MainThread
     fun startConnection(
+        application: Application,
         consumableSkus: Set<String>,
         nonConsumableSkus: Set<String>
     ) {
