@@ -11,9 +11,9 @@ import java.lang.ref.WeakReference
  * Created by brownsoo on 2017. 5. 10..
  */
 
-open class MvpPresenter<T : MvpContract.View>(presentingView: T,
-                                              protected val exceptionHandler: ExceptionHandler?)
-    : MvpContract.Presenter, MvpContract.ViewForegroundListener {
+open class MvpPresenter<T : Mvp.View>(presentingView: T,
+                                      protected val exceptionHandler: ExceptionHandler?)
+    : Mvp.Presenter, Mvp.ViewForegroundListener {
 
     private val delayedCallbacks = ArrayList<DelayedCallback<*>>()
     protected val viewRef: WeakReference<T> = WeakReference(presentingView)

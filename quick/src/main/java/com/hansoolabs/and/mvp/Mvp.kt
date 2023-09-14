@@ -10,7 +10,7 @@ import io.reactivex.Scheduler
  * Created by brownsoo on 2017. 5. 10..
  */
 
-open class MvpContract {
+open class Mvp {
 
     interface View {
 
@@ -34,19 +34,8 @@ open class MvpContract {
         fun showToast(message: String)
         fun showToast(@StringRes resId: Int)
 
-//        fun foreground(): Observable<Boolean>
         fun addForegroundListener(listener: ViewForegroundListener)
         fun removeForegroundListener(listener: ViewForegroundListener)
-
-        fun <T> withProgressDialog(observable: Observable<T>): Observable<T>
-        fun <T> withProgressDialog(observable: Observable<T>, message: String): Observable<T>
-        fun <T> withProgressDialog(observable: Observable<T>,
-                                   title: String,
-                                   message: String): Observable<T>
-
-//        fun <T> bindUntilViewDestroy(observable: Observable<T>): Observable<T>
-//        fun <T> bindUntilViewForeground(observable: Observable<T>): Observable<T>
-
     }
 
     interface Presenter {
