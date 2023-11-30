@@ -73,22 +73,20 @@ object UiUtil {
 
     @JvmStatic
     fun toastShort(context: Context?, @StringRes textResId: Int): Toast {
-        if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_SHORT)
-        return toast(context, context.getString(textResId), Toast.LENGTH_SHORT)
+        return Toast.makeText(context, textResId, Toast.LENGTH_SHORT)
     }
 
     @JvmStatic
     fun toastLong(context: Context?, @StringRes textResId: Int): Toast {
-        if (context == null) return Toast.makeText(context, textResId, Toast.LENGTH_LONG)
-        return toast(context, context.getString(textResId), Toast.LENGTH_LONG)
+        return Toast.makeText(context, textResId, Toast.LENGTH_LONG)
     }
 
     @JvmStatic
     fun toast(context: Context, @StringRes textResId: Int, time: Int = Toast.LENGTH_SHORT): Toast {
-        return toast(context, context.getString(textResId), time)
+        return Toast.makeText(context, context.getString(textResId), time)
     }
 
-    @SuppressLint("InflateParams")
+    @Deprecated("Use Toast.makeText(context, text, time) instead")
     @JvmStatic
     fun toast(context: Context, text: String, time: Int = Toast.LENGTH_SHORT): Toast {
         val inflater = LayoutInflater.from(context)
