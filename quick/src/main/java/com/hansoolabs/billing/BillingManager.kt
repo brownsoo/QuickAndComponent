@@ -460,7 +460,7 @@ class BillingManager constructor(
             billingClient.startConnection(object : BillingClientStateListener {
                 override fun onBillingServiceDisconnected() {
                     HLog.d(TAG, klass, "onBillingServiceDisconnected")
-                    if (ProcessLifecycleOwner.get().lifecycle.currentState == Lifecycle.State.STARTED) {
+                    if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                         startServiceConnection(executeOnSuccess)
                     }
                 }
