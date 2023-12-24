@@ -1,7 +1,7 @@
 package com.hansoolabs.and.rx
 
 import android.os.Looper
-import io.reactivex.Observer
+import io.reactivex.rxjava3.core.Observer
 
 /**
  * Created by brownsoo on 2017. 9. 11..

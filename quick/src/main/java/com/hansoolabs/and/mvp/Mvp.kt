@@ -2,8 +2,7 @@ package com.hansoolabs.and.mvp
 
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
-import io.reactivex.Observable
-import io.reactivex.Scheduler
+import io.reactivex.rxjava3.core.Scheduler
 
 /**
  *

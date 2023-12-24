@@ -18,7 +18,7 @@ import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")

@@ -3,25 +3,23 @@ package com.hansoolabs.and.rx
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.TextView
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.android.MainThreadDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.android.MainThreadDisposable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class TextChanges(private val view: TextView): Observable<String>() {
-    override fun subscribeActual(observer: Observer<in String>?) {
-        observer?.let {
-            if (!RxUtil.checkMainThread(observer))
-                return
-            val listener = Listener(view, it)
-            observer.onSubscribe(listener)
-        }
+    override fun subscribeActual(observer: Observer<in String>) {
+        if (!RxUtil.checkMainThread(observer))
+            return
+        val listener = Listener(view, observer)
+        observer.onSubscribe(listener)
     }
 
     private class Listener(private val view: TextView,
                            private val observer: Observer<in String>)
-        :MainThreadDisposable(), TextWatcher {
+        : MainThreadDisposable(), TextWatcher {
 
         private val subject = PublishSubject.create<String>()
         private var bag: Disposable? = null

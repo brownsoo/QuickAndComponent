@@ -38,8 +38,7 @@ import android.view.animation.Interpolator
 
 @Suppress("unused")
 class BottomNavigationBehavior<V : View> : VerticalScrollingBehavior<V> {
-    private val mWithSnackBarImpl =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) LollipopBottomNavWithSnackBarImpl() else PreLollipopBottomNavWithSnackBarImpl()
+    private val mWithSnackBarImpl = LollipopBottomNavWithSnackBarImpl()
     private val isTablet: Boolean = false
     private val mTabLayoutId: Int
     private var hidden = false
