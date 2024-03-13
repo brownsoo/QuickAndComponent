@@ -31,4 +31,14 @@
         android:layout_marginTop="20dp"
         android:text="Progress Dialog" />
 
+    <com.hansoolabs.and.widget.SettingItemView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTitle="Hello"
+        app:itemAccessory="accessory"
+        app:accessoryColor="@android:color/holo_blue_light"
+        app:titleColor="@android:color/holo_orange_light"
+        app:dividerColor="@color/and__valencia"
+        app:dividerWidth="3dp"/>
+
 </LinearLayout>

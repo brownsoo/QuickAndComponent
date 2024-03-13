@@ -10,13 +10,14 @@
         <attr name="itemTailIcon" format="reference" />
         <attr name="titleColor" format="color"/>
         <attr name="descriptionColor" format="color" />
-        <attr name="dividerColor" format="color" />
         <attr name="accessoryColor" format="color" />
         <attr name="iconTint" format="color" />
         <attr name="itemPaddingStart" format="dimension"/>
         <attr name="itemPaddingEnd" format="dimension"/>
         <attr name="itemPaddingTop" format="dimension"/>
         <attr name="itemPaddingBottom" format="dimension"/>
+        <attr name="dividerColor" format="color" />
+        <attr name="dividerWidth" format="dimension" />
         <attr name="dividerPadding" format="dimension"/>
     </declare-styleable>
 </resources>

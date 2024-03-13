@@ -3,6 +3,7 @@ package com.hansoolabs.and.app
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -260,7 +261,12 @@ open class QuickActivity : AppCompatActivity(),
         if (isLive()) {
             finish()
             if (muteAnimation) {
-                overridePendingTransition(0, 0)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+                } else {
+                    @Suppress("DEPRECATION")
+                    overridePendingTransition(0, 0)
+                }
             }
         }
     }

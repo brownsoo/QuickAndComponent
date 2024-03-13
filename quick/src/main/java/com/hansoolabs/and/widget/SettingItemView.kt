@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.hansoolabs.and.widget
 
 import android.content.Context
@@ -120,6 +122,10 @@ class SettingItemView
         a.getColor(R.styleable.SettingItemView_dividerColor, -1).let {
             if (it >= 0) dividerColor = it
         }
+        a.getDimension(R.styleable.SettingItemView_dividerWidth, 1.dp2px().toFloat()).let {
+            divider.layoutParams.height = it.toInt()
+        }
+        
         a.getColor(R.styleable.SettingItemView_accessoryColor, -1).let {
             if (it >= 0) {
                 accessoryColor = it

@@ -44,7 +44,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     // Billing
-    implementation "com.android.billingclient:billing-ktx:6.1.0"
+    implementation "com.android.billingclient:billing-ktx:6.2.0"
 
     // RxJava related
     // https://github.com/ReactiveX/RxJava
