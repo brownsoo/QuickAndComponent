@@ -11,11 +11,13 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="SwitchCompat"/>
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="MaterialSwitch"/>
 
     <Button
         android:id="@+id/btn_bottom_dialog"
@@ -34,11 +36,16 @@
     <com.hansoolabs.and.widget.SettingItemView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemTitle="Hello"
-        app:itemAccessory="accessory"
-        app:accessoryColor="@android:color/holo_blue_light"
-        app:titleColor="@android:color/holo_orange_light"
+        app:accessoryColor="@color/and__cadet_blue"
         app:dividerColor="@color/and__valencia"
-        app:dividerWidth="3dp"/>
+        app:dividerPadding="30dp"
+        app:dividerWidth="9dp"
+        app:itemAccessory="accessory"
+        app:itemSwitch="true"
+        app:itemTitle="Hello title "
+        app:itemDescription="item Description"
+        app:descriptionColor="@color/and__orange"
+        app:titleColor="@color/and__mountain_meadow"
+        />
 
 </LinearLayout>

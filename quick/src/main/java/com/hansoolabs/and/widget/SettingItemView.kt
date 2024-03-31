@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -26,9 +27,9 @@ class SettingItemView
     LinearLayout(context, attrs, defStyle) {
 
     val iconView: AppCompatImageView
-    val titleView: TextView
-    val descriptionView: TextView
-    val accessoryView: TextView
+    val titleView: AppCompatTextView
+    val descriptionView: AppCompatTextView
+    val accessoryView: AppCompatTextView
     val tailIconView: AppCompatImageView
     val accessoryContainer: LinearLayout
     val switchView: MaterialSwitch
@@ -74,6 +75,7 @@ class SettingItemView
             field = value
             titleView.setTextColor(value)
         }
+    
     var descriptionColor: Int = Color.parseColor("#0d131b")
         set(value) {
             field = value
@@ -84,6 +86,12 @@ class SettingItemView
         set(value) {
             field = value
             divider.setBackgroundColor(value)
+        }
+    
+    var dividerWidth: Int = 1.dp2px()
+        set(value) {
+            field = value
+            divider.layoutParams.height = value
         }
 
     var accessoryColor: Int = Color.parseColor("#0d131b")
@@ -109,28 +117,16 @@ class SettingItemView
         setIcon(a.getResourceId(R.styleable.SettingItemView_itemIcon, -1))
         setTailIcon(a.getResourceId(R.styleable.SettingItemView_itemTailIcon, -1))
         title = a.getString(R.styleable.SettingItemView_itemTitle)
+        titleColor = a.getColor(R.styleable.SettingItemView_titleColor, Color.parseColor("#0d131b"))
         description = a.getString(R.styleable.SettingItemView_itemDescription)
+        descriptionColor = a.getColor(R.styleable.SettingItemView_descriptionColor, Color.parseColor("#0d131b"))
         accessory = a.getString(R.styleable.SettingItemView_itemAccessory)
+        accessoryColor = a.getColor(R.styleable.SettingItemView_accessoryColor, Color.parseColor("#0d131b"))
         switchVisible = a.getBoolean(R.styleable.SettingItemView_itemSwitch, false)
         isChecked = a.getBoolean(R.styleable.SettingItemView_itemChecked, false)
-        a.getColor(R.styleable.SettingItemView_titleColor, -1).let {
-            if (it >= 0) titleColor = it
-        }
-        a.getColor(R.styleable.SettingItemView_descriptionColor, -1).let {
-            if (it >= 0) descriptionColor = it
-        }
-        a.getColor(R.styleable.SettingItemView_dividerColor, -1).let {
-            if (it >= 0) dividerColor = it
-        }
-        a.getDimension(R.styleable.SettingItemView_dividerWidth, 1.dp2px().toFloat()).let {
-            divider.layoutParams.height = it.toInt()
-        }
         
-        a.getColor(R.styleable.SettingItemView_accessoryColor, -1).let {
-            if (it >= 0) {
-                accessoryColor = it
-            }
-        }
+        dividerColor = a.getColor(R.styleable.SettingItemView_dividerColor, Color.parseColor("#b3b8c5"))
+        dividerWidth = a.getDimension(R.styleable.SettingItemView_dividerWidth, 1.0f).toInt()
 
         if (a.hasValue(R.styleable.SettingItemView_iconTint)) {
             val colorList = a.getColorStateList(R.styleable.SettingItemView_iconTint)
