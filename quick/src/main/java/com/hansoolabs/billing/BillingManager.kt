@@ -144,8 +144,9 @@ class BillingManager constructor(
         this.consumableSkus.addAll(consumableSkus)
         this.nonConsumableSkus.clear()
         this.nonConsumableSkus.addAll(nonConsumableSkus)
+        val params = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
         billingClient = BillingClient.newBuilder(application.applicationContext)
-            .enablePendingPurchases()
+            .enablePendingPurchases(params)
             .setListener(this).build()
         HLog.d(TAG, klass, "starting ")
 
