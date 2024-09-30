@@ -132,7 +132,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun setupDialogWindow(@Suppress("UNUSED_PARAMETER") dialog: Dialog) = Unit
+    protected open fun setupDialogWindow(dialog: Dialog) = Unit
 
     protected open fun initLayout(view: View) {
         titleView = view.findViewById(R.id.alert_dialog_title)
@@ -215,9 +215,7 @@ open class QuickBottomSheetDialogFragment : BottomSheetDialogFragment() {
      */
     @CallSuper
     override fun onDestroyView() {
-        if (retainInstance) {
-            dialog?.setDismissMessage(null)
-        }
+        dialog?.setDismissMessage(null)
         super.onDestroyView()
     }
 
