@@ -126,7 +126,7 @@ fun Context.versionName(): String {
     return try {
         val manager = this.packageManager
         val info = manager.getPackageInfo(this.packageName, 0)
-        info.versionName
+        info.versionName ?: "0.0.0"
     } catch (e: Throwable) {
         "0.0.0"
     }
