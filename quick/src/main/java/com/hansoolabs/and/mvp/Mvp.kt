@@ -2,7 +2,6 @@ package com.hansoolabs.and.mvp
 
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
-import io.reactivex.rxjava3.core.Scheduler
 
 /**
  *
@@ -14,7 +13,6 @@ open class Mvp {
     interface View {
 
         val isForeground: Boolean
-        val uiScheduler: Scheduler
 
         fun getString(@StringRes resId: Int): String
         fun getString(@StringRes resId: Int, vararg formatArgs: Any): String

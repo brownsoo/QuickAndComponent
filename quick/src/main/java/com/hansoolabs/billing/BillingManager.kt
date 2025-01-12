@@ -14,7 +14,7 @@ import java.lang.Runnable
 import kotlin.collections.HashSet
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class BillingManager constructor(
+class BillingManager(
     private val verification: BillingVerification
 ) : PurchasesUpdatedListener {
 

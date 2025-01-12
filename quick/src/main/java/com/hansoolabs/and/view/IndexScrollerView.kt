@@ -1,9 +1,7 @@
 package com.hansoolabs.and.view
 
 import android.content.Context
-import android.os.Build
 import androidx.annotation.AttrRes
-import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,20 +25,17 @@ class IndexScrollerView : AbsRecyclerViewScroller {
         fun updateIndex(current: Int, total: Int)
     }
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context,
                 attrs: AttributeSet?,
-                @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-    }
+                @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context,
                 attrs: AttributeSet?,
-                @AttrRes defStyleAttr: Int, @StyleRes defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-    }
+                @AttrRes defStyleAttr: Int, @StyleRes defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     fun setIndexIndicator(indexIndicator: IndexIndicator?) {
         this.indexIndicator = indexIndicator

@@ -18,7 +18,6 @@ import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 @Suppress("UseExpressionBody", "MemberVisibilityCanBePrivate")
@@ -74,8 +73,6 @@ open class QuickFragment : Fragment(),
     val viewForegrounded: Boolean
         get() = viewForeground
 
-    val rxBag by lazy { CompositeDisposable() }
-
     protected val exceptionHandler: BaseExceptionHandler by lazy {
         createCommonExceptionHandler()
     }
@@ -111,11 +108,6 @@ open class QuickFragment : Fragment(),
         resumed = false
         notifyViewForegroundChanged()
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        rxBag.clear()
-        super.onDestroy()
     }
 
     protected fun getFragmentManagerOrNull(): FragmentManager? {

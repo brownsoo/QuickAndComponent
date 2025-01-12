@@ -23,7 +23,6 @@ import com.hansoolabs.and.utils.UiUtil
 import com.hansoolabs.and.utils.isLive
 import com.hansoolabs.and.widget.MessageProgress
 import com.hansoolabs.and.widget.MessageProgressDialog
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
@@ -47,8 +46,6 @@ open class QuickActivity : AppCompatActivity(),
         get() = !AppForegroundObserver.instance.isAppInBackground
 
     protected var viewForeground = false
-
-    protected val compositeBag by lazy { CompositeDisposable() }
 
     private val mainHandler by lazy { QuickMainHandler(this) }
 
@@ -139,11 +136,6 @@ open class QuickActivity : AppCompatActivity(),
         resumed = false
         notifyViewForegroundChanged()
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        compositeBag.clear()
-        super.onDestroy()
     }
 
     override fun onAppDidForeground() {
