@@ -52,9 +52,4 @@ dependencies {
     // Billing
     implementation "com.android.billingclient:billing-ktx:7.1.1"
 
-    // RxJava related
-    // https://github.com/ReactiveX/RxJava
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
-    // https://github.com/ReactiveX/RxAndroid
-    implementation "io.reactivex.rxjava3:rxandroid:3.0.2"
 }
