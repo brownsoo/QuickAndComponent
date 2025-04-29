@@ -1,16 +1,15 @@
 package com.hansoolabs.and.utils
 
-import android.os.Build
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.TextWatcher
-import java.lang.StringBuilder
 import java.util.*
 
 /**
  * Created by vulpes on 2017. 7. 6..
  */
+@Deprecated("내부 PhoneNumberFormattingTextWatcher 가 deprecated 되었습니다.")
 class PhoneNumberFormattingCompatTextWatcher(private val locale: Locale = Locale.getDefault()) :
     TextWatcher {
 
@@ -67,17 +66,12 @@ fun formatPhoneNumber(number: String, locale: Locale = Locale.getDefault()): Str
                 .also { formatPhoneNumberForKorea(it) }
                 .toString()
     }
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        PhoneNumberUtils.formatNumber(number, locale.country)
-    } else {
-        @Suppress("DEPRECATION")
-        PhoneNumberUtils.formatNumber(number)
-    }
+    return PhoneNumberUtils.formatNumber(number, locale.country)
 }
 
 fun formatPhoneNumberForKorea(number: Editable) {
     val builder = StringBuilder()
-    builder.append(number.toString().replace(Regex("[^\\d]"), ""))
+    builder.append(number.toString().replace(Regex("\\D"), ""))
 
     if (builder.length > 3) {
         builder.insert(3, "-")

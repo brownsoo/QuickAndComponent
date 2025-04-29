@@ -53,6 +53,7 @@ object ImageUtil {
                     return true
                 }
             } else {
+                @Suppress("DEPRECATION")
                 val movie = Movie.decodeStream(file.inputStream())
                 return movie != null
             }
