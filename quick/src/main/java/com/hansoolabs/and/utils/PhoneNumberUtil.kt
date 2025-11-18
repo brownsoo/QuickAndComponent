@@ -17,7 +17,7 @@ class PhoneNumberFormattingCompatTextWatcher(private val locale: Locale = Locale
     private val watcher = PhoneNumberFormattingTextWatcher()
 
     init {
-        compatWatchers.put(Locale.KOREA.country, KoreaPhoneNumberFormattingTextWatcher())
+        compatWatchers[Locale.KOREA.country] = KoreaPhoneNumberFormattingTextWatcher()
     }
 
     override fun afterTextChanged(s: Editable?) {

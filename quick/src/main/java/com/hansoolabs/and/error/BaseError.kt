@@ -4,16 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import com.hansoolabs.and.utils.readSerializableCompat
 
 /**
  * Created by brownsoo on 2017. 8. 3..
  */
 
-class BaseError(@NonNull val sector: Sector,
-                @NonNull val code: Code,
-                @NonNull val message: String,
-                @Nullable val facingMessage: String?,
-                @Nullable val cause: Throwable?) : Parcelable {
+class BaseError(val sector: Sector,
+                val code: Code,
+                val message: String,
+                val facingMessage: String?,
+                val cause: Throwable?) : Parcelable {
 
     enum class Sector(val code: Int, val message: String) {
         Network(1000, "Network error"),
@@ -51,7 +52,7 @@ class BaseError(@NonNull val sector: Sector,
             Code.values()[parcel.readInt()],
             parcel.readString() ?: "",
             parcel.readString(),
-            parcel.readSerializable() as Throwable)
+            parcel.readSerializableCompat() as? Throwable)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(sector.ordinal)
