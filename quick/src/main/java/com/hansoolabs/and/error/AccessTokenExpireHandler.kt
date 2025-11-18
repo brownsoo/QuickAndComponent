@@ -1,9 +1,7 @@
 package com.hansoolabs.and.error
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
 import com.hansoolabs.and.app.QuickDialogFragment
 import com.hansoolabs.and.R
@@ -85,14 +83,13 @@ class AccessTokenExpireHandler : ExceptionHandler {
     }
 
     private fun notifyLogoutRequired() {
-        delegate.context?.let {
-            LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(ACTION_LOGOUT_REQUIRED))
-        }
+
+//        delegate.context?.let {
+//            LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(ACTION_LOGOUT_REQUIRED))
+//        }
     }
 
     companion object {
-        @JvmField
-        val ACTION_LOGOUT_REQUIRED: String = StringUtil.constant("ACTION_LOGOUT_REQUIRED")
         private const val TAG_DIALOG = "AccessTokenExpireDialog"
     }
 }
