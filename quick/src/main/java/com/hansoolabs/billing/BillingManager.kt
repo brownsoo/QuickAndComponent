@@ -93,7 +93,7 @@ class BillingManager(
     }
 
     data class QueryProduct(
-        @BillingClient.ProductType val productType: String,
+        val productType: String,
         val productId: String
     )
     
