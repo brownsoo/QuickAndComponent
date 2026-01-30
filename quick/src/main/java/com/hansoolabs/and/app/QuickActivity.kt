@@ -65,6 +65,7 @@ open class QuickActivity : AppCompatActivity(),
 
     @CallSuper
     protected open fun handleMainHandlerMessage(msg: Message?) {
+        if (isFinishing || isDestroyed) { return }
         when(msg?.what) {
             WHAT_SHOW_PROGRESS -> {
                 msg.data?.let {
@@ -75,7 +76,15 @@ open class QuickActivity : AppCompatActivity(),
                 }
             }
             WHAT_DISMISS_PROGRESS -> {
-                progressDialog?.dismiss()
+                try {
+                    progressDialog?.let {
+                        if (it.isShowing) {
+                            it.dismiss()
+                        }
+                    }
+                } catch (e: Exception) {
+                    exceptionHandler.onError(e)
+                }
             }
         }
     }
@@ -136,6 +145,14 @@ open class QuickActivity : AppCompatActivity(),
         resumed = false
         notifyViewForegroundChanged()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (progressDialog != null && progressDialog!!.isShowing) {
+            progressDialog!!.dismiss()
+        }
+        mainHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onAppDidForeground() {
