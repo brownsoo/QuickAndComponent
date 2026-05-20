@@ -1,11 +1,13 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id 'com.android.library'
+    alias(libs.plugins.android.library)
     id 'maven-publish'
 }
 
 android {
     namespace 'com.hansoolabs.and'
-    compileSdk 36
+    compileSdk 37
 
     defaultConfig {
         minSdk 24
@@ -27,7 +29,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-// ...
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
@@ -36,7 +37,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -47,30 +48,30 @@ android {
 
 dependencies {
     // Core & UI
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.core:core-ktx:1.17.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.fragment:fragment-ktx:1.8.9'
-    implementation 'com.google.android.material:material:1.13.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.10.0'
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.cardview
+    implementation libs.androidx.fragment.ktx
+    implementation libs.material
+    implementation libs.androidx.lifecycle.process
 
     // Lifecycle (lifecycle-extensions 대신 필요한 모듈만 선언)
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.10.0"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.10.0"
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
 
     // Billing & Utilities
-    implementation 'com.android.billingclient:billing-ktx:8.3.0'
+    implementation libs.billing
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
 
     // Testing
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-    androidTestImplementation 'androidx.test:runner:1.7.0'
-    androidTestImplementation 'androidx.test:rules:1.7.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    testImplementation libs.junit
+    testImplementation libs.kotlin.test.junit
+    androidTestImplementation libs.androidx.runner
+    androidTestImplementation libs.androidx.rules
+    androidTestImplementation libs.androidx.espresso.core
 }
 
 afterEvaluate {
