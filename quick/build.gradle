@@ -81,7 +81,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.brownsoo'
                 artifactId = 'QuickAndComponent'
-                version = '1.2.2'
+                version = '1.2.4'
             }
         }
     }

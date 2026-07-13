@@ -12,6 +12,7 @@ import com.hansoolabs.and.utils.HLog
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import kotlin.collections.HashSet
+import kotlin.coroutines.resume
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class BillingManager(
@@ -33,6 +34,9 @@ class BillingManager(
 
         private const val TAG = "quick"
         const val BILLING_MANAGER_NOT_INITIALIZED = -1
+
+        // 검증 콜백이 유실/지연될 때 배치가 무한 대기하지 않도록 하는 상한
+        private const val VERIFY_TIMEOUT_MS = 10_000L
 
         fun errorMessage(@BillingClient.BillingResponseCode code: Int): String {
             when (code) {
@@ -226,67 +230,76 @@ class BillingManager(
         purchasesResult: Set<Purchase>,
         queryCallback: ((Set<Purchase>) -> Unit)?
     ) {
-    
+
         if (purchasesResult.isEmpty()) {
-            queryCallback?.let { callback ->
-                CoroutineScope(Dispatchers.Main).launch {
-                    callback.invoke(emptySet())
-                }
+            CoroutineScope(Dispatchers.Main).launch {
+                queryCallback?.invoke(emptySet())
             }
             return
         }
-        
-        CoroutineScope(Job() + Dispatchers.IO).launch {
-            
-            val validPurchases = HashSet<Purchase>(purchasesResult.size)
-            var verifyTotal = purchasesResult.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }.size
 
-            val verificationResult = object : BillingVerificationResult {
-                override fun onVerificationResult(purchase: Purchase, verified: Boolean) {
-                    if (verified) {
-                        validPurchases.add(purchase)
-                    } else {
-                        HLog.w(TAG, klass, "NOT valid ${purchase.products}")
-                    }
-                    verifyTotal --
-                    if (verifyTotal <= 0) {
-                        HLog.d(TAG, klass, "verifyValidSignature complete ")
-                        val (consumables, nonConsumables) = validPurchases.partition { p ->
-                            consumableSkus.any { p.products.contains(it) }
-                        }
-                        HLog.d(TAG, klass, "processPurchases consumables content $consumables")
-                        HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
-                        /*
-                          As is being done in this sample, for extra reliability you may store the
-                          receipts/purchases to a your own remote/local database for until after you
-                          disburse entitlements. That way if the Google Play Billing library fails at any
-                          given point, you can independently verify whether entitlements were accurately
-                          disbursed. In this sample, the receipts are then removed upon entitlement
-                          disbursement.
-                         */
-                        CoroutineScope(Dispatchers.Main).launch {
-                            handleConsumablePurchasesAsync(consumables)
-                            acknowledgeNonConsumablePurchasesAsync(nonConsumables)
-                            queryCallback?.invoke(validPurchases)
-                        }
-                    } else {
-                        HLog.d(TAG, klass, "verifyValidSignature $verifyTotal ")
-                    }
-                }
+        CoroutineScope(Job() + Dispatchers.IO).launch {
+
+            val purchased = purchasesResult.filter {
+                it.purchaseState == Purchase.PurchaseState.PURCHASED
             }
-            
-            purchasesResult.forEach { purchase ->
-                HLog.d(TAG, klass, "processPurchases newBatch content ${purchase.products}")
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    verification.verifyValidSignature(purchase, verificationResult)
-                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+            purchasesResult
+                .filter { it.purchaseState == Purchase.PurchaseState.PENDING }
+                .forEach {
                     // handle pending purchases, e.g. confirm with users about the pending
                     // purchases, prompt them to complete it, etc.
-                    HLog.w(TAG, klass, "PENDING ${purchase.products}")
+                    HLog.w(TAG, klass, "PENDING ${it.products}")
                 }
+
+            // 1) Google 가 PURCHASED 로 확정한 구매는 자체 서명검증과 분리하여 즉시 승인/소비한다.
+            //    승인이 누락되면 3일 후 자동 환불되므로, 불안정할 수 있는 자체 검증(원격 키 조회 등)에
+            //    승인 흐름을 종속시키지 않는다. acknowledge/consume 는 모두 멱등(idempotent)이다.
+            val (consumables, nonConsumables) = purchased.partition { p ->
+                consumableSkus.any { p.products.contains(it) }
+            }
+            HLog.d(TAG, klass, "processPurchases consumables content $consumables")
+            HLog.d(TAG, klass, "processPurchases non-consumables content $nonConsumables")
+            withContext(Dispatchers.Main) {
+                handleConsumablePurchasesAsync(consumables)
+                acknowledgeNonConsumablePurchasesAsync(nonConsumables)
+            }
+
+            // 2) 자체 서명검증은 '권한 부여(entitlement)' 판단에만 사용한다. 승인 흐름은 막지 않는다.
+            //    콜백 기반 검증을 코루틴으로 순차 브릿지하여 카운터 레이스/콜백 유실을 제거한다.
+            val validPurchases = LinkedHashSet<Purchase>(purchased.size)
+            for (purchase in purchased) {
+                if (verifySignatureSuspend(purchase)) {
+                    validPurchases.add(purchase)
+                } else {
+                    HLog.w(TAG, klass, "NOT valid ${purchase.products}")
+                }
+            }
+            HLog.d(TAG, klass, "verifyValidSignature complete valid=$validPurchases")
+
+            withContext(Dispatchers.Main) {
+                queryCallback?.invoke(validPurchases)
             }
         }
     }
+
+    /**
+     * 콜백 기반 [BillingVerification.verifyValidSignature] 를 코루틴으로 브릿지한다.
+     * 검증 구현이 콜백을 누락하거나 지연시켜도 [VERIFY_TIMEOUT_MS] 후 false 로 degrade 되어
+     * 배치 전체가 멈추지 않는다. (이 시점에는 이미 승인/소비가 완료된 상태다)
+     */
+    private suspend fun verifySignatureSuspend(purchase: Purchase): Boolean =
+        withTimeoutOrNull(VERIFY_TIMEOUT_MS) {
+            suspendCancellableCoroutine { cont ->
+                verification.verifyValidSignature(purchase, object : BillingVerificationResult {
+                    override fun onVerificationResult(purchase: Purchase, verified: Boolean) {
+                        if (cont.isActive) cont.resume(verified)
+                    }
+                })
+            }
+        } ?: run {
+            HLog.w(TAG, klass, "verifyValidSignature timed out ${purchase.products}")
+            false
+        }
 
 
     private fun handleConsumablePurchasesAsync(consumables: List<Purchase>) {
@@ -429,24 +442,39 @@ class BillingManager(
             CoroutineScope(Job() + Dispatchers.Default).launch {
                 val time = System.currentTimeMillis()
                 val purchasesResult = HashSet<Purchase>()
-                var result = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
+
+                // 조회가 실패했는데 빈 목록을 그대로 전달하면, 소유 중인 구매가 '사라진 것'처럼 보여
+                // 리스너가 권한(구독/광고제거)을 잘못 해제한다. 성공적으로 확인된 결과만 전달한다.
+                val inAppResult = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
                     .setProductType(BillingClient.ProductType.INAPP).build())
                 HLog.d(
                     TAG, klass,
                     "Querying purchases elapsed time: ${System.currentTimeMillis() - time} ms"
                 )
-                result.purchasesList.let { purchasesResult.addAll(it) }
-        
-                if (isSubscriptionSupported()) {
-                    result = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
-                        .setProductType(BillingClient.ProductType.SUBS).build())
-                    HLog.d(
-                        TAG, klass,
-                        "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
-                    )
-                    result.purchasesList.let { purchasesResult.addAll(it) }
+                if (inAppResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                    HLog.w(TAG, klass, "queryPurchases INAPP failed: ${inAppResult.billingResult.responseCode}; skip update")
+                    return@launch
                 }
-        
+                purchasesResult.addAll(inAppResult.purchasesList)
+
+                // 구독 지원 여부가 확인되지 않으면(서비스 일시 단절 등) 구독 소유를 검증할 수 없으므로
+                // 빈 결과로 구독을 지우지 않도록 이번 업데이트를 건너뛴다.
+                if (!isSubscriptionSupported()) {
+                    HLog.w(TAG, klass, "queryPurchases: subscriptions not currently checkable; skip update")
+                    return@launch
+                }
+                val subsResult = billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder()
+                    .setProductType(BillingClient.ProductType.SUBS).build())
+                HLog.d(
+                    TAG, klass,
+                    "Querying subscriptions elapsed time: " + (System.currentTimeMillis() - time) + "ms"
+                )
+                if (subsResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                    HLog.w(TAG, klass, "queryPurchases SUBS failed: ${subsResult.billingResult.responseCode}; skip update")
+                    return@launch
+                }
+                purchasesResult.addAll(subsResult.purchasesList)
+
                 processPurchases(purchasesResult) { valid ->
                     mainHandler.post {
                         updatesListeners.forEach { li -> li.onBillingPurchasesUpdated(valid.toList()) }
